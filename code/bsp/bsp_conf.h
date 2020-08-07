@@ -38,10 +38,10 @@
 // -----------------------------------------------
 // -----------BSP Module Active list -------------
 #define BSP_SMC_MODULE_ENABLE			0
-#define BSP_GPIO_MODULE_ENABLE			0
-#define BSP_TIM_MODULE_ENABLE			0
+#define BSP_GPIO_MODULE_ENABLE			1
+#define BSP_TIM_MODULE_ENABLE			1
 #define BSP_RTC_MODULE_ENABLE			0
-#define BSP_ADC_MODULE_ENABLE			0
+#define BSP_ADC_MODULE_ENABLE			1
 #define BSP_DMA_MODULE_ENABLE			0
 #define BSP_USART_MODULE_ENABLE			1
 #define BSP_FLASH_MODULE_ENABLE			0
@@ -53,7 +53,7 @@
 #define BSP_EXTI_MODULE_ENABLE 			0
 
 #define BSP_IIC_MODULE_ENABLE			0
-#define BSP_SPI_MODULE_ENABLE			0
+#define BSP_SPI_MODULE_ENABLE			1
 #define BSP_WDG_MODULE_ENABLE			0
 #define BSP_SYSTICK_MODULE_ENABLE		0
 
@@ -71,7 +71,7 @@
 
 
 #if BSP_ADC_MODULE_ENABLE == 1
-	#include "fsl_smc.h"
+	#include "stm32f4xx_hal_adc.h"
 #endif
 
 #if BSP_SMC_MODULE_ENABLE == 1
@@ -79,21 +79,15 @@
 #endif
 
 #if BSP_GPIO_MODULE_ENABLE == 1
-	#include "fsl_gpio.h"
+	#include "stm32f4xx_hal_gpio.h"
 #endif	
 
 #if BSP_TIM_MODULE_ENABLE == 1
-	#include "fsl_lptmr.h"	
-	#include "fsl_tpm.h"
+	#include "stm32f4xx_hal_tim.h"	
 #endif	
 
 #if BSP_RTC_MODULE_ENABLE == 1	
 	#include "fsl_rtc.h"
-#endif	
-
-
-#if BSP_ADC_MODULE_ENABLE == 1	
-	#include "fsl_adc16.h"
 #endif	
 
 #if BSP_DMA_MODULE_ENABLE == 1	
@@ -115,6 +109,9 @@
 	#include "fsl_pmc.h"
 #endif	
 
+#if BSP_SPI_MODULE_ENABLE == 1	
+	#include "stm32f4xx_hal_spi.h"
+#endif	
 
 
 

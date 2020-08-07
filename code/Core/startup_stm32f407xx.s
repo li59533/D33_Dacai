@@ -105,7 +105,7 @@ __Vectors       DCD     __initial_sp               ; Top of Stack
                 DCD     TIM1_TRG_COM_TIM11_IRQHandler     ; TIM1 Trigger and Commutation and TIM11
                 DCD     TIM1_CC_IRQHandler                ; TIM1 Capture Compare                                   
                 DCD     TIM2_IRQHandler                   ; TIM2                                            
-                DCD     TIM3_IRQHandler                   ; TIM3                                            
+                DCD     TIM2_IRQHandler                       ; TIM3                                            
                 DCD     TIM4_IRQHandler                   ; TIM4                                            
                 DCD     I2C1_EV_IRQHandler                ; I2C1 Event                                             
                 DCD     I2C1_ER_IRQHandler                ; I2C1 Error                                             

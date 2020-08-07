@@ -19,7 +19,7 @@
  * @addtogroup    XXX 
  * @{  
  */
-#include "bsp_led.h"
+
 /**
  * @addtogroup    bsp_adc_Modules 
  * @{  
@@ -40,7 +40,7 @@
  * @brief         
  * @{  
  */
-#define ADC16_RESULT_REG_ADDR (uint32_t)(&ADC0->R[0]) /* Get ADC16 result register address */
+
 /**
  * @}
  */
@@ -77,12 +77,17 @@ typedef struct
  * @brief         
  * @{  
  */
+
+ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef hdma_adc1;
+
+
 bsp_adc_data_t bsp_adc_data = 
 {
 	.in = 0 ,
 	.average = 0,
 };
-
+uint16_t bsp_adcspace[100];
 
 /**
  * @}
@@ -105,7 +110,7 @@ bsp_adc_data_t bsp_adc_data =
  */
 static void bsp_adc_addvalue(uint16_t value); 
  
-//static void bsp_adcDMA_init(void);
+
 /**
  * @}
  */
@@ -117,130 +122,154 @@ static void bsp_adc_addvalue(uint16_t value);
  */
 void BSP_ADC_Init(void)
 {
-	adc16_config_t config;
-	gpio_pin_config_t gpio_pin_config;
-	
-	// ---------GPIO Init ----------------------
-	CLOCK_EnableClock(kCLOCK_PortC);
-	PORT_SetPinMux(PORTC, 2, kPORT_PinDisabledOrAnalog);
-	GPIO_PinInit(GPIOC, 2, &gpio_pin_config);
-	
-	// -----------------------------------------
-	
-	CLOCK_EnableClock(kCLOCK_Adc0);
-	ADC16_GetDefaultConfig(&config);
-/*
- *   config->referenceVoltageSource     = kADC16_ReferenceVoltageSourceVref;
- *   config->clockSource                = kADC16_ClockSourceAsynchronousClock;
- *   config->enableAsynchronousClock    = true;
- *   config->clockDivider               = kADC16_ClockDivider8;
- *   config->resolution                 = kADC16_ResolutionSE12Bit;
- *   config->longSampleMode             = kADC16_LongSampleDisabled;
- *   config->enableHighSpeed            = false;
- *   config->enableLowPower             = false;
- *   config->enableContinuousConversion = false;
-*/
+	// ---------- DMA Init -----
+	/* DMA controller clock enable */
+	__HAL_RCC_DMA2_CLK_ENABLE();
 
-//	config.clockDivider = ;
-//	config.clockSource = ;
-//	config.enableAsynchronousClock = ;
-//	config.enableContinuousConversion = ;
-//	config.enableHighSpeed = ;
-//	config.enableLowPower = ;
-	config.longSampleMode = kADC16_LongSampleCycle24;
-//	config.referenceVoltageSource = ;
-	config.resolution = kADC16_Resolution16Bit;
-	ADC16_Init( ADC0, &config);
+	/* DMA interrupt init */
+	/* DMA2_Stream0_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);	
+	// --------------------------
+	ADC_ChannelConfTypeDef sConfig = {0};
+
+	/** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+	*/
+	hadc1.Instance = ADC1;
+	hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+	hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+	hadc1.Init.ScanConvMode = ENABLE;
+	hadc1.Init.ContinuousConvMode = ENABLE;
+	hadc1.Init.DiscontinuousConvMode = DISABLE;
+	hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+	hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+	hadc1.Init.NbrOfConversion = 2;
+	hadc1.Init.DMAContinuousRequests = DISABLE;
+	hadc1.Init.EOCSelection = DISABLE;
+	if (HAL_ADC_Init(&hadc1) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	/** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_10;
+	sConfig.Rank = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_84CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}	
 	
-	ADC16_DoAutoCalibration( ADC0 ); 
+	sConfig.Channel = ADC_CHANNEL_11;
+	sConfig.Rank = 2;
+	sConfig.SamplingTime = ADC_SAMPLETIME_84CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
 	
-	// -----channel -------------------
-	adc16_channel_config_t channel_config = { 0 };
-	channel_config.channelNumber = 11;
-	channel_config.enableDifferentialConversion = false;
-	channel_config.enableInterruptOnConversionCompleted = true;
-	ADC16_SetChannelConfig(ADC0, 0, &channel_config);
-	
-	
-	EnableIRQ(ADC0_IRQn);
-	
-	
-	// --------------------------------	
-	// ---------select trigger --------
-	ADC16_EnableHardwareTrigger( ADC0 , true );
-	SIM->SOPT7 = SIM_SOPT7_ADC0TRGSEL(8)| SIM_SOPT7_ADC0ALTTRGEN(1);    // need to look reference maunl 
-	// --------------------------------
-	
-	ADC16_SetOffsetValue(ADC0, 0) ;
-	
-	ADC16_SetHardwareAverage(ADC0, kADC16_HardwareAverageCount4); // Hardware average
-	
-	
-	// ---------Open DMA -------
-	//bsp_adcDMA_init();
-	// -------------------------
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t * )bsp_adcspace, 50);
 }
+
+
+
+void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
+{
+
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	if(adcHandle->Instance==ADC1)
+	{
+		/* USER CODE BEGIN ADC1_MspInit 0 */
+
+		/* USER CODE END ADC1_MspInit 0 */
+		/* ADC1 clock enable */
+		__HAL_RCC_ADC1_CLK_ENABLE();
+
+		__HAL_RCC_GPIOC_CLK_ENABLE();
+		/**ADC1 GPIO Configuration
+		PC0     ------> ADC1_IN10
+		PC1     ------> ADC1_IN11
+		*/
+		GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+		/* ADC1 DMA Init */
+		/* ADC1 Init */
+		hdma_adc1.Instance = DMA2_Stream0;
+		hdma_adc1.Init.Channel = DMA_CHANNEL_0;
+		hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
+		hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;
+		hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
+		hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+		hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+		hdma_adc1.Init.Mode = DMA_NORMAL;
+		hdma_adc1.Init.Priority = DMA_PRIORITY_HIGH;
+		hdma_adc1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+		if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
+		{
+			Error_Handler();
+		}
+
+		__HAL_LINKDMA(adcHandle,DMA_Handle,hdma_adc1);
+
+		/* USER CODE BEGIN ADC1_MspInit 1 */
+
+		/* USER CODE END ADC1_MspInit 1 */
+	}
+}
+
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
+{
+	if(adcHandle->Instance==ADC1)
+	{
+		/* USER CODE BEGIN ADC1_MspDeInit 0 */
+
+		/* USER CODE END ADC1_MspDeInit 0 */
+		/* Peripheral clock disable */
+		__HAL_RCC_ADC1_CLK_DISABLE();
+
+		/**ADC1 GPIO Configuration
+		PC0     ------> ADC1_IN10
+		PC1     ------> ADC1_IN11
+		*/
+		HAL_GPIO_DeInit(GPIOC, GPIO_PIN_0|GPIO_PIN_1);
+
+		/* ADC1 DMA DeInit */
+		HAL_DMA_DeInit(adcHandle->DMA_Handle);
+		/* USER CODE BEGIN ADC1_MspDeInit 1 */
+
+		/* USER CODE END ADC1_MspDeInit 1 */
+	}
+}
+
 
 void BSP_ADC_DeInit(void)
 {
-	adc16_config_t config;
-	gpio_pin_config_t gpio_pin_config;
-	
-	// ---------GPIO Init ----------------------
-	
-	PORT_SetPinMux(PORTC, 2, kPORT_PinDisabledOrAnalog);
-	gpio_pin_config.outputLogic = 0;
-	gpio_pin_config.pinDirection = kGPIO_DigitalInput;
-	GPIO_PinInit(GPIOC, 2, &gpio_pin_config);
-	CLOCK_DisableClock(kCLOCK_PortC);	
-	// -----------------------------------------	
-	
-	
-/*
- *   config->referenceVoltageSource     = kADC16_ReferenceVoltageSourceVref;
- *   config->clockSource                = kADC16_ClockSourceAsynchronousClock;
- *   config->enableAsynchronousClock    = true;
- *   config->clockDivider               = kADC16_ClockDivider8;
- *   config->resolution                 = kADC16_ResolutionSE12Bit;
- *   config->longSampleMode             = kADC16_LongSampleDisabled;
- *   config->enableHighSpeed            = false;
- *   config->enableLowPower             = false;
- *   config->enableContinuousConversion = false;
-*/
 
-//	config.clockDivider = ;
-//	config.clockSource = ;
-	config.enableAsynchronousClock = false;
-//	config.enableContinuousConversion = ;
-//	config.enableHighSpeed = ;
-//	config.enableLowPower = ;
-//	config.longSampleMode = kADC16_LongSampleCycle24;
-//	config.referenceVoltageSource = ;
-//	config.resolution = kADC16_Resolution16Bit;
-	ADC16_Init( ADC0, &config);	
-	
-	ADC16_Deinit(ADC0);
-	CLOCK_DisableClock(kCLOCK_Adc0);
-	DisableIRQ(ADC0_IRQn);
-	
+	// ---------GPIO Init ----------------------
+
+	// -----------------------------------------	
+
 }
 
 
 void BSP_ADC_DisableIRQ(void)
 {
-	DisableIRQ(ADC0_IRQn);
+	
 }
 
 void BSP_ADC_EnableIRQ(void)
 {
-	EnableIRQ(ADC0_IRQn);
+	
 }
 
 uint32_t BSP_ADC_GetValue(uint8_t channel)
 {
-	return ADC16_GetChannelConversionValue( ADC0 , 0);
+	return 0;
 }
-
 
 static void bsp_adc_addvalue(uint16_t value)
 {
@@ -260,11 +289,27 @@ uint16_t BSP_ADC_GetAverageValue(uint8_t channel)
 }
 
 // -------IRQ ----------------
-void ADC0_IRQHandler(void)
+void ADC_IRQHandler(void)
 {
-	//DEBUG("ADC0_IRQHandler\r\n" );
-	bsp_adc_addvalue((uint16_t)ADC16_GetChannelConversionValue( ADC0 , 0));
+	DEBUG("ADC_IRQHandler\r\n" );
+	HAL_ADC_IRQHandler(&hadc1);
+	//bsp_adc_addvalue(0);
 }
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+	if(hadc->Instance == ADC1)
+	{
+		DEBUG("HAL_ADC_ConvCpltCallback\r\n");
+	}
+}
+void DMA2_Stream0_IRQHandler(void)
+{
+	DEBUG("DMA2_Stream0_IRQHandler\r\n");
+	HAL_DMA_IRQHandler(&hdma_adc1);
+}
+
+
 // ---------------------------
 
 // --------------Test -----

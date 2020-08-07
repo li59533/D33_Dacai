@@ -13,17 +13,11 @@
 #include "second_task.h"
 #include "clog.h"
 
-
-
-/**
- * @addtogroup    XXX 
- * @{  
- */
 #include "bsp_uart.h"
 #include "bsp_adc.h"
 
 #include "first_task.h"
-#include "second_task.h"
+
 
 #include "system_param.h"
 
@@ -31,6 +25,12 @@
 #include "crc.h"
 #include "bsp_flash.h"
 
+/**
+ * @addtogroup    XXX 
+ * @{  
+ */
+
+#include "bsp_ad5683.h"
 /**
  * @addtogroup    second_task_Modules 
  * @{  
@@ -124,7 +124,7 @@ uint32_t Second_Task_Init(void)
 							"Second_Task",\
 							256,
 							NULL,
-							1,
+							2,
 							&Second_Task_Handle);
 	
 //	Second_Task_Handle=xTaskCreateStatic((TaskFunction_t	)Second_Task,		//ÈÎÎñº¯Êý
@@ -145,12 +145,20 @@ void Second_Task(void * pvParameter)
 	UBaseType_t secondtask_ramainheap = 0;
 	//UBaseType_t ramainheap = 0;
 	DEBUG("Second Task Enter\r\n");
+	uint32_t count = 0 ;
+	
+	BSP_AD5683_Init();
+
+// -----------Test Code ----------
+	BSP_AD5683_Test();
+	
+	
 	while(1)
 	{
 		secondtask_ramainheap = uxTaskGetStackHighWaterMark(NULL);
 		DEBUG("Second Task ramain heap:%d %%\r\n",secondtask_ramainheap);		
-		
-		DEBUG("Second Task Looping\r\n");
+		DEBUG("Second Task Looping Count:%d\r\n" , count);
+		count ++;
 //		DEBUG("Free Heap:%d\r\n" , RTOS_Get_FreeHeapSize());
 		
 //		ramainheap = uxTaskGetStackHighWaterMark(First_Task_Handle);
@@ -171,7 +179,7 @@ void Second_Task(void * pvParameter)
 //		
 //		ramainheap = uxTaskGetStackHighWaterMark(Hal_Task_Handle);
 //		DEBUG("Hal Task ramain heap:%d\r\n",ramainheap);
-		vTaskDelay(pdMS_TO_TICKS(3000));
+		vTaskDelay(pdMS_TO_TICKS(1000));
 
 		
 	}

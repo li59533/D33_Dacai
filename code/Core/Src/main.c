@@ -4,7 +4,7 @@
 #include "task_list.h"
 #include "clog.h"
 #include "version.h"
-
+#include "bsp_init.h"
 
 void SystemClock_Config(void);
 
@@ -14,6 +14,8 @@ int main(void)
 	HAL_Init();
 
 	SystemClock_Config();
+
+	BSP_Init();
 
 	RTOS_Init();
 

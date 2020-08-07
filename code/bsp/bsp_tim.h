@@ -18,6 +18,7 @@
  * @{ 
  */
 #include "self_def.h"
+#include "bsp_conf.h"
 /**
  * @addtogroup    bsp_tim_Modules 
  * @{  
@@ -27,9 +28,7 @@
  * @defgroup      bsp_tim_Exported_Macros 
  * @{  
  */
-#define		BSP_CLOCK0  0
-#define		BSP_CLOCK1  1
-#define 	BSP_CLOCK2  2
+
 
 
 /**
@@ -67,11 +66,15 @@
  * @defgroup      bsp_tim_Exported_Functions 
  * @{  
  */
-void BSP_Clock_DeInit(uint8_t BSP_CLOCKx);
-void BSP_Clock_Init(uint8_t BSP_CLOCKx);
-uint32_t BSP_GetTimrCurCount(uint8_t BSP_CLOCKx);
-void BSP_Clock_StartOnceTimer(uint8_t BSP_CLOCKx , uint32_t msec);
 
+void BSP_TIM_Init(void);
+void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base);
+void BSP_TIM8_IRQHandler(void);
+void BSP_TIM3_IRQHandler(void);
+void BSP_TIM8_Start(void);
+void BSP_TIM8_Stop(void);
+void BSP_TIM3_Start(void);
+void BSP_TIM3_Stop(void);
 /**
  * @}
  */

@@ -23,7 +23,7 @@
 
 #include "first_task.h"
 #include "second_task.h"
-
+#include "led_task.h"
 
 /**
  * @addtogroup    task_list_Modules 
@@ -35,8 +35,6 @@
  * @brief         
  * @{  
  */
- 
-#define  CMSIS_OS2	
  
 #ifdef CMSIS_OS2 
 	#include "cmsis_os.h"
@@ -122,10 +120,10 @@ void RTOS_Init(void)
 	#else
 	
 	#endif	
-
-	basetype = Second_Task_Init();
-	basetype = First_Task_Init();
-
+	basetype |= First_Task_Init();
+	basetype |= Second_Task_Init();
+	basetype |= Led_Task_Init();
+	
 	if(pdPASS == basetype)
 	{
 		#ifdef CMSIS_OS2   

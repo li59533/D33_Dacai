@@ -18,6 +18,7 @@
  * @{ 
  */
 #include "self_def.h"
+#include "bsp_conf.h"
 /**
  * @addtogroup    version_Modules 
  * @{  
@@ -27,13 +28,7 @@
  * @defgroup      version_Exported_Macros 
  * @{  
  */
-#define VERSION_MAJOR		0   // 0~255
-#define VERSION_MINOR		0   // 0~255
-#define VERSION_LITE		1	// 0~255
 
-#define FRAME_VERSION_MAJOR		0   // 0~255
-#define FRAME_VERSION_MINOR		0   // 0~255
-#define FRAME_VERSION_LITE		3	// 0~255
 
 /**
  * @}
@@ -52,7 +47,13 @@
  * @defgroup      version_Exported_Types 
  * @{  
  */
-
+typedef struct 
+{
+    GPIO_TypeDef * GPIOx;
+    GPIO_InitTypeDef GPIO_Init;
+    GPIO_PinState Begin_status;
+    /* data */
+}BSP_GPIO_Instance_t;
 /**
  * @}
  */
@@ -70,8 +71,7 @@
  * @defgroup      version_Exported_Functions 
  * @{  
  */
-uint32_t Version_Get_Bin(void);
-char * Version_Get_Str(void);
+
 /**
  * @}
  */

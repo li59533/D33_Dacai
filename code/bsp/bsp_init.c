@@ -1,8 +1,8 @@
 /**
  **************************************************************************************************
- * @file        rtos_tools.c
+ * @file        bsp_init.c
  * @author
- * @version   v0.1.0
+ * @bsp_init
  * @date        
  * @brief
  **************************************************************************************************
@@ -10,26 +10,21 @@
  *
  **************************************************************************************************
  */
-#include "rtos_tools.h"
+#include "bsp_init.h"
 /**
  * @addtogroup    XXX 
  * @{  
  */
-#include "FreeRTOS.h"
-#include "task.h"
+#include "bsp_adc.h"
 
-#ifdef CMSIS_OS2 
-	#include "cmsis_os.h"
-#else
-	vTaskStartScheduler();
-#endif
+#include "app_sw.h"
 /**
- * @addtogroup    rtos_tools_Modules 
+ * @addtogroup    bsp_init_Modules 
  * @{  
  */
 
 /**
- * @defgroup      rtos_tools_IO_Defines 
+ * @defgroup      bsp_init_IO_Defines 
  * @brief         
  * @{  
  */
@@ -39,17 +34,7 @@
  */
 
 /**
- * @defgroup      rtos_tools_Macros_Defines 
- * @brief         
- * @{  
- */
-
-/**
- * @}
- */
- 
-/**
- * @defgroup      rtos_tools_Constants_Defines 
+ * @defgroup       bsp_init_Macros_Defines 
  * @brief         
  * @{  
  */
@@ -59,27 +44,7 @@
  */
 
 /**
- * @defgroup      rtos_tools_Private_Types
- * @brief         
- * @{  
- */
-
-/**
- * @}
- */
- 
-/**
- * @defgroup      rtos_tools_Private_Variables 
- * @brief         
- * @{  
- */
-
-/**
- * @}
- */
- 
-/**
- * @defgroup      rtos_tools_Public_Variables 
+ * @defgroup      bsp_init_Constants_Defines 
  * @brief         
  * @{  
  */
@@ -89,7 +54,7 @@
  */
 
 /**
- * @defgroup      rtos_tools_Private_FunctionPrototypes 
+ * @defgroup       bsp_init_Private_Types
  * @brief         
  * @{  
  */
@@ -99,32 +64,49 @@
  */
 
 /**
- * @defgroup      rtos_tools_Functions 
+ * @defgroup      bsp_init_Private_Variables 
  * @brief         
  * @{  
  */
- 
-void RTOS_Delay_ms(uint32_t count)
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      bsp_init_Public_Variables 
+ * @brief         
+ * @{  
+ */
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      bsp_init_Private_FunctionPrototypes 
+ * @brief         
+ * @{  
+ */
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      bsp_init_Functions 
+ * @brief         
+ * @{  
+ */
+void BSP_Init(void)
 {
+	// ---------Test Code -----------
+	APP_SW_Init();
+	APP_SW_H(0);
 	
-	#ifdef CMSIS_OS2   
-		osDelay (pdMS_TO_TICKS(count));
-	#else
-		vTaskDelay(pdMS_TO_TICKS(count));	
-	#endif	
-	
-	
-	
-	
-}	
-
-
-uint32_t RTOS_Get_FreeHeapSize(void)
-{
-	return xPortGetFreeHeapSize();
+	BSP_ADC_Init();
+	// ------------------------------
 }
-
-
 
 /**
  * @}

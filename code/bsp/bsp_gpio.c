@@ -1,8 +1,8 @@
 /**
  **************************************************************************************************
- * @file        rtos_tools.c
+ * @file        version.c
  * @author
- * @version   v0.1.0
+ * @version
  * @date        
  * @brief
  **************************************************************************************************
@@ -10,26 +10,19 @@
  *
  **************************************************************************************************
  */
-#include "rtos_tools.h"
+
 /**
  * @addtogroup    XXX 
  * @{  
  */
-#include "FreeRTOS.h"
-#include "task.h"
-
-#ifdef CMSIS_OS2 
-	#include "cmsis_os.h"
-#else
-	vTaskStartScheduler();
-#endif
+#include "version.h"
 /**
- * @addtogroup    rtos_tools_Modules 
+ * @addtogroup    version_Modules 
  * @{  
  */
 
 /**
- * @defgroup      rtos_tools_IO_Defines 
+ * @defgroup      version_IO_Defines 
  * @brief         
  * @{  
  */
@@ -39,17 +32,7 @@
  */
 
 /**
- * @defgroup      rtos_tools_Macros_Defines 
- * @brief         
- * @{  
- */
-
-/**
- * @}
- */
- 
-/**
- * @defgroup      rtos_tools_Constants_Defines 
+ * @defgroup       version_Macros_Defines 
  * @brief         
  * @{  
  */
@@ -59,27 +42,7 @@
  */
 
 /**
- * @defgroup      rtos_tools_Private_Types
- * @brief         
- * @{  
- */
-
-/**
- * @}
- */
- 
-/**
- * @defgroup      rtos_tools_Private_Variables 
- * @brief         
- * @{  
- */
-
-/**
- * @}
- */
- 
-/**
- * @defgroup      rtos_tools_Public_Variables 
+ * @defgroup      version_Constants_Defines 
  * @brief         
  * @{  
  */
@@ -89,7 +52,7 @@
  */
 
 /**
- * @defgroup      rtos_tools_Private_FunctionPrototypes 
+ * @defgroup       version_Private_Types
  * @brief         
  * @{  
  */
@@ -99,31 +62,40 @@
  */
 
 /**
- * @defgroup      rtos_tools_Functions 
+ * @defgroup      version_Private_Variables 
  * @brief         
  * @{  
  */
- 
-void RTOS_Delay_ms(uint32_t count)
-{
-	
-	#ifdef CMSIS_OS2   
-		osDelay (pdMS_TO_TICKS(count));
-	#else
-		vTaskDelay(pdMS_TO_TICKS(count));	
-	#endif	
-	
-	
-	
-	
-}	
 
+/**
+ * @}
+ */
 
-uint32_t RTOS_Get_FreeHeapSize(void)
-{
-	return xPortGetFreeHeapSize();
-}
+/**
+ * @defgroup      version_Public_Variables 
+ * @brief         
+ * @{  
+ */
 
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      version_Private_FunctionPrototypes 
+ * @brief         
+ * @{  
+ */
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      version_Functions 
+ * @brief         
+ * @{  
+ */
 
 
 /**
