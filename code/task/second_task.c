@@ -149,12 +149,13 @@ void Second_Task(void * pvParameter)
 	
 	BSP_AD5683_Init();
 
-// -----------Test Code ----------
-	BSP_AD5683_Test();
+
 	
 	
 	while(1)
 	{
+		// -----------Test Code ----------
+		BSP_AD5683_Test();
 		secondtask_ramainheap = uxTaskGetStackHighWaterMark(NULL);
 		DEBUG("Second Task ramain heap:%d %%\r\n",secondtask_ramainheap);		
 		DEBUG("Second Task Looping Count:%d\r\n" , count);
@@ -179,7 +180,7 @@ void Second_Task(void * pvParameter)
 //		
 //		ramainheap = uxTaskGetStackHighWaterMark(Hal_Task_Handle);
 //		DEBUG("Hal Task ramain heap:%d\r\n",ramainheap);
-		vTaskDelay(pdMS_TO_TICKS(1000));
+		vTaskDelay(pdMS_TO_TICKS(2000));
 
 		
 	}

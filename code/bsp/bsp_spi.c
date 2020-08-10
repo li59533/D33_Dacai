@@ -17,6 +17,7 @@
  */
 #include "bsp_spi.h"
 #include "bsp_conf.h"
+#include "bsp_ad5683_port.h"
 /**
  * @addtogroup    bsp_spi_Modules 
  * @{  
@@ -314,6 +315,9 @@ void SPI1_IRQHandler(void)
 	if(HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY)
 	{
 		
+		AD5683_SYNC_UP;
+		AD5683_LDAC_DOWN;
+		AD5683_LDAC_UP;
 		//BSP_AD7682_GetValue();
 	}		
 	

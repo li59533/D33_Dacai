@@ -11,6 +11,7 @@ void SystemClock_Config(void);
 int main(void)
 {
 	DEBUG("%s\r\n" , Version_Get_Str());
+	
 	HAL_Init();
 
 	SystemClock_Config();

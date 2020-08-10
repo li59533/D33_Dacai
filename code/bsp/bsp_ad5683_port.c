@@ -163,7 +163,8 @@ void BSP_AD5683_WriteAndRead(uint8_t *tbuf , uint8_t * rbuf ,uint8_t len)
 
 void BSP_AD5683_Write(uint8_t *buf , uint8_t len)
 {
-	BSP_SPI_Write_IT( BSP_SPI_1 , buf, len);
+	//static uint8_t r_buf[3];
+	BSP_SPI_Write( BSP_SPI_1 , buf ,len);
 }
 	
 
