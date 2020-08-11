@@ -67,26 +67,13 @@
  * @{  
  */
 void BSP_AD7682_Init(void);
-
-void BSP_AD7682_TriggerGet_IN(uint8_t channel);
-void BSP_AD7682_LoopTrig(void);
-void BSP_AD7682_GetValue(uint16_t value);
-void BSP_AD7682_GetNeedValue(void);
-float BSP_AD7682_GetAvalue(void);
-void BSP_AD7682_CalcRMS(uint16_t value);
-// -----------------------------------------
 void BSP_AD7682_StartGetValue_InConf(void);
-//void BSP_AD7682_GetValue(void);
+void BSP_AD7682_GetValue(void);
 void BSP_AD7682_ClearData(void);
 uint16_t BSP_AD7682_Getcurvalue(uint8_t channel);
 uint16_t * BSP_AD7682_GetDataBuf_Ptr(void);
 uint8_t BSP_AD7682_GetRealCH(uint8_t location);
 void BSP_AD7682_CheckFilterStatus(void);
-
-
-// -----------testfunc ---------
-void BSP_AD7682_TestFunc(void);
-// -----------------------------
 /**
  * @}
  */

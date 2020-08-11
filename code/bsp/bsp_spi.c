@@ -122,7 +122,7 @@ void BSP_SPI_Init(uint8_t bsp_spix)
 		if (HAL_SPI_Init(&hspi1) != HAL_OK)
 		{
 			Error_Handler();
-		}		
+		}		 
 	}
 	else if(bsp_spix == BSP_SPI_2)
 	{
@@ -315,9 +315,9 @@ void SPI1_IRQHandler(void)
 	if(HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY)
 	{
 		
-		AD5683_SYNC_UP;
-		AD5683_LDAC_DOWN;
-		AD5683_LDAC_UP;
+//		AD5683_SYNC_UP;
+//		AD5683_LDAC_DOWN;
+//		AD5683_LDAC_UP;
 		//BSP_AD7682_GetValue();
 	}		
 	

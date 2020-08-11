@@ -18,6 +18,7 @@
 #include "bsp_adc.h"
 
 #include "app_sw.h"
+#include "bsp_tim.h"
 /**
  * @addtogroup    bsp_init_Modules 
  * @{  

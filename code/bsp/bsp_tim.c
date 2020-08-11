@@ -18,7 +18,8 @@
  * @addtogroup    XXX 
  * @{  
  */
-
+#include "app_sw.h"
+#include "app_vibration_exciter.h"
 /**
  * @addtogroup    bsp_tim_Modules 
  * @{  
@@ -91,6 +92,19 @@ TIM_HandleTypeDef  htim3 =
 };
 
 
+TIM_HandleTypeDef  htim13 =
+{
+	.Instance = TIM13,
+	.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE,
+	.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1,
+	.Init.CounterMode = TIM_COUNTERMODE_UP,
+	//.Init.Period = 26250, //312.5us一次(32point)
+	.Init.Period = 2625, //31.25us一次(320point)
+	.Init.Prescaler = 0,
+};
+
+	
+
 
 /**
  * @}
@@ -122,42 +136,67 @@ TIM_HandleTypeDef  htim3 =
  * @{  
  */
 
-void BSP_TIM_Init(void)
-{
-	TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-	TIM_MasterConfigTypeDef sMasterConfig = {0};
-	
-	if (HAL_TIM_Base_Init(&htim8) != HAL_OK)
-	{
-		Error_Handler();
-	}	
 
-	if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+
+void BSP_TIM_Init(uint8_t Timx)
+{
+	
+	TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+	TIM_MasterConfigTypeDef sMasterConfig = {0};	
+	switch(Timx)
 	{
-		Error_Handler();
-	}	
-	
-	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-	if (HAL_TIM_ConfigClockSource(&htim8, &sClockSourceConfig) != HAL_OK)
-	{
-		Error_Handler();
-	}	
-	if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
-	{
-		Error_Handler();
-	}	
-	
-	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-	if (HAL_TIMEx_MasterConfigSynchronization(&htim8, &sMasterConfig) != HAL_OK)
-	{
-		Error_Handler();
-	}	
-	
-	
-	BSP_TIM3_Start();
-	DEBUG("TIM8 TIM3 Init\r\n");
-	
+		case BSP_TIM_3:
+			{
+				if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+				{
+					Error_Handler();
+				}		
+				sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+				if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+				{
+					Error_Handler();
+				}		
+
+				DEBUG("TIM3 Init\r\n");
+			}
+			break;
+		case BSP_TIM_8:
+			{
+				if (HAL_TIM_Base_Init(&htim8) != HAL_OK)
+				{
+					Error_Handler();
+				}	
+				sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+				if (HAL_TIM_ConfigClockSource(&htim8, &sClockSourceConfig) != HAL_OK)
+				{
+					Error_Handler();
+				}	
+				sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+				sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+				if (HAL_TIMEx_MasterConfigSynchronization(&htim8, &sMasterConfig) != HAL_OK)
+				{
+					Error_Handler();
+				}		
+				DEBUG("TIM8 Init\r\n");
+			}
+			break;
+		case BSP_TIM_13:
+			{
+				if (HAL_TIM_Base_Init(&htim13) != HAL_OK)
+				{
+					Error_Handler();
+				}			
+				sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+				if (HAL_TIM_ConfigClockSource(&htim13, &sClockSourceConfig) != HAL_OK)
+				{
+					Error_Handler();
+				}		
+				DEBUG("TIM13 Init\r\n");
+				
+			}break;
+		default:break;
+	}
+
 }	
 
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
@@ -169,7 +208,8 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 		HAL_NVIC_SetPriority(TIM8_UP_TIM13_IRQn, 1, 0);
 		HAL_NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
 
-	}else if(htim_base->Instance==TIM3)
+	}
+	else if(htim_base->Instance==TIM3)
 	{
 		__HAL_RCC_TIM3_CLK_ENABLE();
 		__HAL_TIM_CLEAR_IT(&htim3, TIM_IT_UPDATE)  ;
@@ -177,24 +217,56 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 		HAL_NVIC_EnableIRQ(TIM3_IRQn);
 
 	}
+	else if(htim_base->Instance==TIM13)
+	{
+		__HAL_RCC_TIM13_CLK_ENABLE();
+		__HAL_TIM_CLEAR_IT(&htim13, TIM_IT_UPDATE)  ;
+		HAL_NVIC_SetPriority(TIM8_UP_TIM13_IRQn, 0, 0);
+		HAL_NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
+	}	
+
+	
 }
 
-void BSP_TIM8_Start(void)
+// ---------- Start and Stop -----------------
+void BSP_TIM_Start(uint8_t Timx)
 {
-	HAL_TIM_Base_Start_IT(&htim8);
-}
-void BSP_TIM8_Stop(void)
-{
-	HAL_TIM_Base_Stop_IT(&htim8);
+	switch(Timx)
+	{
+		case BSP_TIM_3:HAL_TIM_Base_Start_IT(&htim3);break;
+		case BSP_TIM_8:HAL_TIM_Base_Start_IT(&htim8);break;
+		case BSP_TIM_13:HAL_TIM_Base_Start_IT(&htim13);break;
+		default:break;
+	}
 }
 
-void BSP_TIM3_Start(void)
+void BSP_TIM_Stop(uint8_t Timx)
 {
-	HAL_TIM_Base_Start_IT(&htim3);
+	switch(Timx)
+	{
+		case BSP_TIM_3:HAL_TIM_Base_Stop_IT(&htim3);break;
+		case BSP_TIM_8:HAL_TIM_Base_Stop_IT(&htim8);break;
+		case BSP_TIM_13:HAL_TIM_Base_Stop_IT(&htim13);break;
+		default:break;
+	}
 }
-void BSP_TIM3_Stop(void)
+
+// -------------------------------------------
+
+// ---------------- TIM_IRQHandler --------------------
+void TIM8_UP_TIM13_IRQHandler(void)
 {
-	HAL_TIM_Base_Stop_IT(&htim3);
+	if(TIM8->SR & TIM_IT_UPDATE)
+	{
+		TIM8->SR &= (uint16_t)~TIM_IT_UPDATE;
+	}
+	else if(TIM13->SR & TIM_IT_UPDATE)
+	{
+		//APP_SW_Toggle(APP_SW_PD4);
+		APP_VirExc_32Points_Loop();
+		//DEBUG("TIM13->SR & TIM_IT_UPDATE\r\n");
+		TIM13->SR &= (uint16_t)~TIM_IT_UPDATE;
+	}
 }
 
 void BSP_TIM8_IRQHandler(void)
@@ -208,12 +280,13 @@ void BSP_TIM8_IRQHandler(void)
 		//DEBUG("TIM8 IRQ\r\n");
 	}	
 
-	
-	
 	//HAL_TIM_IRQHandler(&htim8);
 	//HAL_TIM_Base_Stop_IT(&htim2);
 
 }
+
+
+
 void BSP_TIM3_IRQHandler(void)
 {
 	HAL_TIM_IRQHandler(&htim3);
@@ -222,7 +295,7 @@ void BSP_TIM3_IRQHandler(void)
 	//DEBUG("TIM3 IRQ\r\n");
 }
 
-
+// --------------------------------------------------------
 
 
 /**

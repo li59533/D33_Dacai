@@ -70,7 +70,6 @@ void BSP_AD7682_StopCONV(void);
 void BSP_AD7682_Get(uint16_t cfg , uint16_t *value);
 void BSP_AD7682_Tim_Init(void);
 
-void BSP_AD7682_WriteCmd(uint16_t data) ;
 // --------------------------------------------------
 
 void BSP_AD7682_StopSample(void);

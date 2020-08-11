@@ -63,7 +63,7 @@
  * @defgroup      clog_Exported_Functions 
  * @{  
  */
-
+void Clog_Float(const char * buf ,float  value);
 /**
  * @}
  */

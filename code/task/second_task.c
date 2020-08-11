@@ -147,15 +147,10 @@ void Second_Task(void * pvParameter)
 	DEBUG("Second Task Enter\r\n");
 	uint32_t count = 0 ;
 	
-	BSP_AD5683_Init();
-
-
-	
 	
 	while(1)
 	{
 		// -----------Test Code ----------
-		BSP_AD5683_Test();
 		secondtask_ramainheap = uxTaskGetStackHighWaterMark(NULL);
 		DEBUG("Second Task ramain heap:%d %%\r\n",secondtask_ramainheap);		
 		DEBUG("Second Task Looping Count:%d\r\n" , count);

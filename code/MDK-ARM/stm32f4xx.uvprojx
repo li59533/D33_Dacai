@@ -337,9 +337,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_HAL_DRIVER,STM32F407xx,CMSIS_OS2</Define>
+              <Define>USE_HAL_DRIVER,STM32F407xx,CMSIS_OS2,ARM_MATH_CM4</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\bsp;..\fml;..\task;..\Utilities;..\Middlewares;..\Middlewares\rttviewer;..\app</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\bsp;..\fml;..\task;..\Utilities;..\Middlewares;..\Middlewares\rttviewer;..\app;..\Drivers\CMSIS\Lib\ARM;..\Drivers\CMSIS\DSP\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -522,6 +522,11 @@
               <FileName>system_stm32f4xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/system_stm32f4xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_cortexM4lf_math.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\Drivers\CMSIS\Lib\ARM\arm_cortexM4lf_math.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -820,6 +825,11 @@
               <FileType>1</FileType>
               <FilePath>..\task\led_task.c</FilePath>
             </File>
+            <File>
+              <FileName>virexc_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\task\virexc_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -844,6 +854,11 @@
               <FileName>app_sw.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\app\app_sw.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_vibration_exciter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\app_vibration_exciter.c</FilePath>
             </File>
           </Files>
         </Group>

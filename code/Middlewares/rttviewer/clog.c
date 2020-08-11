@@ -11,7 +11,7 @@
  **************************************************************************************************
  */
 #include "clog.h"
-
+#include "self_def.h"
 /**
  * @addtogroup    XXX 
  * @{  
@@ -97,7 +97,12 @@
  * @brief         
  * @{  
  */
-
+void Clog_Float(const char * buf ,float  value)
+{
+	char cbuf[30];
+	snprintf( cbuf , 30 , "%s%f\r\n" , buf , value);
+	DEBUG("%s" , cbuf);
+}
 /**
  * @}
  */

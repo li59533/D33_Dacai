@@ -74,6 +74,7 @@ typedef enum
  * @{  
  */
 void BSP_AD5683_Init(void);
+void BSP_AD5683_SetOut(uint16_t value);
 
 // -----------Test Code ----------
 void BSP_AD5683_Test(void);

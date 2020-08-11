@@ -132,13 +132,14 @@ void Led_Task(void * pvParameter)
 {
 	
 	Bsp_LedInit();
-	BSP_LED_BlinkStandard(BSP_LED_DATA, 0, Blink_LowSpeed);
-	BSP_LED_BlinkStandard(BSP_LED_RANGE, 0, Blink_MidSpeed);
-	BSP_LED_BlinkStandard(BSP_LED_C, 0, Blink_HighSpeed);
-	BSP_LED_BlinkStandard(BSP_LED_D, 0, Blink_LowSpeed);
-	BSP_LED_BlinkStandard(BSP_LED_TEST_UNIT, 0, Blink_MidSpeed);
-	BSP_LED_BlinkStandard(BSP_LED_STANDARD_UINT, 0, Blink_HighSpeed);
-	BSP_LED_BlinkStandard(BSP_LED_EXCITATION, 0, Blink_LowSpeed);
+	
+	//BSP_LED_BlinkStandard(BSP_LED_DATA, 0, Blink_LowSpeed);
+	//BSP_LED_BlinkStandard(BSP_LED_RANGE, 0, Blink_MidSpeed);
+	//BSP_LED_BlinkStandard(BSP_LED_C, 0, Blink_HighSpeed);
+	//BSP_LED_BlinkStandard(BSP_LED_D, 0, Blink_LowSpeed);
+	//BSP_LED_BlinkStandard(BSP_LED_TEST_UNIT, 0, Blink_MidSpeed);
+	//BSP_LED_BlinkStandard(BSP_LED_STANDARD_UINT, 0, Blink_HighSpeed);
+	//BSP_LED_BlinkStandard(BSP_LED_EXCITATION, 0, Blink_LowSpeed);
 	while(1)
 	{
 		BSP_Led_UpdateStatus();

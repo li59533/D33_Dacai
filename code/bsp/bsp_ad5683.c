@@ -136,10 +136,13 @@ static void bsp_ad5683_writecmd(uint8_t cmd , uint16_t value);
 void BSP_AD5683_Init(void)
 {
 	BSP_AD5683_Pin_Init();
-	BSP_AD5683_Tim_Init();
 	bsp_ad5683_writecmd(AD5683_CMD_None , 0);
 	bsp_ad5683_writecmd(AD5683_CMD_W_ConReg , (uint16_t )bsp_ad5683_conReg.buf);
 }
+
+
+
+
 
 static void bsp_ad5683_writecmd(uint8_t cmd , uint16_t value)
 {
@@ -172,6 +175,12 @@ static void bsp_ad5683_writecmd(uint8_t cmd , uint16_t value)
 	AD5683_LDAC_UP;
 	*/ 	
 }
+
+void BSP_AD5683_SetOut(uint16_t value)
+{
+	bsp_ad5683_writecmd(AD5683_CMD_W_InDACReg , value);
+}
+
 
 
 // -------------Test Code -------------------

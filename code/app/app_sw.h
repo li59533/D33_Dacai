@@ -28,7 +28,16 @@
  * @{  
  */
 
+#define APP_SW_COUNT       			8
 
+#define APP_SW_PD0					0
+#define APP_SW_PD1					1
+#define APP_SW_PD2					2
+#define APP_SW_PD3					3
+#define APP_SW_PD4					4
+#define APP_SW_PC10					5
+#define APP_SW_PC11					6
+#define APP_SW_PC12					7
 /**
  * @}
  */

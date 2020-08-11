@@ -69,7 +69,8 @@
  * @brief         
  * @{  
  */
-#define APP_SW_COUNT       			8
+
+ 
  
 static BSP_GPIO_Instance_t app_sw_instance[APP_SW_COUNT] =
 {
