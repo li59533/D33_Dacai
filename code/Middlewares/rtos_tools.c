@@ -15,14 +15,7 @@
  * @addtogroup    XXX 
  * @{  
  */
-#include "FreeRTOS.h"
-#include "task.h"
 
-#ifdef CMSIS_OS2 
-	#include "cmsis_os.h"
-#else
-	vTaskStartScheduler();
-#endif
 /**
  * @addtogroup    rtos_tools_Modules 
  * @{  
@@ -123,8 +116,8 @@ uint32_t RTOS_Get_FreeHeapSize(void)
 {
 	return xPortGetFreeHeapSize();
 }
-
-
+// ------------- Record -------------------     
+//emu_inter_data = pvPortMalloc(sizeof(float) * 16384); //vPortFree()
 
 /**
  * @}

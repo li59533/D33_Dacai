@@ -19,6 +19,7 @@
 
 #include "app_sw.h"
 #include "bsp_tim.h"
+#include "bsp_ad7682.h"
 /**
  * @addtogroup    bsp_init_Modules 
  * @{  
@@ -106,6 +107,7 @@ void BSP_Init(void)
 	APP_SW_H(0);
 	
 	BSP_ADC_Init();
+	
 	// ------------------------------
 }
 

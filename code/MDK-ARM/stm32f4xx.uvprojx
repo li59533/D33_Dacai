@@ -758,6 +758,11 @@
               <FileType>1</FileType>
               <FilePath>..\app\app_vibration_exciter.c</FilePath>
             </File>
+            <File>
+              <FileName>app_dvalue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\app_dvalue.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

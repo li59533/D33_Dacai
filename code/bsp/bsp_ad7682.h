@@ -77,10 +77,17 @@ extern BSP_AD7682_Value_t BSP_AD7682_Value[4];
  * @defgroup      bsp_ad7682_Exported_Functions 
  * @{  
  */
+
+
 void BSP_AD7682_Init(void);
 void BSP_AD7682_LoopTrig(void);   // usual in tim interrupt
 void BSP_AD7682_SPI_GetValue(void);  // in SPI interrupt
 
+
+// ------------- Test Code ------------
+
+void BSP_AD7682_TestCode(void);
+// ------------------------------------
 
 /**
  * @}

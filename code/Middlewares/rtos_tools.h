@@ -18,6 +18,15 @@
  * @{ 
  */
 #include "self_def.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
+
+#ifdef CMSIS_OS2 
+	#include "cmsis_os.h"
+#else
+	vTaskStartScheduler();
+#endif
 /**
  * @addtogroup    rtos_tools_Modules 
  * @{  

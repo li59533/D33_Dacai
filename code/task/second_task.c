@@ -24,13 +24,14 @@
 
 #include "crc.h"
 #include "bsp_flash.h"
-
+#include "bsp_ad7682.h"
 /**
  * @addtogroup    XXX 
  * @{  
  */
 
 #include "bsp_ad5683.h"
+#include "app_dvalue.h"
 /**
  * @addtogroup    second_task_Modules 
  * @{  
@@ -140,6 +141,7 @@ uint32_t Second_Task_Init(void)
 	return basetype;
 }
 #include "cmsis_armcc.h"
+
 void Second_Task(void * pvParameter)
 {
 	UBaseType_t secondtask_ramainheap = 0;
@@ -147,7 +149,8 @@ void Second_Task(void * pvParameter)
 	DEBUG("Second Task Enter\r\n");
 	uint32_t count = 0 ;
 	
-	
+	APP_Dvalue_Init();
+		
 	while(1)
 	{
 		// -----------Test Code ----------
@@ -175,7 +178,11 @@ void Second_Task(void * pvParameter)
 //		
 //		ramainheap = uxTaskGetStackHighWaterMark(Hal_Task_Handle);
 //		DEBUG("Hal Task ramain heap:%d\r\n",ramainheap);
-		vTaskDelay(pdMS_TO_TICKS(2000));
+
+		
+		//BSP_AD7682_LoopTrig();
+		BSP_AD7682_TestCode();
+		vTaskDelay(pdMS_TO_TICKS(1000));
 
 		
 	}

@@ -14,11 +14,13 @@
 #include "bsp_conf.h"
 #include "bsp_ad7682_port.h"
 #include "clog.h"
+#include "rtos_tools.h"
+
 /**
  * @addtogroup    XXX 
  * @{  
  */
-
+#include "arm_math.h"
 /**
  * @addtogroup    bsp_ad7682_Modules 
  * @{  
@@ -104,7 +106,7 @@ BSP_AD7682_Value_t BSP_AD7682_Value[4] =
 	},	
 };
 
-static uint8_t bsp_ad7682_ch_seq[4] = { 0 , 1 , 2 , 3 };
+static uint8_t bsp_ad7682_ch_seq[4] = { 0 ,1, 2 ,3 };
 
 bsp_ad7682_reqrespindex_t curindex = 
 {
@@ -147,7 +149,11 @@ static uint16_t bsp_ad7682_curvalue = 0;
 void BSP_AD7682_Init(void)
 {
 	BSP_AD7682_Pin_Init();
+	BSP_AD7682_Tim_Init();
 	DEBUG("BSP_AD7682 is Init\r\n");
+	// ------- Test Code ----------
+	BSP_AD7682_StartSample();
+	// ----------------------------
 }
   
 void BSP_AD7682_StartGetValue_InConf(void)
@@ -174,19 +180,22 @@ void BSP_AD7682_LoopTrig(void)   // usual in tim interrupt
 	ad7682_cfg = (uint16_t)BSP_AD7682_SAMPLE_CFG | ( req_channel << 7 );
 	ad7682_cfg = ad7682_cfg << 2;
 	
+	BSP_AD7682_StartCONV();
 	BSP_AD7682_Get( ad7682_cfg , &bsp_ad7682_curvalue);
 
+	curindex.req_index ++;
+	curindex.req_index %= 4;
 }
 
 void BSP_AD7682_SPI_GetValue(void)  // in SPI interrupt
 {
 	static uint8_t start_getflag = 0;
 	
-	
+	BSP_AD7682_StopCONV();
 	
 	if(curindex.req_index > curindex.resp_index)
 	{
-		if((curindex.req_index - curindex.resp_index) == 2)
+		if((curindex.req_index - curindex.resp_index) == 1)
 		{
 			start_getflag = 1;
 		}
@@ -197,7 +206,7 @@ void BSP_AD7682_SPI_GetValue(void)  // in SPI interrupt
 	}
 	else
 	{
-		if((curindex.req_index + 4 - curindex.resp_index) == 2)
+		if((curindex.req_index + 4 - curindex.resp_index) == 1)
 		{
 			start_getflag = 1;
 		}
@@ -222,8 +231,7 @@ void BSP_AD7682_SPI_GetValue(void)  // in SPI interrupt
 		
 	}
 	
-	curindex.req_index ++;
-	curindex.req_index %= 4;
+
 
 }
 
@@ -233,7 +241,30 @@ void BSP_AD7682_SPI_GetValue(void)  // in SPI interrupt
 
 void BSP_AD7682_TestCode(void)
 {
+	float temp_f;
+	float * temp_buf;
+	temp_buf = pvPortMalloc( sizeof(float) * BSP_AD7682_SAVE_SIZE);
 	
+	for(uint8_t i = 0 ; i < 4 ; i ++)
+	{
+		temp_f = (float)( BSP_AD7682_Value[i].curvalue * 0.03814697f );//0.03814697 = 2500mV / 65536
+		
+		
+		DEBUG("Channel:%d\r\n" , i);
+		DEBUG("CurOrig:%d\r\n" , BSP_AD7682_Value[i].curvalue);
+		Clog_Float("Cur:",temp_f);
+		
+		for(uint16_t j = 0 ; j < BSP_AD7682_SAVE_SIZE ; j ++)
+		{
+			temp_buf[j] = (float) (BSP_AD7682_Value[i].buf[j] * 0.03814697f );
+		}
+		
+		arm_rms_f32(temp_buf, 1000, &temp_f);
+		Clog_Float("Rms:",temp_f);
+		DEBUG("--------------\r\n");
+	}
+	
+	vPortFree(temp_buf);
 }
 
 

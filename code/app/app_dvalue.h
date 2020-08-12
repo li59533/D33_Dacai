@@ -1,8 +1,8 @@
 /**
  **************************************************************************************************
- * @file        version.h
+ * @file        app_dvalue.h
  * @author
- * @version
+ * @app_dvalue
  * @date        
  * @brief
  **************************************************************************************************
@@ -10,8 +10,8 @@
  *
  **************************************************************************************************
  */
-#ifndef _VERSION_H_
-#define _VERSION_H_
+#ifndef _APP_DVALUE_H_
+#define _APP_DVALUE_H_
 
 /**
  * @addtogroup    XXX 
@@ -19,28 +19,22 @@
  */
 #include "self_def.h"
 /**
- * @addtogroup    version_Modules 
+ * @addtogroup    app_dvalue_Modules 
  * @{  
  */
 
 /**
- * @defgroup      version_Exported_Macros 
+ * @defgroup      app_dvalue_Exported_Macros 
  * @{  
  */
-#define VERSION_MAJOR		0   // 0~255
-#define VERSION_MINOR		0   // 0~255
-#define VERSION_LITE		4	// 0~255
 
-#define FRAME_VERSION_MAJOR		0   // 0~255
-#define FRAME_VERSION_MINOR		0   // 0~255
-#define FRAME_VERSION_LITE		3	// 0~255
 
 /**
  * @}
  */
 
 /**
- * @defgroup      version_Exported_Constants
+ * @defgroup      app_dvalue_Exported_Constants
  * @{  
  */
 
@@ -49,7 +43,22 @@
  */
 
 /**
- * @defgroup      version_Exported_Types 
+ * @defgroup      app_dvalue_Exported_Types 
+ * @{  
+ */
+typedef enum
+{
+	Test_PGA_1 = 0,
+	Test_PGA_10 ,
+	Test_PGA_100 , 
+}APP_Dvalue_Test_PGA_e;
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      app_dvalue_Exported_Variables 
  * @{  
  */
 
@@ -58,20 +67,15 @@
  */
 
 /**
- * @defgroup      version_Exported_Variables 
+ * @defgroup      app_dvalue_Exported_Functions 
  * @{  
  */
 
-/**
- * @}
- */
+void APP_Dvalue_Init(void);
+void APP_Dvalue_TestPGA(uint8_t  Test_PGA);
 
-/**
- * @defgroup      version_Exported_Functions 
- * @{  
- */
-uint32_t Version_Get_Bin(void);
-char * Version_Get_Str(void);
+
+
 /**
  * @}
  */

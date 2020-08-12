@@ -19,6 +19,7 @@
  * @{  
  */
 #include "app_sw.h"
+#include "bsp_ad7682.h"
 #include "app_vibration_exciter.h"
 /**
  * @addtogroup    bsp_tim_Modules 
@@ -89,6 +90,17 @@ TIM_HandleTypeDef  htim3 =
 	.Init.Period = 499, //500usÒ»´Î
 	.Init.Prescaler = 119,
 	.Init.RepetitionCounter = 0,	
+};
+
+
+TIM_HandleTypeDef  htim11 =
+{
+	.Instance = TIM11,
+	.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE,
+	.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1,
+	.Init.CounterMode = TIM_COUNTERMODE_UP,
+	.Init.Period = 21000, //(4000point 250us)
+	.Init.Prescaler = 1,
 };
 
 
@@ -180,6 +192,20 @@ void BSP_TIM_Init(uint8_t Timx)
 				DEBUG("TIM8 Init\r\n");
 			}
 			break;
+		case BSP_TIM_11:
+			{
+				if (HAL_TIM_Base_Init(&htim11) != HAL_OK)
+				{
+					Error_Handler();
+				}			
+				sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+				if (HAL_TIM_ConfigClockSource(&htim11, &sClockSourceConfig) != HAL_OK)
+				{
+					Error_Handler();
+				}		
+				DEBUG("TIM11 Init\r\n");
+				
+			}break;			
 		case BSP_TIM_13:
 			{
 				if (HAL_TIM_Base_Init(&htim13) != HAL_OK)
@@ -217,6 +243,13 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 		HAL_NVIC_EnableIRQ(TIM3_IRQn);
 
 	}
+	else if(htim_base->Instance==TIM11)
+	{
+		__HAL_RCC_TIM11_CLK_ENABLE();
+		__HAL_TIM_CLEAR_IT(&htim11, TIM_IT_UPDATE)  ;
+		HAL_NVIC_SetPriority(TIM1_TRG_COM_TIM11_IRQn, 1, 0);
+		HAL_NVIC_EnableIRQ(TIM1_TRG_COM_TIM11_IRQn);
+	}		
 	else if(htim_base->Instance==TIM13)
 	{
 		__HAL_RCC_TIM13_CLK_ENABLE();
@@ -235,6 +268,7 @@ void BSP_TIM_Start(uint8_t Timx)
 	{
 		case BSP_TIM_3:HAL_TIM_Base_Start_IT(&htim3);break;
 		case BSP_TIM_8:HAL_TIM_Base_Start_IT(&htim8);break;
+		case BSP_TIM_11:HAL_TIM_Base_Start_IT(&htim11);break;
 		case BSP_TIM_13:HAL_TIM_Base_Start_IT(&htim13);break;
 		default:break;
 	}
@@ -246,6 +280,7 @@ void BSP_TIM_Stop(uint8_t Timx)
 	{
 		case BSP_TIM_3:HAL_TIM_Base_Stop_IT(&htim3);break;
 		case BSP_TIM_8:HAL_TIM_Base_Stop_IT(&htim8);break;
+		case BSP_TIM_11:HAL_TIM_Base_Stop_IT(&htim11);break;
 		case BSP_TIM_13:HAL_TIM_Base_Stop_IT(&htim13);break;
 		default:break;
 	}
@@ -254,6 +289,19 @@ void BSP_TIM_Stop(uint8_t Timx)
 // -------------------------------------------
 
 // ---------------- TIM_IRQHandler --------------------
+
+void TIM1_TRG_COM_TIM11_IRQHandler(void)
+{
+	if(TIM11->SR & TIM_IT_UPDATE)
+	{
+		//APP_SW_Toggle(APP_SW_PD4);
+		BSP_AD7682_LoopTrig();
+		
+		TIM11->SR &= (uint16_t)~TIM_IT_UPDATE;
+	}
+
+}
+
 void TIM8_UP_TIM13_IRQHandler(void)
 {
 	if(TIM8->SR & TIM_IT_UPDATE)

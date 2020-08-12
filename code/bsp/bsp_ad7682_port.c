@@ -13,6 +13,7 @@
 #include "bsp_ad7682_port.h"
 #include "bsp_conf.h"
 #include "bsp_spi.h"
+#include "bsp_tim.h"
 /**
  * @addtogroup    XXX 
  * @{  
@@ -100,39 +101,46 @@
  */
 void BSP_AD7682_Pin_Init(void)
 {
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	// -------GPIO init----------
+	GPIO_InitTypeDef  GPIO_Init;
+	GPIO_Init.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_Init.Pin = GPIO_PIN_12;
+	GPIO_Init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	HAL_GPIO_Init( GPIOB, &GPIO_Init);
 	// -------SPI Init ----------
 	BSP_SPI_Init(BSP_SPI_2);
 }
 
 void BSP_AD7682_Tim_Init(void)
 {
-	
+	BSP_TIM_Init(BSP_TIM_11);
 }
 
 
 void BSP_AD7682_StopSample(void)
 {
-	
+	BSP_TIM_Stop(BSP_TIM_11);
 }
 
 void BSP_AD7682_StartSample(void)
 {
-	
+	BSP_TIM_Start(BSP_TIM_11);
 }
 
 void BSP_AD7682_StartCONV(void)
 {
-	
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 }
 
 void BSP_AD7682_StopCONV(void)
 {
-	
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 }
 
 void BSP_AD7682_Get(uint16_t cfg , uint16_t *value)
 {
-	BSP_SPI_WriteAndRead_Byte_IT( BSP_SPI_1, (uint8_t *)&cfg , (uint8_t *) value );
+	BSP_SPI_WriteAndRead_Byte_IT( BSP_SPI_2, (uint8_t *)&cfg , (uint8_t *) value );
 }
 
 	

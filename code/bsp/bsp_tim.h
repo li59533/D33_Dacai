@@ -30,7 +30,8 @@
  */
 #define BSP_TIM_3    0
 #define BSP_TIM_8    1
-#define BSP_TIM_13   2
+#define BSP_TIM_11   2
+#define BSP_TIM_13   3
 
 
 /**
@@ -73,9 +74,6 @@ void BSP_TIM_Init(uint8_t Timx);
 void BSP_TIM_Start(uint8_t Timx);
 void BSP_TIM_Stop(uint8_t Timx);
 
-
-void BSP_TIM8_IRQHandler(void);
-void BSP_TIM3_IRQHandler(void);
 
 
 /**

@@ -181,7 +181,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
 	if(adcHandle->Instance==ADC1)
 	{
 		/* USER CODE BEGIN ADC1_MspInit 0 */
-
+   
 		/* USER CODE END ADC1_MspInit 0 */
 		/* ADC1 clock enable */
 		__HAL_RCC_ADC1_CLK_ENABLE();

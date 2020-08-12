@@ -145,7 +145,7 @@ static BSP_GPIO_Instance_t app_sw_instance[APP_SW_COUNT] =
 	.GPIO_Init.Speed = GPIO_SPEED_FREQ_VERY_HIGH,
 	// .GPIO_Init.Alternate = ,
 	.Begin_status = GPIO_PIN_RESET,
-    },		
+    },				
 };
 /**
  * @}

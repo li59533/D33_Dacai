@@ -76,7 +76,7 @@
  * @{  
  */
 static float app_virexc_sinbuf[APP_VIREXC_SINPOINT_C];
-static uint16_t app_virexc_gain = 2000;
+static uint16_t app_virexc_gain = 1500;
 /**
  * @}
  */

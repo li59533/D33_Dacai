@@ -18,6 +18,9 @@
 #include "bsp_spi.h"
 #include "bsp_conf.h"
 #include "bsp_ad5683_port.h"
+#include "bsp_ad7682.h"
+#include "clog.h"
+#include "app_sw.h"
 /**
  * @addtogroup    bsp_spi_Modules 
  * @{  
@@ -129,10 +132,10 @@ void BSP_SPI_Init(uint8_t bsp_spix)
 		hspi2.Instance = SPI2;
 		hspi2.Init.Mode = SPI_MODE_MASTER;
 		hspi2.Init.Direction = SPI_DIRECTION_2LINES;
-		hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
+		hspi2.Init.DataSize = SPI_DATASIZE_16BIT;
 		hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
 		hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
-		hspi2.Init.NSS = SPI_NSS_HARD_OUTPUT;
+		hspi2.Init.NSS = SPI_NSS_SOFT;
 		hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
 		hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
 		hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
@@ -192,7 +195,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
 		PB14     ------> SPI2_MISO
 		PB15     ------> SPI2_MOSI
 		*/
-		GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+		GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
 		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -325,12 +328,15 @@ void SPI1_IRQHandler(void)
 }
 
 
-void BSP_SPI2_IRQHandler(void)
+void SPI2_IRQHandler(void)
 {
+	
 	HAL_SPI_IRQHandler(&hspi2); // clear some flag
 	if(HAL_SPI_GetState(&hspi2) == HAL_SPI_STATE_READY)
 	{
-		
+		//DEBUG("SPI2_IRQHandler\r\n");
+		//APP_SW_Toggle(APP_SW_PD4);
+		BSP_AD7682_SPI_GetValue();
 		//BSP_AD7682_GetValue();
 	}		
 	
