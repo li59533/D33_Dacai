@@ -167,6 +167,8 @@ void VirExc_Task(void * pvParameter)
 			DEBUG("VirExc Task VIREXC_TASK_TEST2_EVENT\r\n");
 			APP_VirExc_Start();
 			BSP_LED_BlinkStandard(BSP_LED_EXCITATION, 0, Blink_LowSpeed);
+			
+			
 		}		
 		
 		

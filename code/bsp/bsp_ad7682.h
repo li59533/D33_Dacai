@@ -27,10 +27,15 @@
  * @defgroup      bsp_ad7682_Exported_Macros 
  * @{  
  */
-#define BSP_AD7682_ADCHS		        0X04
-#define BSP_AD7682_SAMPLE_ADCH   		8
-#define BSP_AD7682_SAMPLEPOINTS 		128
-#define BSP_AD7682_ACC_REALCHS 			0x03  
+
+#define BSP_AD7682_SAVE_SIZE     	1000	// 
+
+#define BSP_AD7682_CHANNEL_0		0
+#define BSP_AD7682_CHANNEL_1		1
+#define BSP_AD7682_CHANNEL_2		2
+#define BSP_AD7682_CHANNEL_3		3
+
+
 /**
  * @}
  */
@@ -48,7 +53,13 @@
  * @defgroup      bsp_ad7682_Exported_Types 
  * @{  
  */
-
+typedef struct
+{
+	uint16_t curvalue;
+	uint16_t buf[BSP_AD7682_SAVE_SIZE];
+	uint16_t index;
+	uint8_t buf_flag;
+}BSP_AD7682_Value_t;
 /**
  * @}
  */
@@ -57,7 +68,7 @@
  * @defgroup      bsp_ad7682_Exported_Variables 
  * @{  
  */
-
+extern BSP_AD7682_Value_t BSP_AD7682_Value[4];
 /**
  * @}
  */
@@ -67,13 +78,10 @@
  * @{  
  */
 void BSP_AD7682_Init(void);
-void BSP_AD7682_StartGetValue_InConf(void);
-void BSP_AD7682_GetValue(void);
-void BSP_AD7682_ClearData(void);
-uint16_t BSP_AD7682_Getcurvalue(uint8_t channel);
-uint16_t * BSP_AD7682_GetDataBuf_Ptr(void);
-uint8_t BSP_AD7682_GetRealCH(uint8_t location);
-void BSP_AD7682_CheckFilterStatus(void);
+void BSP_AD7682_LoopTrig(void);   // usual in tim interrupt
+void BSP_AD7682_SPI_GetValue(void);  // in SPI interrupt
+
+
 /**
  * @}
  */
