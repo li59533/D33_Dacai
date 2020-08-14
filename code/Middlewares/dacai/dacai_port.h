@@ -1,8 +1,8 @@
 /**
  **************************************************************************************************
- * @file        version.h
+ * @file        dacai_port.h
  * @author
- * @version
+ * @dacai_port
  * @date        
  * @brief
  **************************************************************************************************
@@ -10,8 +10,8 @@
  *
  **************************************************************************************************
  */
-#ifndef _VERSION_H_
-#define _VERSION_H_
+#ifndef _DACAI_PORT_H_
+#define _DACAI_PORT_H_
 
 /**
  * @addtogroup    XXX 
@@ -19,28 +19,12 @@
  */
 #include "self_def.h"
 /**
- * @addtogroup    version_Modules 
+ * @addtogroup    dacai_port_Modules 
  * @{  
  */
 
 /**
- * @defgroup      version_Exported_Macros 
- * @{  
- */
-#define VERSION_MAJOR		0   // 0~255
-#define VERSION_MINOR		0   // 0~255
-#define VERSION_LITE		7	// 0~255
-
-#define FRAME_VERSION_MAJOR		0   // 0~255
-#define FRAME_VERSION_MINOR		0   // 0~255
-#define FRAME_VERSION_LITE		3	// 0~255
-
-/**
- * @}
- */
-
-/**
- * @defgroup      version_Exported_Constants
+ * @defgroup      dacai_port_Exported_Macros 
  * @{  
  */
 
@@ -49,7 +33,7 @@
  */
 
 /**
- * @defgroup      version_Exported_Types 
+ * @defgroup      dacai_port_Exported_Constants
  * @{  
  */
 
@@ -58,7 +42,7 @@
  */
 
 /**
- * @defgroup      version_Exported_Variables 
+ * @defgroup      dacai_port_Exported_Types 
  * @{  
  */
 
@@ -67,11 +51,22 @@
  */
 
 /**
- * @defgroup      version_Exported_Functions 
+ * @defgroup      dacai_port_Exported_Variables 
  * @{  
  */
-uint32_t Version_Get_Bin(void);
-char * Version_Get_Str(void);
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      dacai_port_Exported_Functions 
+ * @{  
+ */
+void Dacai_Port_Init(void);
+void Dacai_Port_Send(uint8_t *buf , uint16_t len);
+void Dacai_Port_Rev(uint8_t buf);
+
 /**
  * @}
  */

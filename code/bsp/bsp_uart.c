@@ -18,6 +18,7 @@
  * @{  
  */
 #include "bsp_led.h"
+#include "dacai_port.h"
 
 /**
  * @addtogroup    bsp_uart_Modules 
@@ -176,7 +177,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 		/* USER CODE END USART1_MspInit 0 */
 		/* USART1 clock enable */
 		__HAL_RCC_USART1_CLK_ENABLE();
-
+		__HAL_RCC_DMA2_CLK_ENABLE();
 		__HAL_RCC_GPIOA_CLK_ENABLE();
 		/**USART1 GPIO Configuration
 		PA9     ------> USART1_TX
@@ -216,7 +217,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 		HAL_NVIC_SetPriority(USART1_IRQn, 1, 0);
 		HAL_NVIC_EnableIRQ(USART1_IRQn);
 		/* USER CODE BEGIN USART1_MspInit 1 */
-
+		/* DMA2_Stream7_IRQn interrupt configuration */
+		HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 0, 0);
+		HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
 		/* USER CODE END USART1_MspInit 1 */
 	}
 	else if(huart->Instance==USART3)
@@ -228,6 +231,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 		__HAL_RCC_USART3_CLK_ENABLE();
 
 		__HAL_RCC_GPIOD_CLK_ENABLE();
+		__HAL_RCC_DMA1_CLK_ENABLE();
 		/**USART3 GPIO Configuration
 		PD8     ------> USART3_TX
 		PD9     ------> USART3_RX
@@ -241,7 +245,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 
 		
 		/* USART3 DMA Init */
-		/* USART3_TX Init */
+		/* USART3_TX Init  */
 		hdma_usart3_tx.Instance = DMA1_Stream3;
 		hdma_usart3_tx.Init.Channel = DMA_CHANNEL_4;
 		hdma_usart3_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
@@ -257,17 +261,17 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 		{
 			Error_Handler();
 		}
-
-		__HAL_LINKDMA(huart,hdmatx,hdma_usart3_tx);
-
 		
-		HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 2, 0);
-		HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);		
+		__HAL_LINKDMA(huart,hdmatx,hdma_usart3_tx);
+	
 		/* USART3 interrupt Init */
-		HAL_NVIC_SetPriority(USART3_IRQn, 1, 0);
+		HAL_NVIC_SetPriority(USART3_IRQn, 6, 0);
 		HAL_NVIC_EnableIRQ(USART3_IRQn);
 		/* USER CODE BEGIN USART3_MspInit 1 */
-
+		/* DMA interrupt init */
+		/* DMA1_Stream3_IRQn interrupt configuration */
+		HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 0, 0);
+		HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 		/* USER CODE END USART3_MspInit 1 */
 	}
 }
@@ -406,7 +410,7 @@ void USART3_IRQHandler(void)
 void DMA1_Stream3_IRQHandler(void)
 {
 	HAL_DMA_IRQHandler(&hdma_usart3_tx);
-	DEBUG("DMA1_Stream3_IRQHandler\r\n" );
+	//DEBUG("DMA1_Stream3_IRQHandler\r\n" );
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -417,12 +421,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
 	else if(huart->Instance==USART3)
 	{
-		DEBUG("UART3_RxCplt:%x\r\n" , USART3_Rx_Buf[0]);
+		Dacai_Port_Rev(USART3_Rx_Buf[0]);
+
+		//DEBUG("UART3_RxCplt:%x\r\n" , USART3_Rx_Buf[0]);
 	}
 }
+
+
+
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-	DEBUG("HAL_UART_TxCpltCallback");
+	//DEBUG("HAL_UART_TxCpltCallback");
 }
 
 // -------------------------------------------------

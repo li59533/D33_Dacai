@@ -25,7 +25,7 @@
 #include "second_task.h"
 #include "led_task.h"
 #include "virexc_task.h"
-
+#include "dacai_task.h"
 /**
  * @addtogroup    task_list_Modules 
  * @{  
@@ -125,6 +125,7 @@ void RTOS_Init(void)
 	basetype |= Second_Task_Init();
 	basetype |= Led_Task_Init();
 	basetype |= VirExc_Task_Init();
+	basetype |= Dacai_Task_Init();
 	
 	
 	if(pdPASS == basetype)

@@ -181,12 +181,10 @@ void Second_Task(void * pvParameter)
 //		ramainheap = uxTaskGetStackHighWaterMark(Hal_Task_Handle);
 //		DEBUG("Hal Task ramain heap:%d\r\n",ramainheap);
 
-		BSP_Uart_TestCode();
-		//BSP_AD7682_LoopTrig();
-		BSP_AD7682_TestCode();
-		vTaskDelay(pdMS_TO_TICKS(1000));
 
-		
+		//BSP_AD7682_TestCode();
+		vTaskDelay(pdMS_TO_TICKS(3000));
+
 	}
 	
 }
