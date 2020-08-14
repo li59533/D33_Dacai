@@ -76,7 +76,7 @@
  * @{  
  */
 static float app_virexc_sinbuf[APP_VIREXC_SINPOINT_C];
-static uint16_t app_virexc_gain = 1500;
+static uint16_t app_virexc_gain = 500;
 /**
  * @}
  */
@@ -118,9 +118,6 @@ void APP_Viration_Exciter_Init(void)
 {
 	BSP_AD5683_Init();
 	BSP_TIM_Init(BSP_TIM_13);
-
-	float sin_buf_1[32];
-	uint16_t sin_buf_2[32];
 	
 	for(uint16_t i = 0 ; i < APP_VIREXC_SINPOINT_C; i ++)
 	{
