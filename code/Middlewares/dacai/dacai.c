@@ -50,7 +50,7 @@
  * @{  
  */
 #define DACAI_R_BUF_LEN			100
-#define DACAI_T_QUEUE_LEN   	50
+#define DACAI_T_QUEUE_LEN   	20
 /**
  * @}
  */
@@ -78,7 +78,7 @@ typedef struct
 }dacai_txbuf_t;
 typedef struct
 {
-	dacai_txbuf_t tqueue[3];
+	dacai_txbuf_t tqueue[10];
 	uint8_t in ;
 	uint8_t out;
 	uint8_t count;
@@ -190,7 +190,7 @@ static void dacai_tryget_fullbuf(uint8_t buf)
 		//DEBUG("%X %X %X %X\r\n" ,foot_ptr[0] ,foot_ptr[1],foot_ptr[2],foot_ptr[3] );
 		if(foot_ptr[0]== 0xff && foot_ptr[1]== 0xfc && foot_ptr[2]== 0xff && foot_ptr[3]== 0xff )
 		{
-			dacai_rev_anaglysis(dacai_revspace , cur_ptr - 1);
+			dacai_rev_anaglysis(dacai_revspace , cur_ptr );
 			cur_ptr = 0;
 		}
 		else
@@ -198,22 +198,21 @@ static void dacai_tryget_fullbuf(uint8_t buf)
 			
 		}
 	}		
-	
 }
 static void dacai_rev_anaglysis(uint8_t *buf , uint8_t len)
 {
 	uint8_t buf_temp[100];
 	memcpy(buf_temp , buf , len);
+	
 	for(uint8_t i = 0 ; i < len; i ++)
 	{
 		DEBUG("0x%X  ", buf_temp[i]);
+		
 	}
+	DEBUG("\r\n");
+	Dacai_Protocol_RevAnalgsis(buf_temp + 1 , len - 5);
 }
 
-void Dacai_Rev_Anaglysis(uint8_t *buf , uint16_t len)
-{
-	
-}
 
 // -------Send ----------------
 
@@ -292,6 +291,32 @@ int8_t Dacai_Queue_out_Bytes(uint8_t * buf, uint16_t * len)
 }
 
 
+
+// --------------------------------------
+
+
+
+// ------------ Test Code ---------------
+void Dacai_TestCode(void)
+{
+	
+	//uint8_t tempbuf1[] = {0xee ,0x82 , 0xff , 0xff , 0xfc, 0xff ,0xff};
+	//Dacai_Queue_in_Bytes(tempbuf1 , 7);
+	Dacai_SetHandShake();
+	Dacai_GetScreen();
+	char testbuf0[] = "19.5";
+	char testbuf1[] = "12.5";
+	char testbuf2[] = "42.5";
+	char testbuf3[] = "414.5";
+	char testbuf4[] = "21.5";
+	char testbuf5[] = "65.5";
+	Dacai_SetTextValue(0,3,(uint8_t *)testbuf0 , strlen(testbuf0));
+	Dacai_SetTextValue(0,4,(uint8_t *)testbuf1 , strlen(testbuf1));
+	Dacai_SetTextValue(0,5,(uint8_t *)testbuf2 , strlen(testbuf2));
+	Dacai_SetTextValue(0,6,(uint8_t *)testbuf3 , strlen(testbuf3));
+	Dacai_SetTextValue(0,7,(uint8_t *)testbuf4 , strlen(testbuf4));
+	Dacai_SetTextValue(0,8,(uint8_t *)testbuf5 , strlen(testbuf5));
+}
 
 // --------------------------------------
 

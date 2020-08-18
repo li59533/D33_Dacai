@@ -143,6 +143,11 @@ void Dacai_Task(void * pvParameter)
 	DEBUG("Dacai Task Enter\r\n");
 	UBaseType_t dacaitask_ramainheap = 0;
 	
+	
+	Dacai_Init();
+	RTOS_Delay_ms(1000);
+	Dacai_SetPowerSaving(1 ,0x0f, 0xff, 30);
+	Dacai_SetBuzzer(50);
 	while(1)
 	{
 		xTaskNotifyWait(0x00,ULONG_MAX,&event_flag , portMAX_DELAY);
@@ -162,18 +167,14 @@ void Dacai_Task(void * pvParameter)
 		if((event_flag & DACAI_TASK_REV_EVENT) != 0x00)
 		{
 			Dacai_RevPorcess();
-			//DEBUG("Dacai Task REV EVENT\r\n");
 		}			
 		if((event_flag & DACAI_TASK_SEND_EVENT) != 0x00)
 		{
 			Dacai_Send_Process();
+			RTOS_Delay_ms(100);
 			DEBUG("Dacai Task Send EVENT\r\n");
 		}			
-		
-
-		
 	}
-	
 }
 
 

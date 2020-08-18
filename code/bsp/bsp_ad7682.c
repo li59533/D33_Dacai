@@ -173,7 +173,7 @@ void BSP_AD7682_StartGetValue_InConf(void)
 void BSP_AD7682_LoopTrig(void)   // usual in tim interrupt
 {
 	uint8_t req_channel = 0;
-	uint8_t resp_channel = 0;
+	//uint8_t resp_channel = 0;
 	uint16_t ad7682_cfg = 0 ; 
 	
 	req_channel = bsp_ad7682_ch_seq[curindex.req_index];
@@ -248,8 +248,7 @@ void BSP_AD7682_TestCode(void)
 	for(uint8_t i = 0 ; i < 4 ; i ++)
 	{
 		temp_f = (float)( BSP_AD7682_Value[i].curvalue * 0.03814697f );//0.03814697 = 2500mV / 65536
-		
-		
+
 		DEBUG("Channel:%d\r\n" , i);
 		DEBUG("CurOrig:%d\r\n" , BSP_AD7682_Value[i].curvalue);
 		Clog_Float("Cur:",temp_f);

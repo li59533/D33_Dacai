@@ -12,7 +12,7 @@
  */
 #include "second_task.h"
 #include "clog.h"
-
+#include "rtos_tools.h"
 #include "bsp_uart.h"
 #include "bsp_adc.h"
 
@@ -33,6 +33,7 @@
 #include "bsp_ad5683.h"
 #include "app_dvalue.h"
 #include "bsp_uart.h"
+#include "dacai.h"
 /**
  * @addtogroup    second_task_Modules 
  * @{  
@@ -151,7 +152,7 @@ void Second_Task(void * pvParameter)
 	uint32_t count = 0 ;
 	
 	APP_Dvalue_Init();
-	BSP_USART_Init(BSP_USART3 , 0);
+
 	
 	while(1)
 	{
@@ -182,9 +183,11 @@ void Second_Task(void * pvParameter)
 //		DEBUG("Hal Task ramain heap:%d\r\n",ramainheap);
 
 
-		//BSP_AD7682_TestCode();
-		vTaskDelay(pdMS_TO_TICKS(3000));
-
+		BSP_AD7682_TestCode();
+		//Dacai_TestCode();
+		//vTaskDelay(pdMS_TO_TICKS(100));
+		//
+		RTOS_Delay_ms(10000);
 	}
 	
 }
