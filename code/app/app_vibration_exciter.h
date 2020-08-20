@@ -69,6 +69,19 @@ void APP_VirExc_Start(void);
 void APP_VirExc_Stop(void);
 void APP_VirExc_32Points_Loop(void);  // 312.5us (32point)
 
+void APP_VirExc_UPgain(void);
+void APP_VirExc_Downgain(void);
+
+void APP_VirExc_PID_1250(void);
+void APP_VirExc_PID_50(void);
+void APP_VirExc_PID_Loop(void);
+
+
+
+// ---------------- Test Code -----------
+
+void APP_VirExc_TestCode(void);
+
 /**
  * @}
  */

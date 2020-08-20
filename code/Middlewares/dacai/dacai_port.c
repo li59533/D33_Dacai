@@ -20,7 +20,7 @@
 #include "dacai.h"
 #include "bsp_conf.h"
 #include "bsp_uart.h"
-
+#include "app_guifunc.h"
 /**
  * @addtogroup    dacai_port_Modules 
  * @{  
@@ -106,6 +106,10 @@
 void Dacai_Port_Init(void)
 {
 	BSP_USART_Init( BSP_USART3 , 0);
+	
+	Dacai_Button_CallbackRegister(APP_GuiButton_Process);
+	
+	
 }
 
 void Dacai_Port_Send(uint8_t *buf , uint16_t len)

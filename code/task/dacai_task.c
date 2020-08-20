@@ -172,7 +172,7 @@ void Dacai_Task(void * pvParameter)
 		{
 			Dacai_Send_Process();
 			RTOS_Delay_ms(100);
-			DEBUG("Dacai Task Send EVENT\r\n");
+			//DEBUG("Dacai Task Send EVENT\r\n");
 		}			
 	}
 }

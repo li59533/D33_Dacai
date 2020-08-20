@@ -131,6 +131,7 @@ uint32_t VirExc_Task_Init(void)
 //										(StaticTask_t*  )&VirExc_TaskTCB);	//ÈÎÎñ¿ØÖÆ¿é              
 //			
 	
+
 	return basetype;
 }
 
@@ -145,6 +146,7 @@ void VirExc_Task(void * pvParameter)
 	
 	// ------ Init -------
 	APP_Viration_Exciter_Init();
+	VirExc_Task_Tim_Init();
 	
 	// -------------------
 	// ------ Test Code --
@@ -166,10 +168,14 @@ void VirExc_Task(void * pvParameter)
 		{
 			DEBUG("VirExc Task VIREXC_TASK_TEST2_EVENT\r\n");
 			APP_VirExc_Start();
+
 			BSP_LED_BlinkStandard(BSP_LED_EXCITATION, 0, Blink_LowSpeed);
-			
-			
 		}		
+		if((event_flag & VIREXC_TASK_PID1250_EVENT) != 0x00)
+		{
+			DEBUG("VirExc Task PID1250\r\n");
+			VirExc_Task_StartTim(100);
+		}			
 		
 		
 	}
@@ -211,6 +217,7 @@ void VirExc_Task_StartTim(uint16_t time_count)
 }
 static void virexc_task_tim_callback(TimerHandle_t xTimer)
 {
+	APP_VirExc_TestCode();
 	//VirExc_Task_Event_Start(VirExc_TASK_SEND_AT_EVENT, EVENT_FROM_TASK);
 }
 

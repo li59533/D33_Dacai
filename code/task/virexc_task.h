@@ -17,8 +17,9 @@
  * @addtogroup    XXX 
  * @{ 
  */
-#include "self_def.h"
-#include "task.h"
+
+#include "rtos_tools.h"
+
 /**
  * @addtogroup    virexc_task_Modules 
  * @{  
@@ -28,8 +29,11 @@
  * @defgroup      virexc_task_Exported_Macros 
  * @{  
  */
-#define VIREXC_TASK_TEST_EVENT 			(0X01 << 0)
-#define VIREXC_TASK_TEST2_EVENT			(0X01 << 1)
+#define VIREXC_TASK_TEST_EVENT 				(0X01 << 0)
+#define VIREXC_TASK_TEST2_EVENT				(0X01 << 1)
+#define VIREXC_TASK_PID1250_EVENT			(0X01 << 2)
+
+
 /**
  * @}
  */

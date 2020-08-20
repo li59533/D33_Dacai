@@ -118,6 +118,7 @@ typedef struct
  */
 static uint16_t dacai_Tbuf_Add(uint8_t * space , uint8_t *addbuf , uint16_t len);
 static void dacai_b1_analysis(uint8_t *cmd2 ,uint16_t len);
+static void dacai_button_process(uint16_t screen_id , uint16_t control_id , uint8_t status);
 /**
  * @}
  */
@@ -133,8 +134,13 @@ static void dacai_b1_analysis(uint8_t *cmd2 ,uint16_t len);
 #define	DACAI_GETCURSCREEN		0X01
 #define DACAI_READ_CONTROL		0X11
 
+#define DACAI_CONTROL_TYPE_BUTTON	0x10
 
 static void (*Dacai_HandShake_Callback)(void); 
+static void (*Dacai_Button_Callback)(uint16_t screen_id , uint16_t control_id ,uint8_t);
+
+
+
 
 void Dacai_Protocol_RevAnalgsis(uint8_t * cmd , uint16_t len)
 {
@@ -155,14 +161,23 @@ void Dacai_Protocol_RevAnalgsis(uint8_t * cmd , uint16_t len)
 			}break;
 		case DACAI_B1:
 			{
-				DEBUG("Dacai DACAI_B1 OK\r\n");
+				//DEBUG("Dacai DACAI_B1 OK\r\n");
 				dacai_b1_analysis(cmd + 1 , len -1);
 			}break;
 		default:break;
 	}
 	
 }
-
+#pragma pack(1)
+typedef struct
+{
+	uint16_t screen_id;
+	uint16_t control_id;
+	uint8_t control_type;
+	uint8_t sub_type;
+	uint8_t status;
+}dacai_readcontrol_value_t;
+#pragma pack()
 static void dacai_b1_analysis(uint8_t *cmd2 ,uint16_t len)
 {
 	switch(*cmd2)
@@ -174,15 +189,43 @@ static void dacai_b1_analysis(uint8_t *cmd2 ,uint16_t len)
 			}break;
 		case DACAI_READ_CONTROL:
 			{
+				dacai_readcontrol_value_t * dacai_readcontrol_value = (dacai_readcontrol_value_t *)(cmd2 + 1);
 				
+				switch(dacai_readcontrol_value->control_type)
+				{
+					case DACAI_CONTROL_TYPE_BUTTON:
+					{
+						
+						dacai_button_process(dacai_readcontrol_value->screen_id , \
+												dacai_readcontrol_value->control_id , \
+												dacai_readcontrol_value->status);
+						
+					
+					}break;
+					default:break;
+				}		
 			}break;
 		default:break;
 	}
 }
 
+static void dacai_button_process(uint16_t screen_id , uint16_t control_id , uint8_t status)
+{
+	//DEBUG("screen_id:%d  control_id:%d  status:%d\r\n " , __REV16(screen_id) ,__REV16(control_id) , status );
+	
+	if(Dacai_Button_Callback != NULL)
+	{
+		Dacai_Button_Callback(__REV16(screen_id) , __REV16(control_id) ,status);
+	}
+}
 
 
 // ---------- Callback func register -------
+
+void Dacai_Button_CallbackRegister(void (*callback)(uint16_t screen_id , uint16_t control_id ,uint8_t status))
+{
+	Dacai_Button_Callback = callback;
+}
 void Dacai_HandShake_CallbackRegister(void (*callback)(void))
 {
 	Dacai_HandShake_Callback = callback;

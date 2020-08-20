@@ -17,11 +17,13 @@
  */
 #include "app_vibration_exciter.h"
 #include "bsp_spi.h"
+#include "bsp_adc.h"
 #include "bsp_tim.h"
 #include "bsp_ad5683.h"
 #include "arm_math.h"
 #include "clog.h"
-
+#include "arm_math.h"
+#include "virexc_task.h"
 
 /**
  * @addtogroup    app_vibration_exciter_Modules 
@@ -76,7 +78,8 @@
  * @{  
  */
 static float app_virexc_sinbuf[APP_VIREXC_SINPOINT_C];
-static uint16_t app_virexc_gain = 500;
+static uint16_t app_virexc_gain = 1;
+static float desired_value = 50.0f;
 /**
  * @}
  */
@@ -109,7 +112,12 @@ static uint16_t app_virexc_gain = 500;
  
  
 
-
+arm_pid_instance_f32 PID = 
+{
+	.Kp = 4.0f,
+	.Ki = 0.0f,
+	.Kd = 0.0f,
+};
 
 
 
@@ -117,6 +125,7 @@ static uint16_t app_virexc_gain = 500;
 void APP_Viration_Exciter_Init(void)
 {
 	BSP_AD5683_Init();
+	arm_pid_init_f32(&PID , 1);
 	BSP_TIM_Init(BSP_TIM_13);
 	
 	for(uint16_t i = 0 ; i < APP_VIREXC_SINPOINT_C; i ++)
@@ -147,7 +156,72 @@ void APP_VirExc_32Points_Loop(void)  // 312.5us (32point)
 	
 }
 
+void APP_VirExc_UPgain(void)
+{
+	app_virexc_gain +=10;
+}
 
+void APP_VirExc_Downgain(void)
+{
+	if(app_virexc_gain > 10)
+	{
+		app_virexc_gain -= 10;
+	}
+}
+
+void APP_VirExc_PID_1250(void)
+{
+	desired_value = 1250.0f;
+	VirExc_Task_Event_Start(VIREXC_TASK_PID1250_EVENT,EVENT_FROM_TASK);
+}
+
+void APP_VirExc_PID_50(void)
+{
+	desired_value = 50.0f;
+	VirExc_Task_Event_Start(VIREXC_TASK_PID1250_EVENT,EVENT_FROM_TASK);
+}
+
+
+void APP_VirExc_PID_Loop(void)
+{
+	float out = 0;
+	float err_range = 0;
+	
+	err_range = desired_value - BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv;
+	
+	Clog_Float("err_range:" , err_range);
+	
+	out = arm_pid_f32(&PID , err_range);
+	
+	Clog_Float("out:" , out);
+
+	app_virexc_gain = (uint16_t )(app_virexc_gain + out);
+	DEBUG("app_virexc_gain :%d\r\n" , app_virexc_gain);	
+}
+
+
+// ---------------- Test Code -----------
+
+void APP_VirExc_TestCode(void)
+{
+	float out = 0;
+	float err_range = 0;
+	
+	err_range = desired_value - BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv;
+	
+	Clog_Float("err_range:" , err_range);
+	
+	out = arm_pid_f32(&PID , err_range);
+	
+	Clog_Float("out:" , out);
+
+	app_virexc_gain = (uint16_t )(app_virexc_gain + out);
+	DEBUG("app_virexc_gain :%d\r\n" , app_virexc_gain);
+//	if(out > 1000)
+//	{
+//		desired_value = 100.0f;
+//	}
+}
 
 
 /**

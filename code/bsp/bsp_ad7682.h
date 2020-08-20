@@ -35,6 +35,13 @@
 #define BSP_AD7682_CHANNEL_2		2
 #define BSP_AD7682_CHANNEL_3		3
 
+// ------------------ User Channel Define -----------------
+
+#define BSP_AD7682_SIG_CHANNEL		BSP_AD7682_CHANNEL_1
+#define BSP_AD7682_C_OUT_CHANNEL	BSP_AD7682_CHANNEL_2
+#define BSP_AD7682_CAL_CHANNEL		BSP_AD7682_CHANNEL_3
+
+// --------------------------------------------------------
 
 /**
  * @}
@@ -78,12 +85,12 @@ extern BSP_AD7682_Value_t BSP_AD7682_Value[4];
  * @{  
  */
 
-
 void BSP_AD7682_Init(void);
 void BSP_AD7682_LoopTrig(void);   // usual in tim interrupt
 void BSP_AD7682_SPI_GetValue(void);  // in SPI interrupt
 
-
+float BSP_AD7682_Get_CurValue(uint8_t channel);
+float BSP_AD7682_Get_RMS(uint8_t channel);
 // ------------- Test Code ------------
 
 void BSP_AD7682_TestCode(void);

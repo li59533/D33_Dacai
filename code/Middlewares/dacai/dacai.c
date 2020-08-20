@@ -50,7 +50,7 @@
  * @{  
  */
 #define DACAI_R_BUF_LEN			100
-#define DACAI_T_QUEUE_LEN   	20
+#define DACAI_T_QUEUE_LEN   	40
 /**
  * @}
  */
@@ -154,17 +154,16 @@ void Dacai_Init(void)
 void Dacai_RevPorcess(void)
 {
 	uint8_t buf_tmep;
-	if(Dacai_Ring_out_Byte(&buf_tmep) >=0)
+	if(Dacai_Ring_out_Byte(&buf_tmep) >0)
 	{
-
-		dacai_tryget_fullbuf(buf_tmep);
-		//DEBUG("buf_tmep:0x%X\r\n" , buf_tmep);
 		Dacai_Task_Event_Start(DACAI_TASK_REV_EVENT , EVENT_FROM_TASK);
 	}
 	else
 	{
 		DEBUG("Dacai_Ring is NULL\r\n");
 	}
+	
+	dacai_tryget_fullbuf(buf_tmep);
 }
 
 static void dacai_tryget_fullbuf(uint8_t buf)
@@ -297,25 +296,33 @@ int8_t Dacai_Queue_out_Bytes(uint8_t * buf, uint16_t * len)
 
 
 // ------------ Test Code ---------------
+
+#include "bsp_adc.h"
+#include "bsp_ad7682.h"
+#include "version.h"
 void Dacai_TestCode(void)
 {
 	
 	//uint8_t tempbuf1[] = {0xee ,0x82 , 0xff , 0xff , 0xfc, 0xff ,0xff};
 	//Dacai_Queue_in_Bytes(tempbuf1 , 7);
-	Dacai_SetHandShake();
-	Dacai_GetScreen();
-	char testbuf0[] = "19.5";
-	char testbuf1[] = "12.5";
-	char testbuf2[] = "42.5";
-	char testbuf3[] = "414.5";
-	char testbuf4[] = "21.5";
-	char testbuf5[] = "65.5";
-	Dacai_SetTextValue(0,3,(uint8_t *)testbuf0 , strlen(testbuf0));
-	Dacai_SetTextValue(0,4,(uint8_t *)testbuf1 , strlen(testbuf1));
-	Dacai_SetTextValue(0,5,(uint8_t *)testbuf2 , strlen(testbuf2));
-	Dacai_SetTextValue(0,6,(uint8_t *)testbuf3 , strlen(testbuf3));
-	Dacai_SetTextValue(0,7,(uint8_t *)testbuf4 , strlen(testbuf4));
-	Dacai_SetTextValue(0,8,(uint8_t *)testbuf5 , strlen(testbuf5));
+	//Dacai_SetHandShake();
+	//Dacai_GetScreen();
+	
+	char strbuf[40];
+	snprintf(strbuf , 40 , "%.2f" , BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv);
+	Dacai_SetTextValue(0,4,(uint8_t *)strbuf , strlen(strbuf));
+	snprintf(strbuf , 40 , "%.2f" , BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv);
+	Dacai_SetTextValue(0,3,(uint8_t *)strbuf , strlen(strbuf));
+
+	
+	snprintf(strbuf , 40 , "%.2f" , BSP_AD7682_Get_RMS(BSP_AD7682_SIG_CHANNEL));
+	Dacai_SetTextValue(0,6,(uint8_t *)strbuf , strlen(strbuf));
+	snprintf(strbuf , 40 , "%.2f" , BSP_AD7682_Get_RMS(BSP_AD7682_CAL_CHANNEL));
+	Dacai_SetTextValue(0,5,(uint8_t *)strbuf , strlen(strbuf));	
+	snprintf(strbuf , 40 , "%.2f" , BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL));
+	Dacai_SetTextValue(0,7,(uint8_t *)strbuf , strlen(strbuf));	
+
+	Dacai_SetTextValue(0,8,(uint8_t *)Version_Get_Str() , strlen(Version_Get_Str()));
 }
 
 // --------------------------------------

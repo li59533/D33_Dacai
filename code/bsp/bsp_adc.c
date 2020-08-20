@@ -12,7 +12,7 @@
  */
 
 #include "bsp_conf.h"
-
+#include "bsp_adc.h"
 #include "clog.h"
 
 /**
@@ -60,12 +60,6 @@
  * @brief         
  * @{  
  */
-typedef struct
-{
-	uint16_t adcbuf[8];
-	uint8_t in ;
-	uint16_t average;
-}bsp_adc_data_t;
 
 
 /**
@@ -82,12 +76,8 @@ ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 
-bsp_adc_data_t bsp_adc_data = 
-{
-	.in = 0 ,
-	.average = 0,
-};
-uint16_t bsp_adcspace[100];
+bsp_adc_data_t BSP_ADC_Value[BSP_ADC_CHANNEL_COUNT];
+uint16_t bsp_adcspace[128];
 
 /**
  * @}
@@ -108,9 +98,7 @@ uint16_t bsp_adcspace[100];
  * @brief         
  * @{  
  */
-static void bsp_adc_addvalue(uint16_t value); 
- 
-
+static void bsp_adc_calc(void);
 /**
  * @}
  */
@@ -145,7 +133,7 @@ void BSP_ADC_Init(void)
 	hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
 	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
 	hadc1.Init.NbrOfConversion = 2;
-	hadc1.Init.DMAContinuousRequests = DISABLE;
+	hadc1.Init.DMAContinuousRequests = ENABLE;
 	hadc1.Init.EOCSelection = DISABLE;
 	if (HAL_ADC_Init(&hadc1) != HAL_OK)
 	{
@@ -169,7 +157,7 @@ void BSP_ADC_Init(void)
 		Error_Handler();
 	}
 	
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t * )bsp_adcspace, 50);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t * )bsp_adcspace, 64);
 }
 
 
@@ -205,7 +193,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
 		hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
 		hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
 		hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
-		hdma_adc1.Init.Mode = DMA_NORMAL;
+		hdma_adc1.Init.Mode = DMA_CIRCULAR;
 		hdma_adc1.Init.Priority = DMA_PRIORITY_HIGH;
 		hdma_adc1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
 		if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
@@ -266,27 +254,24 @@ void BSP_ADC_EnableIRQ(void)
 	
 }
 
-uint32_t BSP_ADC_GetValue(uint8_t channel)
+static void bsp_adc_calc(void)
 {
-	return 0;
-}
-
-static void bsp_adc_addvalue(uint16_t value)
-{
-	uint32_t sum  = 0 ;
-	bsp_adc_data.adcbuf[bsp_adc_data.in ++] = value;
-	bsp_adc_data.in %= 8;
-	for(uint8_t i = 0 ; i < 8 ; i ++)
+	uint32_t sum[2] = {0 , 0};
+	for(uint8_t i = 0 ; i < 32 ; i ++)
 	{
-		sum += bsp_adc_data.adcbuf[i];
+		sum[0] += bsp_adcspace[i* 2];
+		sum[1] += bsp_adcspace[i * 2 + 1];
 	}
-	bsp_adc_data.average  = sum >> 3;
+	
+	
+	BSP_ADC_Value[BSP_ADC_CHANNEL_0].average = (uint16_t )(sum[0] / 32);
+	BSP_ADC_Value[BSP_ADC_CHANNEL_1].average = (uint16_t )(sum[1] / 32);
+	
+	BSP_ADC_Value[BSP_ADC_CHANNEL_0].real_mv = (float)(0.805664f * BSP_ADC_Value[BSP_ADC_CHANNEL_0].average);
+	BSP_ADC_Value[BSP_ADC_CHANNEL_1].real_mv = (float)(0.805664f * BSP_ADC_Value[BSP_ADC_CHANNEL_1].average);
 }
 
-uint16_t BSP_ADC_GetAverageValue(uint8_t channel)
-{
-	return bsp_adc_data.average;
-}
+
 
 // -------IRQ ----------------
 void ADC_IRQHandler(void)
@@ -296,26 +281,34 @@ void ADC_IRQHandler(void)
 	//bsp_adc_addvalue(0);
 }
 
+/*
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
 	if(hadc->Instance == ADC1)
 	{
-		DEBUG("HAL_ADC_ConvCpltCallback\r\n");
+		
+		//DEBUG("HAL_ADC_ConvCpltCallback\r\n");
 	}
 }
+*/
+
 void DMA2_Stream0_IRQHandler(void)
 {
-	DEBUG("DMA2_Stream0_IRQHandler\r\n");
+	//DEBUG("DMA2_Stream0_IRQHandler\r\n");
 	HAL_DMA_IRQHandler(&hdma_adc1);
+	
+	bsp_adc_calc();
 }
-
 
 // ---------------------------
 
 // --------------Test -----
 void BSP_ADC_ShowValue(void)
 {
-	DEBUG("ADC Value:%d\r\n" ,BSP_ADC_GetValue(0) );
+	DEBUG("sig avr:%d\r\n" , BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].average);
+	Clog_Float("sig real:" , BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv);
+	DEBUG("cal avr:%d\r\n" , BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].average);
+	Clog_Float("cal real:" , BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv);
 }
 
 // ------------------------

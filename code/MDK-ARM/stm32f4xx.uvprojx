@@ -798,6 +798,11 @@
               <FileType>1</FileType>
               <FilePath>..\app\app_dvalue.c</FilePath>
             </File>
+            <File>
+              <FileName>app_guifunc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\app_guifunc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

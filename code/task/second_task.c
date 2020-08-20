@@ -183,11 +183,12 @@ void Second_Task(void * pvParameter)
 //		DEBUG("Hal Task ramain heap:%d\r\n",ramainheap);
 
 
-		BSP_AD7682_TestCode();
-		//Dacai_TestCode();
+		//BSP_AD7682_TestCode();
+		//BSP_ADC_ShowValue();
+		Dacai_TestCode();
 		//vTaskDelay(pdMS_TO_TICKS(100));
 		//
-		RTOS_Delay_ms(10000);
+		RTOS_Delay_ms(1000);
 	}
 	
 }

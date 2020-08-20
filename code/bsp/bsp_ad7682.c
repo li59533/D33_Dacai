@@ -195,7 +195,7 @@ void BSP_AD7682_SPI_GetValue(void)  // in SPI interrupt
 	
 	if(curindex.req_index > curindex.resp_index)
 	{
-		if((curindex.req_index - curindex.resp_index) == 1)
+		if((curindex.req_index - curindex.resp_index) == 3)
 		{
 			start_getflag = 1;
 		}
@@ -206,7 +206,7 @@ void BSP_AD7682_SPI_GetValue(void)  // in SPI interrupt
 	}
 	else
 	{
-		if((curindex.req_index + 4 - curindex.resp_index) == 1)
+		if((curindex.req_index + 4 - curindex.resp_index) == 3)
 		{
 			start_getflag = 1;
 		}
@@ -235,6 +235,30 @@ void BSP_AD7682_SPI_GetValue(void)  // in SPI interrupt
 
 }
 
+
+
+
+
+float BSP_AD7682_Get_CurValue(uint8_t channel)
+{
+	return (float)( BSP_AD7682_Value[channel].curvalue * 0.03814697f );//0.03814697 = 2500mV / 65536
+}
+
+float BSP_AD7682_Get_RMS(uint8_t channel)
+{
+	float temp_f;
+	float * temp_buf;
+	temp_buf = pvPortMalloc( sizeof(float) * BSP_AD7682_SAVE_SIZE);
+
+	for(uint16_t j = 0 ; j < BSP_AD7682_SAVE_SIZE ; j ++)
+	{
+		temp_buf[j] = (float) (BSP_AD7682_Value[channel].buf[j] * 0.03814697f );
+	}
+	arm_rms_f32(temp_buf, 1000, &temp_f);
+	vPortFree(temp_buf);	
+	return temp_f;
+	
+}
 
 
 // -------------- Test Code -------------------

@@ -27,7 +27,17 @@
  * @defgroup      bsp_adc_Exported_Macros 
  * @{  
  */
+#define BSP_ADC_CHANNEL_COUNT 	2
+#define BSP_ADC_CHANNEL_0		0
+#define BSP_ADC_CHANNEL_1		1
 
+
+// ------------User Channel define ---------------
+#define BSP_ADC_SIG_CHANNEL		BSP_ADC_CHANNEL_0
+#define BSP_ADC_CAL_CHANNEL		BSP_ADC_CHANNEL_1
+
+
+// -----------------------------------------------
 
 /**
  * @}
@@ -46,6 +56,11 @@
  * @defgroup      bsp_adc_Exported_Types 
  * @{  
  */
+typedef struct
+{
+	uint16_t average;
+	float real_mv;
+}bsp_adc_data_t;
 
 /**
  * @}
@@ -55,7 +70,7 @@
  * @defgroup      bsp_adc_Exported_Variables 
  * @{  
  */
-
+extern bsp_adc_data_t BSP_ADC_Value[BSP_ADC_CHANNEL_COUNT];
 /**
  * @}
  */
@@ -66,12 +81,16 @@
  */
 void BSP_ADC_Init(void);
 void BSP_ADC_DeInit(void);
-uint32_t BSP_ADC_GetValue(uint8_t channel);
 
-uint16_t BSP_ADC_GetAverageValue(uint8_t channel);
-void BSP_ADC_ShowValue(void);
 void BSP_ADC_DisableIRQ(void);
 void BSP_ADC_EnableIRQ(void);
+
+
+
+// ----------TestCode -------------
+void BSP_ADC_ShowValue(void);
+// --------------------------------
+
 /**
  * @}
  */
