@@ -40,7 +40,13 @@
  * @brief         
  * @{  
  */
+#define DACAI_HANDSHAKE			0X55
+#define DACAI_RSET				0x07
+#define DACAI_B1				0XB1
+#define	DACAI_GETCURSCREEN		0X01
+#define DACAI_READ_CONTROL		0X11
 
+#define DACAI_CONTROL_TYPE_BUTTON	0x10
 /**
  * @}
  */
@@ -62,6 +68,19 @@ const static uint8_t dacai_foot[] = {0xFF , 0xFC , 0xFF , 0xFF};
  * @brief         
  * @{  
  */
+#pragma pack(1)
+typedef struct
+{
+	uint16_t screen_id;
+	uint16_t control_id;
+	uint8_t control_type;
+	uint8_t sub_type;
+	uint8_t status;
+}dacai_readcontrol_value_t;
+#pragma pack()
+
+
+
 #pragma pack(1) 
 typedef struct
 {
@@ -106,6 +125,11 @@ typedef struct
  * @brief         
  * @{  
  */
+dacai_gui_info_t dacai_gui_info = 
+{
+	.handshake_flag = 0,
+	.cur_s = 0,
+};
 
 /**
  * @}
@@ -119,6 +143,12 @@ typedef struct
 static uint16_t dacai_Tbuf_Add(uint8_t * space , uint8_t *addbuf , uint16_t len);
 static void dacai_b1_analysis(uint8_t *cmd2 ,uint16_t len);
 static void dacai_button_process(uint16_t screen_id , uint16_t control_id , uint8_t status);
+
+
+static void (*Dacai_HandShake_Callback)(void); 
+static void (*Dacai_Button_Callback)(uint16_t screen_id , uint16_t control_id ,uint8_t);
+static void (*Dacai_Rest_Callback)(void); 
+
 /**
  * @}
  */
@@ -128,18 +158,6 @@ static void dacai_button_process(uint16_t screen_id , uint16_t control_id , uint
  * @brief         
  * @{  
  */
- 
-#define DACAI_HANDSHAKE			0X55
-#define DACAI_B1				0XB1
-#define	DACAI_GETCURSCREEN		0X01
-#define DACAI_READ_CONTROL		0X11
-
-#define DACAI_CONTROL_TYPE_BUTTON	0x10
-
-static void (*Dacai_HandShake_Callback)(void); 
-static void (*Dacai_Button_Callback)(uint16_t screen_id , uint16_t control_id ,uint8_t);
-
-
 
 
 void Dacai_Protocol_RevAnalgsis(uint8_t * cmd , uint16_t len)
@@ -154,11 +172,22 @@ void Dacai_Protocol_RevAnalgsis(uint8_t * cmd , uint16_t len)
 		case  DACAI_HANDSHAKE: 
 			{
 				DEBUG("Dacai HandShake OK\r\n");
+				dacai_gui_info.handshake_flag = 1;
+				
 				if(Dacai_HandShake_Callback != NULL)
 				{
 					Dacai_HandShake_Callback();
 				}
 			}break;
+		case  DACAI_RSET: 
+			{
+				DEBUG("Dacai Rset\r\n");
+
+				if(Dacai_Rest_Callback != NULL)
+				{
+					Dacai_Rest_Callback();
+				}
+			}break;			
 		case DACAI_B1:
 			{
 				//DEBUG("Dacai DACAI_B1 OK\r\n");
@@ -168,24 +197,21 @@ void Dacai_Protocol_RevAnalgsis(uint8_t * cmd , uint16_t len)
 	}
 	
 }
-#pragma pack(1)
-typedef struct
-{
-	uint16_t screen_id;
-	uint16_t control_id;
-	uint8_t control_type;
-	uint8_t sub_type;
-	uint8_t status;
-}dacai_readcontrol_value_t;
-#pragma pack()
+
+
+
+
+
+
+
 static void dacai_b1_analysis(uint8_t *cmd2 ,uint16_t len)
 {
 	switch(*cmd2)
 	{
 		case DACAI_GETCURSCREEN:
 			{
-				uint16_t cur_s = *(cmd2 + 1) * 256 + *(cmd2 + 2);
-				DEBUG("Cur Sreen:%d\r\n" , cur_s);
+				dacai_gui_info.cur_s = *(cmd2 + 1) * 256 + *(cmd2 + 2);
+				DEBUG("Cur Sreen:%d\r\n" , dacai_gui_info.cur_s);
 			}break;
 		case DACAI_READ_CONTROL:
 			{
@@ -231,6 +257,11 @@ void Dacai_HandShake_CallbackRegister(void (*callback)(void))
 	Dacai_HandShake_Callback = callback;
 }
 
+void Dacai_Rest_CallbackRegister(void (*callback)(void))
+{
+	Dacai_Rest_Callback = callback;
+}
+
 
 // ---------- Some Driver -------------------
 //Dacai_Queue_in_Bytes(uint8_t *buf , uint16_t len);
@@ -252,6 +283,42 @@ void Dacai_SetHandShake(void)
 	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_foot , 4);
 	Dacai_Queue_in_Bytes( tempbuf , space_ptr);
 }
+
+void Dacai_SetRest(void)
+{
+	uint8_t space_ptr = 0;
+	uint8_t tempbuf[50];
+	
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_head , 1);
+	uint8_t cmd[] = {0x07 ,0x35 ,0x5A ,0x53 ,0xA5};
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)cmd , sizeof(cmd));
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_foot , 4);
+	Dacai_Queue_in_Bytes( tempbuf , space_ptr);
+}
+void Dacai_Disable_Updata(void)
+{
+	uint8_t space_ptr = 0;
+	uint8_t tempbuf[50];
+	
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_head , 1);
+	uint8_t cmd[] = {0xb3 ,0x00 };
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)cmd ,  sizeof(cmd));
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_foot , 4);
+	Dacai_Queue_in_Bytes( tempbuf , space_ptr);	
+}
+
+void Dacai_Enable_Updata(void)
+{
+	uint8_t space_ptr = 0;
+	uint8_t tempbuf[50];
+	
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_head , 1);
+	uint8_t cmd[] = {0xb3 ,0x01 };
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)cmd ,  sizeof(cmd));
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_foot , 4);
+	Dacai_Queue_in_Bytes( tempbuf , space_ptr);	
+}
+
 // ----
 void Dacai_CleanScreen(void)
 {
@@ -323,6 +390,22 @@ void Dacai_GetScreen(void)
 	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&cmd , 1);
 	uint8_t cmd2 = 0x01;
 	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&cmd2 , 1);
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_foot , 4);
+	Dacai_Queue_in_Bytes( tempbuf , space_ptr);
+}
+// ----
+void Dacai_SetScreen(uint16_t screen_id)
+{
+	uint8_t space_ptr = 0;
+	uint8_t tempbuf[50];
+	
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_head , 1);
+	uint8_t cmd = 0xB1;
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&cmd , 1);
+	uint8_t cmd2 = 0x00;
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&cmd2 , 1);
+	uint16_t temp = __REV16(screen_id);
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&temp , 2);	
 	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_foot , 4);
 	Dacai_Queue_in_Bytes( tempbuf , space_ptr);
 }

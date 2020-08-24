@@ -23,7 +23,7 @@
  * @{  
  */
 #include "dacai.h"
-
+#include "app_guifunc.h"
 
 /**
  * @addtogroup    dacai_task_Modules 
@@ -142,12 +142,7 @@ void Dacai_Task(void * pvParameter)
 	
 	DEBUG("Dacai Task Enter\r\n");
 	UBaseType_t dacaitask_ramainheap = 0;
-	
-	
-	Dacai_Init();
-	RTOS_Delay_ms(1000);
-	Dacai_SetPowerSaving(1 ,0x0f, 0xff, 30);
-	Dacai_SetBuzzer(50);
+
 	while(1)
 	{
 		xTaskNotifyWait(0x00,ULONG_MAX,&event_flag , portMAX_DELAY);
@@ -157,12 +152,10 @@ void Dacai_Task(void * pvParameter)
 			DEBUG("Dacai Task Looping\r\n");
 			dacaitask_ramainheap = uxTaskGetStackHighWaterMark(NULL);
 			DEBUG("Dacai Task ramain heap:%d %%\r\n",dacaitask_ramainheap);
-	
 		}
 		if((event_flag & DACAI_TASK_TEST2_EVENT) != 0x00)
 		{
 			DEBUG("Dacai Task DACAI_TASK_TEST2_EVENT\r\n");
-			
 		}		
 		if((event_flag & DACAI_TASK_REV_EVENT) != 0x00)
 		{

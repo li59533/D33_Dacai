@@ -77,9 +77,19 @@
  * @brief         
  * @{  
  */
+ 
+arm_pid_instance_f32 PID = 
+{
+	.Kp = 4.0f,
+	.Ki = 0.0f,
+	.Kd = 0.0f,
+};
+ 
+ 
 static float app_virexc_sinbuf[APP_VIREXC_SINPOINT_C];
 static uint16_t app_virexc_gain = 1;
-static float desired_value = 50.0f;
+static float desired_value = 20.0f;
+static uint8_t app_virexc_pid_flag = 0;
 /**
  * @}
  */
@@ -112,12 +122,6 @@ static float desired_value = 50.0f;
  
  
 
-arm_pid_instance_f32 PID = 
-{
-	.Kp = 4.0f,
-	.Ki = 0.0f,
-	.Kd = 0.0f,
-};
 
 
 
@@ -169,16 +173,34 @@ void APP_VirExc_Downgain(void)
 	}
 }
 
+
+
 void APP_VirExc_PID_1250(void)
 {
 	desired_value = 1250.0f;
-	VirExc_Task_Event_Start(VIREXC_TASK_PID1250_EVENT,EVENT_FROM_TASK);
+	if(app_virexc_pid_flag == 0)
+	{
+		app_virexc_pid_flag = 1;
+		VirExc_Task_Event_Start(VIREXC_TASK_PID1250_EVENT,EVENT_FROM_TASK);
+	}
+	else
+	{
+		
+	}
 }
 
 void APP_VirExc_PID_50(void)
 {
-	desired_value = 50.0f;
-	VirExc_Task_Event_Start(VIREXC_TASK_PID1250_EVENT,EVENT_FROM_TASK);
+	desired_value = 20.0f;
+	if(app_virexc_pid_flag == 0)
+	{
+		app_virexc_pid_flag = 1;
+		VirExc_Task_Event_Start(VIREXC_TASK_PID1250_EVENT,EVENT_FROM_TASK);
+	}
+	else
+	{
+		
+	}
 }
 
 
@@ -186,17 +208,31 @@ void APP_VirExc_PID_Loop(void)
 {
 	float out = 0;
 	float err_range = 0;
+	float next_gain = 0;
 	
 	err_range = desired_value - BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv;
 	
-	Clog_Float("err_range:" , err_range);
+	//Clog_Float("err_range:" , err_range);
 	
 	out = arm_pid_f32(&PID , err_range);
 	
-	Clog_Float("out:" , out);
+	//Clog_Float("out:" , out);
 
-	app_virexc_gain = (uint16_t )(app_virexc_gain + out);
-	DEBUG("app_virexc_gain :%d\r\n" , app_virexc_gain);	
+	next_gain = (float) (app_virexc_gain + out);
+	
+	if(next_gain < 0)
+	{
+		app_virexc_gain = 0;
+	}
+	else if(next_gain > 65535)
+	{
+		app_virexc_gain = 65535;
+	}
+	else
+	{
+		app_virexc_gain = (uint16_t )next_gain;
+	}
+	//DEBUG("app_virexc_gain :%d\r\n" , app_virexc_gain);	
 }
 
 

@@ -1,6 +1,6 @@
 /**
  **************************************************************************************************
- * @file        clog.h
+ * @file        gui_task.h
  * @author
  * @version    v0.1.0
  * @date        
@@ -10,40 +10,32 @@
  *
  **************************************************************************************************
  */
-#ifndef _CLOG_H_
-#define _CLOG_H_
+#ifndef _GUI_TASK_H_
+#define _GUI_TASK_H_
 
 /**
  * @addtogroup    XXX 
  * @{ 
  */
-#include "SEGGER_RTT.h"
-/**
- * @addtogroup    clog_Modules 
- * @{  
- */
-
-/**
- * @defgroup      clog_Exported_Macros 
- * @{  
- */
  
-#ifdef RTT_DEBUG  
+#include "rtos_tools.h"
 
-#define  DEBUG(arg...) 			SEGGER_RTT_printf(0, arg)
+/**
+ * @addtogroup    gui_task_Modules 
+ * @{  
+ */
 
-#else
-
-#define  DEBUG(arg...)			((void)0U)
-
-#endif 
+/**
+ * @defgroup      gui_task_Exported_Macros 
+ * @{  
+ */
 
 /**
  * @}
  */
 
 /**
- * @defgroup      clog_Exported_Constants
+ * @defgroup      gui_task_Exported_Constants
  * @{  
  */
 
@@ -52,7 +44,7 @@
  */
  
 /**
- * @defgroup      clog_Exported_Types 
+ * @defgroup      gui_task_Exported_Types 
  * @{  
  */
 
@@ -61,19 +53,21 @@
  */
 
 /**
- * @defgroup      clog_Exported_Variables 
+ * @defgroup      gui_task_Exported_Variables 
  * @{  
  */
-
+extern TaskHandle_t  Gui_Task_Handle ;
 /**
  * @}
  */
 
 /**
- * @defgroup      clog_Exported_Functions 
+ * @defgroup      gui_task_Exported_Functions 
  * @{  
  */
-void Clog_Float(const char * buf ,float  value);
+
+void Gui_Task(void * pvParameter);	
+uint32_t Gui_Task_Init(void);
 /**
  * @}
  */
@@ -86,6 +80,5 @@ void Clog_Float(const char * buf ,float  value);
  * @}
  */
 #endif
-
 
 

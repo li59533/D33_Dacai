@@ -151,16 +151,16 @@ void Second_Task(void * pvParameter)
 	DEBUG("Second Task Enter\r\n");
 	uint32_t count = 0 ;
 	
-	APP_Dvalue_Init();
+	
 
 	
 	while(1)
 	{
 		// -----------Test Code ----------
-		secondtask_ramainheap = uxTaskGetStackHighWaterMark(NULL);
-		DEBUG("Second Task ramain heap:%d %%\r\n",secondtask_ramainheap);		
-		DEBUG("Second Task Looping Count:%d\r\n" , count);
-		count ++;
+//		secondtask_ramainheap = uxTaskGetStackHighWaterMark(NULL);
+//		DEBUG("Second Task ramain heap:%d %%\r\n",secondtask_ramainheap);		
+//		DEBUG("Second Task Looping Count:%d\r\n" , count);
+//		count ++;
 //		DEBUG("Free Heap:%d\r\n" , RTOS_Get_FreeHeapSize());
 		
 //		ramainheap = uxTaskGetStackHighWaterMark(First_Task_Handle);
@@ -185,7 +185,7 @@ void Second_Task(void * pvParameter)
 
 		//BSP_AD7682_TestCode();
 		//BSP_ADC_ShowValue();
-		Dacai_TestCode();
+		//Dacai_TestCode();
 		//vTaskDelay(pdMS_TO_TICKS(100));
 		//
 		RTOS_Delay_ms(1000);

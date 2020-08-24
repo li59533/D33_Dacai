@@ -24,6 +24,7 @@
  */
 #include "app_vibration_exciter.h"
 #include "bsp_led.h"
+#include "app_dvalue.h"
 
 /**
  * @addtogroup    virexc_task_Modules 
@@ -145,6 +146,9 @@ void VirExc_Task(void * pvParameter)
 
 	
 	// ------ Init -------
+	
+	APP_Dvalue_Init();
+	
 	APP_Viration_Exciter_Init();
 	VirExc_Task_Tim_Init();
 	
@@ -217,7 +221,7 @@ void VirExc_Task_StartTim(uint16_t time_count)
 }
 static void virexc_task_tim_callback(TimerHandle_t xTimer)
 {
-	APP_VirExc_TestCode();
+	APP_VirExc_PID_Loop();
 	//VirExc_Task_Event_Start(VirExc_TASK_SEND_AT_EVENT, EVENT_FROM_TASK);
 }
 
