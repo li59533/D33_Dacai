@@ -45,6 +45,8 @@
 
 #define  _BTN_Dֵ_BUTTON2                                                       9
 
+#define  _PROGRESS_Dֵ_PROGRESS1                                               10
+
 #define  _TXT_DIS__Cֵ_TEXT_DISPLAY1                                            5
 
 #define  _TXT_DIS__Cֵ_TEXT_DISPLAY3                                            7

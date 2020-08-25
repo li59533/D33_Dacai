@@ -145,6 +145,7 @@ void Gui_Task(void * pvParameter)
 		APP_Gui_Loop();
 		RTOS_Delay_ms(500);
 	}
+	
 }
 							
 

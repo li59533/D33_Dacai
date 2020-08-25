@@ -28,6 +28,7 @@
 #include "virexc_task.h"
 #include "dacai_task.h"
 #include "gui_task.h"
+#include "time_task.h"
 /**
  * @addtogroup    task_list_Modules 
  * @{  
@@ -131,7 +132,8 @@ void RTOS_Init(void)
 	basetype |= VirExc_Task_Init();
 	basetype |= Dacai_Task_Init();
 	basetype |= Gui_Task_Init();
-
+	basetype |= Time_Task_Init();
+	
 	if(pdPASS == basetype)
 	{
 		#ifdef CMSIS_OS2   

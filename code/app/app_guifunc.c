@@ -20,6 +20,7 @@
 #include "dacai.h"
 #include "bsp_adc.h"
 #include "bsp_ad7682.h"
+#include "app_dvalue.h"
 /**
  * @addtogroup    app_guifunc_Modules 
  * @{  
@@ -142,6 +143,7 @@ static void app_gui_btn_d_back(uint8_t status);
 #define GUI_TEXT_D_STANDARD	5
 #define GUI_TEXT_D_TEST		6
 #define GUI_TEXT_D_D		7
+#define GUI_TEXT_D_PROGRASS	10
 
 #define GUI_TEXT_C_VOL		5
 #define GUI_TEXT_C_C		7
@@ -351,7 +353,6 @@ static void app_gui_update(void)
 	}
 }
 
-
 static void app_gui_up_start(void)
 {
 	Dacai_SetScreen(GUI_SCREEN_HOME);
@@ -361,7 +362,6 @@ static void app_gui_up_d(void)
 {
 	Dacai_Disable_Updata();
 	
-	
 	char strbuf[40];
 
 	snprintf(strbuf , 40 , "%.2f" , BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv);
@@ -370,11 +370,14 @@ static void app_gui_up_d(void)
 	snprintf(strbuf , 40 , "%.2f" , BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv);
 	Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_TEST,(uint8_t *)strbuf , strlen(strbuf));
 	
-	Dacai_Enable_Updata();
 	
-	snprintf(strbuf , 40 , "%.2f" , BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL));
-	Dacai_SetTextValue(0,7,(uint8_t *)strbuf , strlen(strbuf));	
-
+	
+	snprintf(strbuf , 40 , "%.2f" , APP_Dvalue.D_value);
+	Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_D,(uint8_t *)strbuf , strlen(strbuf));	
+	
+	Dacai_SetProgressBar(GUI_SCREEN_D , GUI_TEXT_D_PROGRASS,(uint32_t )APP_Dvalue.schedule);
+	
+	Dacai_Enable_Updata();
 }
 
 
@@ -404,6 +407,7 @@ static void app_gui_btn_d_pid(uint8_t status)
 	{	
 		DEBUG("APP_VirExc_PID_1250\r\n");
 		APP_VirExc_PID_1250();
+		APP_Dvalue.calc_flag = 1;
 	}
 	else
 	{

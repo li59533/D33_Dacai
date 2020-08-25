@@ -118,9 +118,9 @@ uint32_t VirExc_Task_Init(void)
 	BaseType_t basetype = { 0 };
 	basetype = xTaskCreate(VirExc_Task,\
 							"VirExc Task",\
-							256,
+							1024,
 							NULL,
-							3,
+							6,
 							&VirExc_Task_Handle);
 	
 //	VirExc_Task_Handle=xTaskCreateStatic((TaskFunction_t	)VirExc_Task,		//ÈÎÎñº¯Êý
@@ -154,7 +154,8 @@ void VirExc_Task(void * pvParameter)
 	
 	// -------------------
 	// ------ Test Code --
-	VirExc_Task_Event_Start(VIREXC_TASK_TEST2_EVENT, EVENT_FROM_TASK);
+	//VirExc_Task_Event_Start(VIREXC_TASK_START_EVENT, EVENT_FROM_TASK);
+	APP_VirExc_Start();
 	// -------------------
 	
 	while(1)
@@ -168,9 +169,9 @@ void VirExc_Task(void * pvParameter)
 			DEBUG("VirExc Task ramain heap:%d %%\r\n",virexctask_ramainheap);
 	
 		}
-		if((event_flag & VIREXC_TASK_TEST2_EVENT) != 0x00)
+		if((event_flag & VIREXC_TASK_START_EVENT) != 0x00)
 		{
-			DEBUG("VirExc Task VIREXC_TASK_TEST2_EVENT\r\n");
+			DEBUG("VirExc Task VIREXC_TASK_START_EVENT\r\n");
 			APP_VirExc_Start();
 
 			BSP_LED_BlinkStandard(BSP_LED_EXCITATION, 0, Blink_LowSpeed);
@@ -179,8 +180,8 @@ void VirExc_Task(void * pvParameter)
 		{
 			DEBUG("VirExc Task PID1250\r\n");
 			VirExc_Task_StartTim(100);
-		}			
-		
+		}	
+	
 		
 	}
 	

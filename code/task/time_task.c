@@ -19,7 +19,7 @@
  * @addtogroup    XXX 
  * @{  
  */
-
+#include "app_dvalue.h"
 /**
  * @addtogroup    time_task_Modules 
  * @{  
@@ -135,8 +135,8 @@ void Time_Task(void * pvParameter)
 	DEBUG("Time Task Enter\r\n");
 	while(1)
 	{
-
-		RTOS_Delay_ms(1000);
+		APP_Dvalue_Calc();
+		RTOS_Delay_ms(20);
 	}
 }
 							

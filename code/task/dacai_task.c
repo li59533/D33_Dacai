@@ -164,7 +164,7 @@ void Dacai_Task(void * pvParameter)
 		if((event_flag & DACAI_TASK_SEND_EVENT) != 0x00)
 		{
 			Dacai_Send_Process();
-			RTOS_Delay_ms(100);
+			RTOS_Delay_ms(50);
 			//DEBUG("Dacai Task Send EVENT\r\n");
 		}			
 	}

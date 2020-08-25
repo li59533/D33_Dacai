@@ -53,6 +53,16 @@ typedef enum
 	Test_PGA_100 , 
 }APP_Dvalue_Test_PGA_e;
 
+typedef struct
+{
+	float D_value;
+	uint8_t mul;
+	uint8_t schedule;
+	uint8_t calc_flag;
+}APP_Dvalue_t;
+
+
+
 /**
  * @}
  */
@@ -61,7 +71,7 @@ typedef enum
  * @defgroup      app_dvalue_Exported_Variables 
  * @{  
  */
-
+extern APP_Dvalue_t APP_Dvalue ;
 /**
  * @}
  */
@@ -73,7 +83,7 @@ typedef enum
 
 void APP_Dvalue_Init(void);
 void APP_Dvalue_TestPGA(uint8_t  Test_PGA);
-
+void APP_Dvalue_Calc(void);
 
 
 /**

@@ -94,7 +94,7 @@ void Dacai_SetTimer(uint16_t screen_id,uint16_t control_id,uint32_t timeout);
 void Dacai_StartTimer(uint16_t screen_id,uint16_t control_id);
 void Dacai_StopTimer(uint16_t screen_id,uint16_t control_id);
 void Dacai_PauseTimer(uint16_t screen_id,uint16_t control_id);
-
+void Dacai_SetProgressBar(uint16_t screen_id,uint16_t control_id,uint32_t value);
 /**
  * @}
  */

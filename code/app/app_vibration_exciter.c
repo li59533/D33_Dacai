@@ -24,7 +24,7 @@
 #include "clog.h"
 #include "arm_math.h"
 #include "virexc_task.h"
-
+#include "app_dvalue.h"
 /**
  * @addtogroup    app_vibration_exciter_Modules 
  * @{  
@@ -81,8 +81,8 @@
 arm_pid_instance_f32 PID = 
 {
 	.Kp = 4.0f,
-	.Ki = 0.0f,
-	.Kd = 0.0f,
+	.Ki = 0.5f,
+	.Kd = 0.2f,
 };
  
  
@@ -182,6 +182,7 @@ void APP_VirExc_PID_1250(void)
 	{
 		app_virexc_pid_flag = 1;
 		VirExc_Task_Event_Start(VIREXC_TASK_PID1250_EVENT,EVENT_FROM_TASK);
+		
 	}
 	else
 	{
