@@ -167,7 +167,7 @@ void APP_Gui_Init(void)
 void APP_Gui_SetParam(void)
 {
 	Dacai_SetHandShake();
-	Dacai_SetPowerSaving(1 ,0x0f, 0xff, 30);
+	//Dacai_SetPowerSaving(1 ,0x0f, 0xff, 30);
 	Dacai_SetBuzzer(50);	
 	Dacai_GetScreen();
 }
@@ -364,16 +364,26 @@ static void app_gui_up_d(void)
 	
 	char strbuf[40];
 
-	snprintf(strbuf , 40 , "%.2f" , BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv);
+	snprintf(strbuf , 40 , "%.2fmV" , BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv);
 	Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_STANDARD,(uint8_t *)strbuf , strlen(strbuf));
 	
-	snprintf(strbuf , 40 , "%.2f" , BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv);
+	snprintf(strbuf , 40 , "%.2fmV" , BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv);
 	Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_TEST,(uint8_t *)strbuf , strlen(strbuf));
 	
 	
 	
-	snprintf(strbuf , 40 , "%.2f" , APP_Dvalue.D_value);
-	Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_D,(uint8_t *)strbuf , strlen(strbuf));	
+	if(abs((int)(BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv - 1250.0f)) < 5)
+	{
+		snprintf(strbuf , 40 , "%.2fpc/N" , APP_Dvalue.D_value);
+		Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_D,(uint8_t *)strbuf , strlen(strbuf));			
+	}
+	else
+	{
+		char temp_str[] = "--.--pc/N";
+		Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_D,(uint8_t *)temp_str , strlen(temp_str));		
+	}
+	
+
 	
 	Dacai_SetProgressBar(GUI_SCREEN_D , GUI_TEXT_D_PROGRASS,(uint32_t )APP_Dvalue.schedule);
 	
@@ -420,6 +430,7 @@ static void app_gui_btn_d_pid(uint8_t status)
 static void app_gui_btn_d_back(uint8_t status)
 {
 	APP_VirExc_PID_50();
+	
 }
 
 	

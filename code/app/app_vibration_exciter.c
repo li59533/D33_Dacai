@@ -78,11 +78,17 @@
  * @{  
  */
  
-arm_pid_instance_f32 PID = 
-{
+/*
 	.Kp = 4.0f,
 	.Ki = 0.5f,
 	.Kd = 0.2f,
+
+*/ 
+arm_pid_instance_f32 PID = 
+{
+	.Kp = 4.0f,
+	.Ki = 0.0f,
+	.Kd = 0.0f,
 };
  
  
@@ -192,7 +198,7 @@ void APP_VirExc_PID_1250(void)
 
 void APP_VirExc_PID_50(void)
 {
-	desired_value = 20.0f;
+	desired_value = 0.0f;
 	if(app_virexc_pid_flag == 0)
 	{
 		app_virexc_pid_flag = 1;
@@ -227,7 +233,7 @@ void APP_VirExc_PID_Loop(void)
 	}
 	else if(next_gain > 65535)
 	{
-		app_virexc_gain = 65535;
+		app_virexc_gain = 1000;
 	}
 	else
 	{

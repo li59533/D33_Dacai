@@ -69,6 +69,7 @@ typedef enum
 	APP_DVALUE_Wait	= 1,
 	APP_DVALUE_Check_SIG ,
 	APP_DVALUE_Get_Average  ,
+	APP_DVALUE_Calc_Complete , 
 }app_dvalue_state_machine_e;
 
 
@@ -174,7 +175,7 @@ void APP_Dvalue_Calc(void)
 
 				if(APP_Dvalue.calc_flag == 1)
 				{
-					APP_Dvalue.D_value = 0;
+					//APP_Dvalue.D_value = 0;
 					APP_Dvalue.calc_flag = 0;
 					APP_Dvalue.schedule = 1;
 					status = APP_DVALUE_Check_SIG;
@@ -190,9 +191,9 @@ void APP_Dvalue_Calc(void)
 			{
 				static uint16_t time_count = 0 ;
 				time_count ++ ;
-				APP_Dvalue.schedule = (uint8_t )((80.0 / 250.0) * time_count);
+				APP_Dvalue.schedule = (uint8_t )((50.0 / 50.0) * time_count);
 				
-				if(time_count > 250)
+				if(time_count > 50)
 				{
 					time_count = 0;
 					
@@ -230,12 +231,25 @@ void APP_Dvalue_Calc(void)
 					{
 						sum += sig_buf[i];
 					}
-					APP_Dvalue.D_value = (float)(sum / 8.0f) / APP_Dvalue.mul * 0.4f;
+					APP_Dvalue.D_value = (float)(sum / 8.0f) * APP_Dvalue.mul / 10.0f * 0.4f;
 					APP_Dvalue.schedule = 100;
-					status = APP_DVALUE_Wait;
+					status = APP_DVALUE_Calc_Complete;
+					APP_Dvalue.calc_flag = 1;
 				}
 
 								
+			}break;
+		case APP_DVALUE_Calc_Complete:
+			{
+				static uint8_t wait_time = 0;
+				wait_time ++;
+				if(wait_time > 100)
+				{
+					wait_time = 0;
+					status = APP_DVALUE_Wait;
+				}
+				
+				
 			}break;
 		default:
 			{
