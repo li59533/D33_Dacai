@@ -21,7 +21,7 @@
 #include "bsp_adc.h"
 #include "rtos_tools.h"
 #include "virexc_task.h"
-
+#include "app_cvalue.h"
 #include "clog.h"
 /**
  * @addtogroup    app_dvalue_Modules 
@@ -125,6 +125,11 @@ void APP_Dvalue_Init(void)
 	APP_Dvalue_TestPGA(Test_PGA_1);
 }
 
+void APP_Dvalue_SW(void)
+{
+	APP_SW_L(APP_SW_C_OR_D);	
+}
+
 void APP_Dvalue_TestPGA(uint8_t  Test_PGA)
 {
 	switch(Test_PGA)
@@ -150,19 +155,6 @@ void APP_Dvalue_TestPGA(uint8_t  Test_PGA)
 		default:break;
 	}
 }
-/*
-	snprintf(strbuf , 40 , "%.2f" , BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv);
-	Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_STANDARD,(uint8_t *)strbuf , strlen(strbuf));
-	
-	snprintf(strbuf , 40 , "%.2f" , BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv);
-	Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_TEST,(uint8_t *)strbuf , strlen(strbuf));
-	
-	Dacai_Enable_Updata();
-	
-	snprintf(strbuf , 40 , "%.2f" , BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL));
-	Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_D,(uint8_t *)strbuf , strlen(strbuf));
-*/
-
 
 void APP_Dvalue_Calc(void)
 {
@@ -173,10 +165,10 @@ void APP_Dvalue_Calc(void)
 		case APP_DVALUE_Wait:
 			{
 
-				if(APP_Dvalue.calc_flag == 1)
+				if(APP_Dvalue.calc_flag == 1 && APP_Cvalue.calc_flag == 0)
 				{
 					//APP_Dvalue.D_value = 0;
-					APP_Dvalue.calc_flag = 0;
+					//APP_Dvalue.calc_flag = 0;
 					APP_Dvalue.schedule = 1;
 					status = APP_DVALUE_Check_SIG;
 					APP_Dvalue_TestPGA(Test_PGA_1);
@@ -234,10 +226,7 @@ void APP_Dvalue_Calc(void)
 					APP_Dvalue.D_value = (float)(sum / 8.0f) * APP_Dvalue.mul / 10.0f * 0.4f;
 					APP_Dvalue.schedule = 100;
 					status = APP_DVALUE_Calc_Complete;
-					APP_Dvalue.calc_flag = 1;
 				}
-
-								
 			}break;
 		case APP_DVALUE_Calc_Complete:
 			{

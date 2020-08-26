@@ -1,8 +1,8 @@
 /**
  **************************************************************************************************
- * @file        app_dvalue.h
+ * @file        app_cvalue.h
  * @author
- * @app_dvalue
+ * @app_cvalue
  * @date        
  * @brief
  **************************************************************************************************
@@ -10,8 +10,8 @@
  *
  **************************************************************************************************
  */
-#ifndef _APP_DVALUE_H_
-#define _APP_DVALUE_H_
+#ifndef _APP_CVALUE_H_
+#define _APP_CVALUE_H_
 
 /**
  * @addtogroup    XXX 
@@ -19,22 +19,12 @@
  */
 #include "self_def.h"
 /**
- * @addtogroup    app_dvalue_Modules 
+ * @addtogroup    app_cvalue_Modules 
  * @{  
  */
 
 /**
- * @defgroup      app_dvalue_Exported_Macros 
- * @{  
- */
-
-
-/**
- * @}
- */
-
-/**
- * @defgroup      app_dvalue_Exported_Constants
+ * @defgroup      app_cvalue_Exported_Macros 
  * @{  
  */
 
@@ -43,50 +33,49 @@
  */
 
 /**
- * @defgroup      app_dvalue_Exported_Types 
+ * @defgroup      app_cvalue_Exported_Constants
  * @{  
  */
-typedef enum
-{
-	Test_PGA_1 = 0,
-	Test_PGA_10 ,
-	Test_PGA_100 , 
-}APP_Dvalue_Test_PGA_e;
 
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      app_cvalue_Exported_Types 
+ * @{  
+ */
 typedef struct
 {
-	float D_value;
-	uint8_t mul;
+	float C_value;
+	uint8_t range;
 	uint8_t schedule;
 	uint8_t calc_flag;
-}APP_Dvalue_t;
-
-
-
+}APP_Cvalue_t;
 /**
  * @}
  */
 
 /**
- * @defgroup      app_dvalue_Exported_Variables 
+ * @defgroup      app_cvalue_Exported_Variables 
  * @{  
  */
-extern APP_Dvalue_t APP_Dvalue ;
+extern APP_Cvalue_t APP_Cvalue;
 /**
  * @}
  */
 
 /**
- * @defgroup      app_dvalue_Exported_Functions 
+ * @defgroup      app_cvalue_Exported_Functions 
  * @{  
  */
-
-void APP_Dvalue_Init(void);
-void APP_Dvalue_SW(void);
-void APP_Dvalue_TestPGA(uint8_t  Test_PGA);
-void APP_Dvalue_Calc(void);
-
-
+void APP_Cvalue_Init(void);
+void APP_Cvalue_SW(void);
+void APP_Cvalue_Cali(void);
+void APP_Cvalue_Measure(void);
+void APP_Cvalue_StartCharge(void);
+void APP_Cvalue_StartDischarge(void);
+void APP_Cvalue_Calc(void);
 /**
  * @}
  */

@@ -25,7 +25,7 @@
 #include "app_vibration_exciter.h"
 #include "bsp_led.h"
 #include "app_dvalue.h"
-
+#include "app_cvalue.h"
 /**
  * @addtogroup    virexc_task_Modules 
  * @{  
@@ -148,6 +148,7 @@ void VirExc_Task(void * pvParameter)
 	// ------ Init -------
 	
 	APP_Dvalue_Init();
+	APP_Cvalue_Init();
 	
 	APP_Viration_Exciter_Init();
 	VirExc_Task_Tim_Init();

@@ -21,6 +21,7 @@
 #include "bsp_adc.h"
 #include "bsp_ad7682.h"
 #include "app_dvalue.h"
+#include "app_cvalue.h"
 /**
  * @addtogroup    app_guifunc_Modules 
  * @{  
@@ -190,10 +191,13 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 						}break;
 					case GUI_BUTTON_START_D:
 						{
+							APP_Dvalue_SW();
 							DEBUG("GUI_BUTTON_START_D\r\n");
 						}break;
 					case GUI_BUTTON_START_C:
 						{
+							APP_Cvalue_SW();
+							APP_Cvalue.calc_flag = 1;
 							DEBUG("GUI_BUTTON_START_C\r\n");
 						}break;
 					case GUI_BUTTON_START_TEST:
@@ -221,6 +225,7 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 					case GUI_BUTTON_D_BACK:
 						{
 							app_gui_btn_d_back(status);
+							APP_Dvalue.calc_flag = 0;
 							DEBUG("GUI_BUTTON_D_BACK\r\n");
 						}break;					
 					default:break;
@@ -236,6 +241,7 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 						}break;
 					case GUI_BUTTON_C_BACK:
 						{
+							APP_Cvalue.calc_flag = 0;
 							DEBUG("GUI_BUTTON_C_BACK\r\n");
 						}break;					
 					default:break;
@@ -395,14 +401,11 @@ static void app_gui_up_c(void)
 {
 	Dacai_Disable_Updata();
 	
-	
 	char strbuf[40];
 	snprintf(strbuf , 40 , "%.2f" , BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL));
 	Dacai_SetTextValue(GUI_SCREEN_C,GUI_TEXT_C_VOL,(uint8_t *)strbuf , strlen(strbuf));	
 
 	Dacai_Enable_Updata();
-	
-
 
 }
 

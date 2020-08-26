@@ -20,6 +20,7 @@
  * @{  
  */
 #include "app_dvalue.h"
+#include "app_cvalue.h"
 /**
  * @addtogroup    time_task_Modules 
  * @{  
@@ -136,6 +137,7 @@ void Time_Task(void * pvParameter)
 	while(1)
 	{
 		APP_Dvalue_Calc();
+		APP_Cvalue_Calc();
 		RTOS_Delay_ms(20);
 	}
 }

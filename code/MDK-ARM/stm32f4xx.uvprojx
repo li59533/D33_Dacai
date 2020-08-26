@@ -813,6 +813,11 @@
               <FileType>1</FileType>
               <FilePath>..\app\app_guifunc.c</FilePath>
             </File>
+            <File>
+              <FileName>app_cvalue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\app_cvalue.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
