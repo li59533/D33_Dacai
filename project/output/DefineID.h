@@ -13,12 +13,6 @@
 //创建画面设置的命令索引ID
 #define  _SCREEN_设置                                                            4
 
-//创建画面画面1的命令索引ID
-#define  _SCREEN_画面1                                                           5
-
-//创建画面画面2的命令索引ID
-#define  _SCREEN_画面2                                                           6
-
 #define  _BTN_首页_BUTTON1                                                       1
 
 //全局图片首页2.png
@@ -63,26 +57,4 @@
 #define  _TXT_DIS__设置_TEXT_DISPLAY1                                            4
 
 #define  _TXT_DIS__设置_TEXT_DISPLAY2                                            6
-
-#define  _BTN_画面1_BUTTON1                                                      2
-
-#define  _TXT_DIS__画面1_TEXT_DISPLAY1                                           3
-
-#define  _TXT_DIS__画面1_TEXT_DISPLAY2                                           4
-
-#define  _TXT_DIS__画面1_TEXT_DISPLAY3                                           5
-
-#define  _TXT_DIS__画面1_TEXT_DISPLAY4                                           6
-
-#define  _TXT_DIS__画面1_TEXT_DISPLAY5                                           7
-
-#define  _TXT_DIS__画面1_TEXT_DISPLAY6                                           8
-
-#define  _SLIDER_画面1_SLIDER1                                                   9
-
-#define  _BTN_画面1_BUTTON2                                                     16
-
-#define  _BTN_画面1_BUTTON3                                                     17
-
-#define  _BTN_画面2_BUTTON1                                                      2
 

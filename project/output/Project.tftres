@@ -5,8 +5,6 @@
         <page name="D值" id="2" />
         <page name="C值" id="3" />
         <page name="设置" id="4" />
-        <page name="画面1" id="5" />
-        <page name="画面2" id="6" />
     </pages>
     <images>
         <image id="0" url="d:\github_project\d33_dacai\project\Images\启动页.png" effect_width="800" effect_height="480" />
@@ -18,8 +16,6 @@
         <image id="6" url="d:\github_project\d33_dacai\project\Images\C值2.png" effect_width="800" effect_height="480" />
         <image id="7" url="d:\github_project\d33_dacai\project\Images\设置1.png" effect_width="800" effect_height="480" />
         <image id="8" url="d:\github_project\d33_dacai\project\Images\设置2.png" effect_width="800" effect_height="480" />
-        <image id="9" url="C:\Users\bigym\AppData\Local\Temp\slider_5_9.png" effect_width="494" effect_height="78" />
-        <image id="10" url="C:\Users\bigym\AppData\Local\Temp\cursor_0_0.png" effect_width="24" effect_height="24" />
     </images>
     <waves />
 </Resource>

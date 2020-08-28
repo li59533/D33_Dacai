@@ -189,13 +189,27 @@ void APP_Dvalue_Calc(void)
 				{
 					time_count = 0;
 					
+					
+					
+					
 					if(BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv < 33.0f)
 					{
 						APP_Dvalue_TestPGA(Test_PGA_100);
 					}
 					else if(BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv < 330.0f)
 					{
-						APP_Dvalue_TestPGA(Test_PGA_10);
+						if(APP_Dvalue.mul == 1)
+						{
+							APP_Dvalue_TestPGA(Test_PGA_10);
+						}
+						else if(APP_Dvalue.mul == 10)
+						{
+							APP_Dvalue_TestPGA(Test_PGA_100);
+						}
+						else if(APP_Dvalue.mul == 100)
+						{
+							//status = APP_DVALUE_Get_Average;
+						}
 					}
 					else
 					{
@@ -223,7 +237,10 @@ void APP_Dvalue_Calc(void)
 					{
 						sum += sig_buf[i];
 					}
-					APP_Dvalue.D_value = (float)(sum / 8.0f) * APP_Dvalue.mul / 10.0f * 0.4f;
+					float temp = 0;
+					
+					temp = (float)(sum / 8.0f) / APP_Dvalue.mul * 4.0f;
+					APP_Dvalue.D_value = temp * 0.7018f - 1.701f;
 					APP_Dvalue.schedule = 100;
 					status = APP_DVALUE_Calc_Complete;
 				}

@@ -157,39 +157,23 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>165</LineNumber>
+          <LineNumber>240</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220836</Address>
+          <Address>134221258</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\app\app_cvalue.c</Filename>
+          <Filename>..\app\app_dvalue.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\stm32f4xx\../app/app_cvalue.c\165</Expression>
+          <Expression>\\stm32f4xx\../app/app_dvalue.c\240</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>176</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134220848</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\app\app_cvalue.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\stm32f4xx\../app/app_cvalue.c\176</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>202</LineNumber>
+          <LineNumber>194</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -198,14 +182,14 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\app\app_cvalue.c</Filename>
+          <Filename>..\app\app_dvalue.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
         <Bp>
-          <Number>3</Number>
+          <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>213</LineNumber>
+          <LineNumber>242</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -214,7 +198,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\app\app_cvalue.c</Filename>
+          <Filename>..\app\app_dvalue.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>

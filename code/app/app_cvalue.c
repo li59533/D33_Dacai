@@ -131,7 +131,7 @@ static void app_cvalue_changeRange(uint8_t range);
 
 void APP_Cvalue_Init(void)
 {
-	app_cvalue_changeRange(APP_CVALUE_UF);
+	app_cvalue_changeRange(APP_CVALUE_NF);
 }
 
 
