@@ -136,6 +136,8 @@ static void app_gui_btn_d_back(uint8_t status);
 #define GUI_BUTTON_C_BACK		6
 
 #define GUI_BUTTON_OPTION_BACK  1
+#define GUI_BUTTON_OPTION_CALI	7
+
 
 #define GUI_BUTTON_TEST1	16
 #define GUI_BUTTON_TEST2 	17
@@ -254,7 +256,12 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 					case GUI_BUTTON_OPTION_BACK:
 						{
 							DEBUG("GUI_BUTTON_OPTION_BACK\r\n");
-						}break;				
+						}break;	
+					case GUI_BUTTON_OPTION_CALI:
+						{
+							
+							DEBUG("GUI_BUTTON_OPTION_CALI\r\n");
+						}break;
 					default:break;
 				}					
 			}break;					

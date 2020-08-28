@@ -40,7 +40,8 @@
  * @brief         
  * @{  
  */
-
+#define FLASH_PAGE_SIZE 0x20000
+#define FLASH_BANK_SIZE 0xfffff
 /**
  * @}
  */
@@ -105,47 +106,60 @@
 00> PFlash:Example Start 
 00> 
 00> PFlash:Information 
-00> Total:Program_Flash_Size: 64KB, Hex:(0x10000)
-00> Program:Flash_Sector_Size: 1KB, Hex:(0x400)
+00> Total:Program_Flash_Size: 1024KB, Hex:(0xfffff) 
+00> Program:Flash_Sector_Size: 128KB, Hex:(0x20000) 
+
 */ 
- 
 
- 
-void BSP_Flash_Init(void)
-{	
 
-}	
-
-int8_t BSP_Flash_WriteBytes(uint32_t AddrStart,uint8_t *buf,uint16_t len)
+int8_t BSP_Flash_WriteBytes(uint32_t addr_start , uint8_t * buf , uint16_t len)
 {
-	uint8_t flash_temp[0x400] = { 0 };
-	BSP_Flash_ReadBytes( AddrStart, flash_temp , 0x400);
+
+	FLASH_EraseInitTypeDef pEraseInit ; 
+	uint32_t SectorError ; 
 	
-	memcpy(flash_temp ,buf ,len );
+	uint32_t addr_s = 0;
+	addr_s = addr_start - FLASH_BASE;
 	
-	__disable_irq();
-//	FLASH_Erase(&bsp_flashconfig, AddrStart , 0x400, kFLASH_ApiEraseKey);
-//	FLASH_Program(&bsp_flashconfig, AddrStart ,(uint32_t *) flash_temp, 0x400);
-	__enable_irq();
+	HAL_FLASH_Unlock();
+	
+	
+	if((addr_s % 0x20000) == 0)
+	{
+		pEraseInit.Sector = addr_s / 0x20000 + 4;
+		
+		pEraseInit.Banks = FLASH_BANK_1;
+		pEraseInit.NbSectors = 1;
+		pEraseInit.TypeErase = FLASH_TYPEERASE_SECTORS;
+		pEraseInit.VoltageRange  = FLASH_VOLTAGE_RANGE_3;	
+		
+		HAL_FLASHEx_Erase( &pEraseInit, &SectorError);
+	}
+	else
+	{
+		
+	}
+	
+	for(uint16_t i = 0 ; i < len ; i ++)
+	{
+		HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,addr_start + 1,(uint32_t )buf[i] );
+	}
+
+	HAL_FLASH_Lock();
+	
+
 	return 0;
 }
 
-void BSP_Flash_ReadBytes(uint32_t AddrStart, uint8_t *buf , uint16_t len)
+uint16_t BSP_Flash_ReadBytes(uint32_t addr,uint8_t *buf,uint16_t len)
 {
-	uint16_t i = 0 ;
-	for(i = 0; i < len ; i ++)
+	uint8_t * read_ptr = (uint8_t *)addr;
+	for(uint16_t i = 0; i < len; i ++)
 	{
-		buf[i] = *(uint8_t *)(AddrStart + i );
-	}	
+		*(buf + i) = *(read_ptr + i);
+	}
+	return len;
 }
-
-// ------------Test ----------------
-void BSP_Flash_Test(void)
-{
-	DEBUG("BSP_Flash_Test\r\n");
-}
-
-// ---------------------------------
 
 
 

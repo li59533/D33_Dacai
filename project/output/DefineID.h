@@ -58,3 +58,5 @@
 
 #define  _TXT_DIS__…Ë÷√_TEXT_DISPLAY2                                            6
 
+#define  _BTN_…Ë÷√_BUTTON2                                                       7
+

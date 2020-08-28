@@ -5,6 +5,9 @@
 #include "clog.h"
 #include "version.h"
 #include "bsp_init.h"
+#include "system_param.h"
+
+
 
 void SystemClock_Config(void);
 

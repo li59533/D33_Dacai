@@ -44,7 +44,7 @@
 #define BSP_ADC_MODULE_ENABLE			1
 #define BSP_DMA_MODULE_ENABLE			0
 #define BSP_USART_MODULE_ENABLE			1
-#define BSP_FLASH_MODULE_ENABLE			0
+#define BSP_FLASH_MODULE_ENABLE			1
 #define BSP_LPV_MODULE_ENABLE			0
 
 
@@ -101,7 +101,9 @@
 #endif	
 
 #if BSP_FLASH_MODULE_ENABLE == 1	
-	#include "fsl_flash.h"
+	#include "stm32f4xx_hal_flash.h"
+	#include "stm32f4xx_hal_flash_ex.h"
+	#include "stm32f4xx_hal_flash_ramfunc.h"
 #endif	
 
 #if BSP_LPV_MODULE_ENABLE == 1	

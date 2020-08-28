@@ -29,7 +29,7 @@
  */
 
 /**
- * @defgroup      app_dvalue_IO_Defines 
+ * @defgroup      app_dvalue_IO_Define          s 
  * @brief         
  * @{  
  */
