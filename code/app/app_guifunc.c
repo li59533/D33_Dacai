@@ -22,6 +22,10 @@
 #include "bsp_ad7682.h"
 #include "app_dvalue.h"
 #include "app_cvalue.h"
+#include "system_param.h"
+#include "version.h"
+#include "bsp_uniqueID.h"
+
 /**
  * @addtogroup    app_guifunc_Modules 
  * @{  
@@ -96,6 +100,8 @@ static void app_gui_update(void);
 static void app_gui_up_start(void);
 static void app_gui_up_d(void);
 static void app_gui_up_c(void);
+static void app_gui_up_option(void);
+
 
 static void app_gui_btn_d_pid(uint8_t status);
 static void app_gui_btn_d_back(uint8_t status);
@@ -153,6 +159,8 @@ static void app_gui_btn_d_back(uint8_t status);
 
 #define GUI_TEXT_OPTION_SN	6
 #define GUI_TEXT_OPTION_VERSION	4
+#define GUI_TEXT_OPTION_CALI_D_VALUE 10
+#define GUI_TEXT_OPTION_CALI_INTERNAL_D_VALUE 11
 
 // --------------------------------------
 
@@ -163,6 +171,8 @@ void APP_Gui_Init(void)
 	Dacai_Button_CallbackRegister(APP_Gui_Button_CB);
 	Dacai_HandShake_CallbackRegister(APP_Gui_HandShake_CB);
 	Dacai_Rest_CallbackRegister(APP_Gui_Rest_CB);
+	Dacai_GetRTC_CallbackRegister(APP_Gui_GetRTC);
+	
 	Dacai_Init();	
 	Dacai_SetRest();
 }
@@ -259,7 +269,7 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 						}break;	
 					case GUI_BUTTON_OPTION_CALI:
 						{
-							
+							APP_Dvalue.cali_flag = 1;
 							DEBUG("GUI_BUTTON_OPTION_CALI\r\n");
 						}break;
 					default:break;
@@ -298,6 +308,16 @@ void APP_Gui_Rest_CB(void)
 	
 }
 
+void APP_Gui_GetRTC(uint8_t *buf ,uint16_t len)
+{
+	DEBUG("GetRTC : ");
+	for(uint8_t i = 0; i < len ; i ++)
+	{
+		DEBUG(" %X " , buf[i]);
+	}
+	DEBUG("\r\n");
+	
+}
 
 typedef enum
 {
@@ -361,7 +381,7 @@ static void app_gui_update(void)
 		case GUI_SCREEN_HOME:break;
 		case GUI_SCREEN_D: app_gui_up_d();break;
 		case GUI_SCREEN_C: app_gui_up_c();break;
-		case GUI_SCREEN_OPTION:break;
+		case GUI_SCREEN_OPTION: app_gui_up_option();break;
 		default:break;
 	}
 }
@@ -385,7 +405,7 @@ static void app_gui_up_d(void)
 	
 	
 	
-	if(abs((int)(BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv - 1250.0f)) < 5)
+	if(abs((int)(BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv - (float)g_SystemParam_Config.D_cali_result / 4.0f * 10.0f)) < 5)
 	{
 		snprintf(strbuf , 40 , "%.2fpc/N" , APP_Dvalue.D_value);
 		Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_D,(uint8_t *)strbuf , strlen(strbuf));			
@@ -416,6 +436,40 @@ static void app_gui_up_c(void)
 
 }
 
+#define GUI_TEXT_OPTION_CALI_D_VALUE 10
+#define GUI_TEXT_OPTION_CALI_INTERNAL_D_VALUE 11
+
+static void app_gui_up_option(void)
+{
+	Dacai_Disable_Updata();
+	
+	// -------- SNCode ----------
+	char strbuf[40];
+	uint8_t * sncode = 0;
+	sncode = BSP_GetUniqueID();
+	int temp = 0;
+	for(uint8_t i = 0 ; i < 8 ; i ++)
+	{
+		temp += snprintf(strbuf + temp, 40 - temp , "%.2X" , sncode[i]);
+	}
+	
+	Dacai_SetTextValue(GUI_SCREEN_OPTION,GUI_TEXT_OPTION_SN,(uint8_t *)strbuf , strlen(strbuf));	
+	// -------- D_caliunit_value - 
+	snprintf(strbuf , 40 , "%d" , g_SystemParam_Config.D_caliunit_value);
+	Dacai_SetTextValue(GUI_SCREEN_OPTION,GUI_TEXT_OPTION_CALI_D_VALUE,(uint8_t *)strbuf , strlen(strbuf));
+	
+	// -------- D_cali_result ---- 
+	snprintf(strbuf , 40 , "%d" , g_SystemParam_Config.D_cali_result);
+	Dacai_SetTextValue(GUI_SCREEN_OPTION,GUI_TEXT_OPTION_CALI_INTERNAL_D_VALUE,(uint8_t *)strbuf , strlen(strbuf));	
+	
+	// -------- Version ---------
+	Dacai_SetTextValue(GUI_SCREEN_OPTION,GUI_TEXT_OPTION_VERSION,(uint8_t *)Version_Get_Str() , strlen(Version_Get_Str()));	
+
+	Dacai_Enable_Updata();	
+	
+	
+	
+}
 
 // -----------------------------------
 

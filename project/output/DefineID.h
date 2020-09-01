@@ -26,6 +26,10 @@
 
 #define  _BTN_首页_BUTTON5                                                       5
 
+#define  _RTC_首页_RTC1                                                          6
+
+#define  _RTC_首页_RTC2                                                          7
+
 #define  _TXT_DIS__D值_TEXT_DISPLAY1                                            5
 
 #define  _TXT_DIS__D值_TEXT_DISPLAY2                                            6
@@ -59,4 +63,10 @@
 #define  _TXT_DIS__设置_TEXT_DISPLAY2                                            6
 
 #define  _BTN_设置_BUTTON2                                                       7
+
+#define  _TXT_DIS__设置_TEXT_DISPLAY3                                           10
+
+#define  _TXT_DIS__设置_TEXT_DISPLAY4                                           11
+
+#define  _TXT_DIS__设置_TEXT_DISPLAY5                                           13
 

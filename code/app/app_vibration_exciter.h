@@ -74,6 +74,7 @@ void APP_VirExc_Downgain(void);
 
 void APP_VirExc_PID_1250(void);
 void APP_VirExc_PID_50(void);
+void APP_VirExc_PID_Start(void);
 void APP_VirExc_PID_Loop(void);
 
 

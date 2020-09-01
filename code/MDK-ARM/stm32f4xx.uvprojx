@@ -703,6 +703,11 @@
               <FileType>1</FileType>
               <FilePath>..\bsp\bsp_uart.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_uniqueID.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bsp\bsp_uniqueID.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

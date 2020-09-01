@@ -25,6 +25,7 @@
 #include "arm_math.h"
 #include "virexc_task.h"
 #include "app_dvalue.h"
+#include "system_param.h"
 /**
  * @addtogroup    app_vibration_exciter_Modules 
  * @{  
@@ -179,11 +180,8 @@ void APP_VirExc_Downgain(void)
 	}
 }
 
-
-
-void APP_VirExc_PID_1250(void)
+void APP_VirExc_PID_Start(void)
 {
-	desired_value = 1250.0f;
 	if(app_virexc_pid_flag == 0)
 	{
 		app_virexc_pid_flag = 1;
@@ -193,23 +191,20 @@ void APP_VirExc_PID_1250(void)
 	else
 	{
 		
-	}
+	}	
+}
+
+void APP_VirExc_PID_1250(void)
+{
+	desired_value = (float)(g_SystemParam_Config.D_cali_result / 4.0 * 10.0f);
+	APP_VirExc_PID_Start();
 }
 
 void APP_VirExc_PID_50(void)
 {
 	desired_value = 0.0f;
-	if(app_virexc_pid_flag == 0)
-	{
-		app_virexc_pid_flag = 1;
-		VirExc_Task_Event_Start(VIREXC_TASK_PID1250_EVENT,EVENT_FROM_TASK);
-	}
-	else
-	{
-		
-	}
+	APP_VirExc_PID_Start();
 }
-
 
 void APP_VirExc_PID_Loop(void)
 {
@@ -217,7 +212,26 @@ void APP_VirExc_PID_Loop(void)
 	float err_range = 0;
 	float next_gain = 0;
 	
-	err_range = desired_value - BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv;
+	if(APP_Dvalue.cali_flag == 1)
+	{
+		if(APP_Dvalue.cali_mv > 0)
+		{
+			desired_value = APP_Dvalue.cali_mv * APP_Dvalue.mul ;
+		}
+		else
+		{
+			return ;
+		}
+		
+		err_range = desired_value - BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv;
+	}
+	else
+	{
+		
+		
+		
+		err_range = desired_value - BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv;
+	}	
 	
 	//Clog_Float("err_range:" , err_range);
 	

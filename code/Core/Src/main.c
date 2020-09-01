@@ -19,8 +19,10 @@ int main(void)
 
 	SystemClock_Config();
 
+	SystemParam_Init();
+	
 	BSP_Init();
-
+	
 	RTOS_Init();
 
 	while (1)

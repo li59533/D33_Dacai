@@ -59,6 +59,8 @@ typedef struct
 	uint8_t mul;
 	uint8_t schedule;
 	uint8_t calc_flag;
+	uint8_t cali_flag;
+	float cali_mv;
 }APP_Dvalue_t;
 
 
@@ -85,7 +87,8 @@ void APP_Dvalue_Init(void);
 void APP_Dvalue_SW(void);
 void APP_Dvalue_TestPGA(uint8_t  Test_PGA);
 void APP_Dvalue_Calc(void);
-
+void APP_Dvalue_Cali(void);
+void APP_Dvalue_Loop(void);
 
 /**
  * @}

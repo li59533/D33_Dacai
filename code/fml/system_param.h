@@ -62,7 +62,10 @@
 typedef struct
 {
 	uint8_t SNcode[8];
-
+	uint32_t D_cali_timestamp;
+	uint16_t D_caliunit_value;
+	uint16_t D_cali_result ; 
+	
     uint16_t crc;           /*!< 所有的参数结构体必须按字节对其。且最后一个必须包
                                  含一个uint16_t类型的数据，该数据用于内部存储时的
                                  crc校验和存储，用户在保存参数时不用关心该值数值。*/

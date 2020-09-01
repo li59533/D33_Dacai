@@ -45,6 +45,7 @@
 #define DACAI_B1				0XB1
 #define	DACAI_GETCURSCREEN		0X01
 #define DACAI_READ_CONTROL		0X11
+#define DACAI_GET_RTC			0XF7
 
 #define DACAI_CONTROL_TYPE_BUTTON	0x10
 /**
@@ -148,6 +149,8 @@ static void dacai_button_process(uint16_t screen_id , uint16_t control_id , uint
 static void (*Dacai_HandShake_Callback)(void); 
 static void (*Dacai_Button_Callback)(uint16_t screen_id , uint16_t control_id ,uint8_t);
 static void (*Dacai_Rest_Callback)(void); 
+static void (*Dacai_GetRTC_Callback)(uint8_t *buf ,uint16_t len);
+
 
 /**
  * @}
@@ -192,6 +195,13 @@ void Dacai_Protocol_RevAnalgsis(uint8_t * cmd , uint16_t len)
 			{
 				//DEBUG("Dacai DACAI_B1 OK\r\n");
 				dacai_b1_analysis(cmd + 1 , len -1);
+			}break;
+		case DACAI_GET_RTC:
+			{
+				if(Dacai_GetRTC_Callback != NULL)
+				{
+					Dacai_GetRTC_Callback(cmd + 1 , len -1);
+				}				
 			}break;
 		default:break;
 	}
@@ -262,6 +272,10 @@ void Dacai_Rest_CallbackRegister(void (*callback)(void))
 	Dacai_Rest_Callback = callback;
 }
 
+void Dacai_GetRTC_CallbackRegister(void (*callback)(uint8_t *buf ,uint16_t len))
+{
+	Dacai_GetRTC_Callback = callback;
+}
 
 // ---------- Some Driver -------------------
 //Dacai_Queue_in_Bytes(uint8_t *buf , uint16_t len);
@@ -586,7 +600,17 @@ void Dacai_SetProgressBar(uint16_t screen_id,uint16_t control_id,uint32_t value)
 }
 // ----
 
-
+void Dacai_GetRTC(void)
+{
+	uint8_t space_ptr = 0;
+	uint8_t tempbuf[50];
+	
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_head , 1);
+	uint8_t cmd = 0x82;
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&cmd , 1);
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_foot , 4);
+	Dacai_Queue_in_Bytes( tempbuf , space_ptr);
+}
 
 
 /**

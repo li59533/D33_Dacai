@@ -142,7 +142,8 @@ int8_t BSP_Flash_WriteBytes(uint32_t addr_start , uint8_t * buf , uint16_t len)
 	
 	for(uint16_t i = 0 ; i < len ; i ++)
 	{
-		HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,addr_start + 1,(uint32_t )buf[i] );
+		HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, addr_start ,(uint64_t )buf[i] );
+		addr_start ++;
 	}
 
 	HAL_FLASH_Lock();

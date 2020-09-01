@@ -72,6 +72,9 @@
 const SystemParam_Config_t SystemParam_Config_Default = 
 {
 	.SNcode ={ 0x12 , 0x34 ,0x56 , 0x78 , 0x90, 0xA0, 0xAB ,0x4F} ,
+	.D_cali_timestamp = 0 ,
+	.D_caliunit_value = 497 ,
+	.D_cali_result = 1250 ,  
 };
 /**
  * @}
@@ -110,11 +113,35 @@ void SystemParam_Init(void)
 	BSP_Flash_ReadBytes(SYS_PARAM_SAVE_FLASH_FIRSTHEAD, (uint8_t *)&g_SystemParam_Config , sizeof(g_SystemParam_Config) );
 	if(CRC16_Modbus((uint8_t *)&g_SystemParam_Config,sizeof(g_SystemParam_Config)) == 0) // Same Save
 	{
+		DEBUG("SysParam SNCode:");
+		for(uint8_t i = 0 ; i < sizeof(g_SystemParam_Config.SNcode ) ; i++)
+		{
+			DEBUG("0x%x " , g_SystemParam_Config.SNcode[i]);
+		}
+		DEBUG("\r\n");	
 		DEBUG("SYS Param Read OK\r\n");
 	}
 	else
 	{
-		SystemParam_Reset();
+		BSP_Flash_ReadBytes(SYS_PARAM_SAVE_FLASH_SECONDHEAD, (uint8_t *)&g_SystemParam_Config , sizeof(g_SystemParam_Config) );
+		if(CRC16_Modbus((uint8_t *)&g_SystemParam_Config,sizeof(g_SystemParam_Config)) == 0)
+		{
+			DEBUG("SysParam SNCode:");
+			for(uint8_t i = 0 ; i < sizeof(g_SystemParam_Config.SNcode ) ; i++)
+			{
+				DEBUG("0x%x " , g_SystemParam_Config.SNcode[i]);
+			}
+			DEBUG("\r\n");	
+			
+			DEBUG("Sys D caliUnit:%d\r\n",g_SystemParam_Config.D_caliunit_value);
+			DEBUG("Sys D cali result mv:%d\r\n",g_SystemParam_Config.D_cali_result);
+			DEBUG("SYS Param Read OK\r\n");			
+		}
+		else
+		{
+			SystemParam_Reset();
+		}		
+
 	}
 
 }
@@ -139,6 +166,7 @@ void SystemParam_Save(void)
 {
 	g_SystemParam_Config.crc = CRC16_Modbus((uint8_t*)&g_SystemParam_Config, sizeof(g_SystemParam_Config) - sizeof(g_SystemParam_Config.crc));
 	BSP_Flash_WriteBytes(SYS_PARAM_SAVE_FLASH_FIRSTHEAD,(uint8_t *)&g_SystemParam_Config,sizeof(g_SystemParam_Config));
+	BSP_Flash_WriteBytes(SYS_PARAM_SAVE_FLASH_SECONDHEAD,(uint8_t *)&g_SystemParam_Config,sizeof(g_SystemParam_Config));
 	DEBUG("Sys save\r\n");
 }
 

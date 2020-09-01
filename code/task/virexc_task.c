@@ -157,6 +157,7 @@ void VirExc_Task(void * pvParameter)
 	// ------ Test Code --
 	//VirExc_Task_Event_Start(VIREXC_TASK_START_EVENT, EVENT_FROM_TASK);
 	APP_VirExc_Start();
+	APP_VirExc_PID_Start();
 	// -------------------
 	
 	while(1)

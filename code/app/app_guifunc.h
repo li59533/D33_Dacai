@@ -70,7 +70,7 @@ void APP_Gui_SetParam(void);
 void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t status);
 void APP_Gui_HandShake_CB(void);
 void APP_Gui_Rest_CB(void);
-
+void APP_Gui_GetRTC(uint8_t *buf ,uint16_t len);
 
 void APP_Gui_Loop(void);   // loop in 20ms
 /**
