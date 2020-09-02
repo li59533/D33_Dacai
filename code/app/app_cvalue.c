@@ -289,7 +289,22 @@ void APP_Cvalue_Calc(void)
 			}break;
 		case APP_CVALUE_Measure_Wait:
 			{
-				
+//	
+//				if(BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL) > 2200.0f)
+//				{
+//					measure_time = app_cvalue_checkv_time * 0.25f;
+//					Clog_Float("C_Cali_time:" ,measure_time);
+//					APP_Cvalue.cali_k = measure_time / 220.0f;
+//					app_cvalue_checkv_time = 0;
+//					BSP_TIM_Stop(BSP_TIM_10);
+
+//					status = APP_CVALUE_Measure_Discharge;
+//					APP_Cvalue_StartDischarge();
+//					APP_Cvalue_Measure();
+//				}
+//				break;
+
+//				
 
 				static uint8_t time_out_1 = 0;
 				
@@ -297,7 +312,7 @@ void APP_Cvalue_Calc(void)
 				time_out_1 ++;
 				measure_time = app_cvalue_checkv_time * 0.25f;	
 				
-				if(time_out_1 > 55)
+				if(time_out_1 > 55 || BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL) > 2200.0f)
 				{
 					Clog_Float("measure_time:" , measure_time);
 					time_out_1 = 0;
@@ -308,7 +323,7 @@ void APP_Cvalue_Calc(void)
 						case APP_CVALUE_UF:
 							{
 								DEBUG("APP_CVALUE_UF\r\n");
-								if(measure_time < 20)
+								if(measure_time < 10)
 								{
 									range = APP_CVALUE_NF;
 								
@@ -335,7 +350,7 @@ void APP_Cvalue_Calc(void)
 						case APP_CVALUE_NF:
 							{
 								DEBUG("APP_CVALUE_NF\r\n");
-								if(measure_time < 2)
+								if(measure_time < 1)
 								{
 									range = APP_CVALUE_PF;
 								
@@ -344,7 +359,7 @@ void APP_Cvalue_Calc(void)
 									APP_Cvalue_StartDischarge();
 									APP_Cvalue_Measure();
 								}								
-								else if(measure_time > 1200)
+								else if(measure_time > 1000)
 								{
 									range = APP_CVALUE_UF;
 									
@@ -364,14 +379,14 @@ void APP_Cvalue_Calc(void)
 						case APP_CVALUE_PF:
 							{
 								DEBUG("APP_CVALUE_PF\r\n");
-								if(measure_time < 2)
+								if(measure_time < 1)
 								{
 									APP_Cvalue.status = APP_CVALUE_OVER;
 									status = APP_CVALUE_Measure_Discharge;
 									APP_Cvalue_StartDischarge();
 									APP_Cvalue_Measure();
 								}								
-								else if(measure_time > 1200)
+								else if(measure_time > 1000)
 								{
 									range = APP_CVALUE_NF;
 									
@@ -432,8 +447,8 @@ void APP_Cvalue_CheckV(void)
 	c_out = BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL);
 	if(c_out > 2.0f && c_out < 1580.0f)
 	{
-		DEBUG("c_t:%d\r\n" , app_cvalue_checkv_time);
-		Clog_Float("C_value:" ,c_out);
+		//DEBUG("c_t:%d\r\n" , app_cvalue_checkv_time);
+		//Clog_Float("C_value:" ,c_out);
 		app_cvalue_checkv_time ++;
 	}
 }
