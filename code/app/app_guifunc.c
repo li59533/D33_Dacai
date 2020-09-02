@@ -443,6 +443,31 @@ static void app_gui_up_c(void)
 	snprintf(strbuf , 40 , "%.2f" , BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL));
 	Dacai_SetTextValue(GUI_SCREEN_C,GUI_TEXT_C_VOL,(uint8_t *)strbuf , strlen(strbuf));	
 
+	if(APP_Cvalue.status == APP_CVALUE_NORMALE)
+	{
+		if(APP_Cvalue.range == APP_CVALUE_UF)
+		{
+			snprintf(strbuf , 40 , "%.2fUF" , APP_Cvalue.C_value);
+		}
+		else if(APP_Cvalue.range == APP_CVALUE_NF)
+		{
+			snprintf(strbuf , 40 , "%.2fNF" , APP_Cvalue.C_value);
+		}
+		else if(APP_Cvalue.range == APP_CVALUE_PF)
+		{
+			snprintf(strbuf , 40 , "%.2fPF" , APP_Cvalue.C_value);
+		}		
+	}
+	else if(APP_Cvalue.status == APP_CVALUE_WAIT_CALC)
+	{
+		snprintf(strbuf , 40 , "Calc..." );
+	}
+	else if(APP_Cvalue.status == APP_CVALUE_OVER)
+	{
+		snprintf(strbuf , 40 , "OVER..." );
+	}	
+
+	Dacai_SetTextValue(GUI_SCREEN_C,GUI_TEXT_C_C ,(uint8_t *)strbuf , strlen(strbuf));	
 	Dacai_Enable_Updata();
 
 }

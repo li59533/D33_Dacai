@@ -56,6 +56,8 @@
 
 #define  _BTN_C值_BUTTON2                                                       6
 
+#define  _PROGRESS_C值_PROGRESS1                                               10
+
 #define  _BTN_设置_BUTTON1                                                       1
 
 #define  _TXT_DIS__设置_TEXT_DISPLAY1                                            4

@@ -48,12 +48,30 @@
 typedef struct
 {
 	float C_value;
+	uint8_t status;
 	uint32_t range;
 	uint8_t schedule;
 	uint8_t calc_flag;
 	float cali_k;
 	
 }APP_Cvalue_t;
+
+typedef enum
+{
+	APP_CVALUE_OVER = 1 ,
+	APP_CVALUE_WAIT_CALC ,
+	APP_CVALUE_NORMALE,
+}app_cvalue_status_e;
+
+typedef enum
+{
+	APP_CVALUE_UF = 1,
+	APP_CVALUE_NF ,
+	APP_CVALUE_PF , 
+}app_cvalue_range_e;
+
+
+
 /**
  * @}
  */
