@@ -86,7 +86,7 @@
  * @brief         
  * @{  
  */
-
+sys_time_t app_gui_rtc ; 
 /**
  * @}
  */
@@ -161,7 +161,7 @@ static void app_gui_btn_d_back(uint8_t status);
 #define GUI_TEXT_OPTION_VERSION	4
 #define GUI_TEXT_OPTION_CALI_D_VALUE 10
 #define GUI_TEXT_OPTION_CALI_INTERNAL_D_VALUE 11
-
+#define GUI_TEXT_OPTION_CALI_TIME 		13
 // --------------------------------------
 
 // --------------------------------------
@@ -183,6 +183,7 @@ void APP_Gui_SetParam(void)
 	//Dacai_SetPowerSaving(1 ,0x0f, 0xff, 30);
 	Dacai_SetBuzzer(50);	
 	Dacai_GetScreen();
+	Dacai_GetRTC();
 }
 
 void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t status)
@@ -204,6 +205,7 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 					case GUI_BUTTON_START_D:
 						{
 							APP_Dvalue_SW();
+							APP_Cvalue.calc_flag = 0;
 							DEBUG("GUI_BUTTON_START_D\r\n");
 						}break;
 					case GUI_BUTTON_START_C:
@@ -308,6 +310,8 @@ void APP_Gui_Rest_CB(void)
 	
 }
 
+
+
 void APP_Gui_GetRTC(uint8_t *buf ,uint16_t len)
 {
 	DEBUG("GetRTC : ");
@@ -317,6 +321,13 @@ void APP_Gui_GetRTC(uint8_t *buf ,uint16_t len)
 	}
 	DEBUG("\r\n");
 	
+	app_gui_rtc.year = buf[0];
+	app_gui_rtc.month = buf[1];
+	app_gui_rtc.day = buf[3];
+	app_gui_rtc.hour = buf[4];
+	app_gui_rtc.min = buf[5];
+	app_gui_rtc.sec = buf[6];
+
 }
 
 typedef enum
@@ -462,6 +473,15 @@ static void app_gui_up_option(void)
 	snprintf(strbuf , 40 , "%d" , g_SystemParam_Config.D_cali_result);
 	Dacai_SetTextValue(GUI_SCREEN_OPTION,GUI_TEXT_OPTION_CALI_INTERNAL_D_VALUE,(uint8_t *)strbuf , strlen(strbuf));	
 	
+	// -------- D Cali Time ------
+	
+	snprintf(strbuf , 40 , "20%x.%x,%x  %x.%x.%x" , g_SystemParam_Config.D_cali_time.year , \
+													g_SystemParam_Config.D_cali_time.month  ,\
+													g_SystemParam_Config.D_cali_time.day ,\
+													g_SystemParam_Config.D_cali_time.hour ,\
+													g_SystemParam_Config.D_cali_time.min ,\
+													g_SystemParam_Config.D_cali_time.sec );
+	Dacai_SetTextValue(GUI_SCREEN_OPTION,GUI_TEXT_OPTION_CALI_TIME,(uint8_t *)strbuf , strlen(strbuf));	
 	// -------- Version ---------
 	Dacai_SetTextValue(GUI_SCREEN_OPTION,GUI_TEXT_OPTION_VERSION,(uint8_t *)Version_Get_Str() , strlen(Version_Get_Str()));	
 

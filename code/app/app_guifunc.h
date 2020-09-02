@@ -19,6 +19,7 @@
  */
 #include "self_def.h"
 #include "clog.h"
+#include "system_param.h"
 /**
  * @addtogroup    app_guifunc_Modules 
  * @{  
@@ -56,7 +57,7 @@
  * @defgroup      app_guifunc_Exported_Variables 
  * @{  
  */
-
+extern sys_time_t app_gui_rtc ; 
 /**
  * @}
  */

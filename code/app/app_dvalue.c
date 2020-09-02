@@ -25,6 +25,7 @@
 #include "clog.h"
 #include "system_param.h"
 #include "dacai.h"
+#include "app_guifunc.h"
 
 /**
  * @addtogroup    app_dvalue_Modules 
@@ -193,15 +194,12 @@ void APP_Dvalue_Calc(void)
 			{
 				static uint16_t time_count = 0 ;
 				time_count ++ ;
-				APP_Dvalue.schedule = (uint8_t )((50.0 / 50.0) * time_count);
+				APP_Dvalue.schedule = (uint8_t )((50.0 / 10.0) * time_count);
 				
-				if(time_count > 50)
+				if(time_count > 10)
 				{
 					time_count = 0;
-					
-					
-					
-					
+
 					if(BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv < 33.0f)
 					{
 						APP_Dvalue_TestPGA(Test_PGA_100);
@@ -260,7 +258,7 @@ void APP_Dvalue_Calc(void)
 			{
 				static uint8_t wait_time = 0;
 				wait_time ++;
-				if(wait_time > 100)
+				if(wait_time > 30)
 				{
 					wait_time = 0;
 					status = APP_DVALUE_CALC_Wait;
@@ -347,17 +345,25 @@ void APP_Dvalue_Cali(void)
 
 				if(sig_count == 8)
 				{
-					sig_count = 0;
-					float sum = 0;
-					for(uint8_t i = 0; i < 8 ; i ++)
-					{
-						sum += sig_buf[i];
-					}
-					float temp = 0;
-					
-					temp = (float)(sum / 8.0f) / APP_Dvalue.mul * 4.0f;
-					APP_Dvalue.D_value = temp * 0.7018f - 1.701f;
+//					sig_count = 0;
+//					float sum = 0;
+//					for(uint8_t i = 0; i < 8 ; i ++)
+//					{
+//						sum += sig_buf[i];
+//					}
+//					float temp = 0;
+//					
+//					temp = (float)(sum / 8.0f) / APP_Dvalue.mul * 4.0f;
+					//APP_Dvalue.D_value = temp * 0.7018f - 1.701f;
 					g_SystemParam_Config.D_cali_result = (uint16_t)(BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv / 10.0f * 4.0f);
+					
+					g_SystemParam_Config.D_cali_time.year = app_gui_rtc.year;
+					g_SystemParam_Config.D_cali_time.month = app_gui_rtc.month;
+					g_SystemParam_Config.D_cali_time.day = app_gui_rtc.day;
+					g_SystemParam_Config.D_cali_time.hour = app_gui_rtc.hour;
+					g_SystemParam_Config.D_cali_time.min = app_gui_rtc.min;
+					g_SystemParam_Config.D_cali_time.sec = app_gui_rtc.sec;
+					
 					SystemParam_Save();
 					APP_Dvalue.schedule = 100;
 					status = APP_DVALUE_CALI_Complete;

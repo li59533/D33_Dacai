@@ -137,7 +137,7 @@ void Time_Task(void * pvParameter)
 	while(1)
 	{
 		APP_Dvalue_Loop();
-		//APP_Cvalue_Calc();
+		APP_Cvalue_Loop();
 		RTOS_Delay_ms(20);
 	}
 }

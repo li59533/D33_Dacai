@@ -57,12 +57,20 @@
  
 #pragma pack(1)
 
-
+typedef struct
+{
+	uint8_t year;
+	uint8_t month;
+	uint8_t day;
+	uint8_t hour;
+	uint8_t min;
+	uint8_t sec;
+}sys_time_t;
 
 typedef struct
 {
 	uint8_t SNcode[8];
-	uint32_t D_cali_timestamp;
+	sys_time_t D_cali_time;
 	uint16_t D_caliunit_value;
 	uint16_t D_cali_result ; 
 	

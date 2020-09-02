@@ -48,9 +48,11 @@
 typedef struct
 {
 	float C_value;
-	uint8_t range;
+	uint32_t range;
 	uint8_t schedule;
 	uint8_t calc_flag;
+	float cali_k;
+	
 }APP_Cvalue_t;
 /**
  * @}
@@ -75,7 +77,9 @@ void APP_Cvalue_Cali(void);
 void APP_Cvalue_Measure(void);
 void APP_Cvalue_StartCharge(void);
 void APP_Cvalue_StartDischarge(void);
+void APP_Cvalue_Loop(void);
 void APP_Cvalue_Calc(void);
+void APP_Cvalue_CheckV(void);
 /**
  * @}
  */

@@ -19,6 +19,7 @@
 #include "app_sw.h"
 #include "app_dvalue.h"
 #include "bsp_ad7682.h"
+#include "bsp_tim.h"
 #include "clog.h"
 /**
  * @addtogroup    app_cvalue_Modules 
@@ -92,7 +93,7 @@ typedef enum
  * @brief         
  * @{  
  */
-
+static uint16_t app_cvalue_checkv_time = 0;
 /**
  * @}
  */
@@ -108,6 +109,7 @@ APP_Cvalue_t APP_Cvalue =
 	.range = 0,
 	.schedule = 0,
 	.calc_flag = 0,
+	.cali_k = 1.0f,
 };
 /**
  * @}
@@ -119,6 +121,7 @@ APP_Cvalue_t APP_Cvalue =
  * @{  
  */
 static void app_cvalue_changeRange(uint8_t range);
+static void app_cvalue_powerdown(void);
 /**
  * @}
  */
@@ -131,10 +134,11 @@ static void app_cvalue_changeRange(uint8_t range);
 
 void APP_Cvalue_Init(void)
 {
-	app_cvalue_changeRange(APP_CVALUE_NF);
+	BSP_TIM_Init(BSP_TIM_10);
+	BSP_TIM_Stop(BSP_TIM_10);
+	APP_Cvalue_StartDischarge();
+	//app_cvalue_changeRange(APP_CVALUE_UF);
 }
-
-
 
 static void app_cvalue_changeRange(uint8_t range)
 {
@@ -162,6 +166,13 @@ static void app_cvalue_changeRange(uint8_t range)
 	}
 }
 
+static void app_cvalue_powerdown(void)
+{
+	APP_SW_H(APP_SW_UF);
+	APP_SW_H(APP_SW_PF);
+	APP_SW_H(APP_SW_NF);	
+}
+
 void APP_Cvalue_SW(void)
 {
 	APP_SW_H(APP_SW_C_OR_D);
@@ -184,7 +195,16 @@ void APP_Cvalue_StartCharge(void)
 
 void APP_Cvalue_StartDischarge(void)
 {
+	app_cvalue_powerdown();
 	APP_SW_H(APP_SW_DIS_OR_CHARGE);
+}
+
+void APP_Cvalue_Loop(void)
+{
+	if(APP_Cvalue.calc_flag == 1 && APP_Dvalue.calc_flag == 0 )
+	{
+		APP_Cvalue_Calc();
+	}
 }
 
 void APP_Cvalue_Calc(void)
@@ -199,27 +219,51 @@ void APP_Cvalue_Calc(void)
 				{
 					APP_Cvalue.schedule = 1;
 					APP_Cvalue_Cali();
-					APP_Cvalue_StartCharge();
+					
 					status = APP_CVALUE_Cali_Discharge;
+					APP_Cvalue_StartDischarge();
 				}
 				else
 				{
 					
 				}
-				
 			}break;
 		case APP_CVALUE_Cali_Discharge:
 			{
-				Clog_Float("C:" ,BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL));
+				
+
+				static uint8_t time_out = 0;
+				time_out ++;
+				if(time_out > 3)
+				{
+					time_out = 0 ;
+					status = APP_CVALUE_Cali_Charge;
+				}
 				
 			}break;				
 		case APP_CVALUE_Cali_Charge:
 			{
-				
+				Clog_Float("C:" ,BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL));
+				APP_Cvalue_StartCharge();
+				app_cvalue_changeRange(APP_CVALUE_UF);
+				BSP_TIM_Start(BSP_TIM_10);
+				status = APP_CVALUE_Cali_Calc;
 			}break;				
 		case APP_CVALUE_Cali_Calc:
 			{
-				
+				if(BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL) > 1800.0f)
+				{
+					float measure_time = 0;
+					measure_time = app_cvalue_checkv_time * 0.25f;
+					Clog_Float("measure_time:" ,measure_time);
+					app_cvalue_checkv_time = 0;
+					BSP_TIM_Stop(BSP_TIM_10);
+					
+					
+					
+					status = APP_CVALUE_Start;
+
+				}
 			}break;
 		case APP_CVALUE_Measure_Range:
 			{
@@ -241,6 +285,18 @@ void APP_Cvalue_Calc(void)
 			{
 				status = APP_CVALUE_Start;
 			}break;
+	}
+}
+
+
+
+void APP_Cvalue_CheckV(void)
+{
+	float c_out = 0;
+	c_out = BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL);
+	if(c_out > 2.0f && c_out < 1580.0f)
+	{
+		app_cvalue_checkv_time ++;
 	}
 }
 

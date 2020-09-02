@@ -30,8 +30,9 @@
  */
 #define BSP_TIM_3    0
 #define BSP_TIM_8    1
-#define BSP_TIM_11   2
-#define BSP_TIM_13   3
+#define BSP_TIM_10   2
+#define BSP_TIM_11   3
+#define BSP_TIM_13   4
 
 
 /**
