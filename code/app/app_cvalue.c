@@ -219,6 +219,7 @@ void APP_Cvalue_Calc(void)
 				if(APP_Cvalue.calc_flag == 1 && APP_Dvalue.calc_flag == 0 )
 				{
 					APP_Cvalue.schedule = 1;
+					
 					APP_Cvalue_Cali();
 					
 					status = APP_CVALUE_Cali_Discharge;
@@ -235,6 +236,7 @@ void APP_Cvalue_Calc(void)
 				time_out ++;
 				if(time_out > 3)
 				{
+					APP_Cvalue.schedule = 10;
 					time_out = 0 ;
 					status = APP_CVALUE_Cali_Charge;
 				}
@@ -247,6 +249,7 @@ void APP_Cvalue_Calc(void)
 				app_cvalue_changeRange(APP_CVALUE_UF);
 				BSP_TIM_Start(BSP_TIM_10);
 				status = APP_CVALUE_Cali_Calc;
+				APP_Cvalue.schedule = 15;
 			}break;				
 		case APP_CVALUE_Cali_Calc:
 			{
@@ -261,6 +264,7 @@ void APP_Cvalue_Calc(void)
 					status = APP_CVALUE_Measure_Discharge;
 					APP_Cvalue_StartDischarge();
 					APP_Cvalue_Measure();
+					APP_Cvalue.schedule = 20;
 				}
 			}break;
 		case APP_CVALUE_Measure_Range:
@@ -275,6 +279,7 @@ void APP_Cvalue_Calc(void)
 				{
 					time_out = 0 ;
 					status = APP_CVALUE_Measure_Charge;
+					APP_Cvalue.schedule = 50;
 				}
 								
 			}break;				
@@ -286,29 +291,13 @@ void APP_Cvalue_Calc(void)
 				app_cvalue_changeRange(range);
 				BSP_TIM_Start(BSP_TIM_10);
 				status = APP_CVALUE_Measure_Wait;
+				APP_Cvalue.schedule = 70;
 			}break;
 		case APP_CVALUE_Measure_Wait:
 			{
-//	
-//				if(BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL) > 2200.0f)
-//				{
-//					measure_time = app_cvalue_checkv_time * 0.25f;
-//					Clog_Float("C_Cali_time:" ,measure_time);
-//					APP_Cvalue.cali_k = measure_time / 220.0f;
-//					app_cvalue_checkv_time = 0;
-//					BSP_TIM_Stop(BSP_TIM_10);
-
-//					status = APP_CVALUE_Measure_Discharge;
-//					APP_Cvalue_StartDischarge();
-//					APP_Cvalue_Measure();
-//				}
-//				break;
-
-//				
-
+	
 				static uint8_t time_out_1 = 0;
-				
-				
+
 				time_out_1 ++;
 				measure_time = app_cvalue_checkv_time * 0.25f;	
 				
@@ -317,6 +306,7 @@ void APP_Cvalue_Calc(void)
 					Clog_Float("measure_time:" , measure_time);
 					time_out_1 = 0;
 					BSP_TIM_Stop(BSP_TIM_10);
+					APP_Cvalue.schedule = 90;
 					
 					switch(range)
 					{
@@ -429,7 +419,7 @@ void APP_Cvalue_Calc(void)
 				}
 				Clog_Float("C_value:" ,APP_Cvalue.C_value);
 				
-				
+				APP_Cvalue.schedule = 100;
 				status = APP_CVALUE_Measure_Discharge;
 			}break;				
 		default:

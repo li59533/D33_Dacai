@@ -612,6 +612,24 @@ void Dacai_GetRTC(void)
 	Dacai_Queue_in_Bytes( tempbuf , space_ptr);
 }
 
+// ----
+
+void Dacai_Change_Language(uint8_t language_num)
+{
+	uint8_t space_ptr = 0;
+	uint8_t tempbuf[50];
+	
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_head , 1);
+	uint8_t cmd[] = {0xC1};
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)cmd ,  sizeof(cmd));
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&language_num , 1);
+	uint8_t check_sum = 0;
+	check_sum = 0xc1 + language_num;
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&check_sum , 1);
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_foot , 4);
+	Dacai_Queue_in_Bytes( tempbuf , space_ptr);	
+}
+
 
 /**
  * @}

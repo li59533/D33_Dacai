@@ -73,6 +73,7 @@ typedef struct
 	sys_time_t D_cali_time;
 	uint16_t D_caliunit_value;
 	uint16_t D_cali_result ; 
+	uint8_t language_num;
 	
     uint16_t crc;           /*!< 所有的参数结构体必须按字节对其。且最后一个必须包
                                  含一个uint16_t类型的数据，该数据用于内部存储时的

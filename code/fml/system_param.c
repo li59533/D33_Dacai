@@ -75,6 +75,7 @@ const SystemParam_Config_t SystemParam_Config_Default =
 	//.SNcode ={ 0x12 , 0x34 ,0x56 , 0x78 , 0x90, 0xA0, 0xAB ,0x4F} ,
 	.D_caliunit_value = 497 ,
 	.D_cali_result = 1250 ,  
+	.language_num = 0,
 };
 /**
  * @}

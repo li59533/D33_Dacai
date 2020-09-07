@@ -129,20 +129,18 @@ static void app_gui_btn_d_back(uint8_t status);
 
 // --------------------------------------
 // --------- Button Define --------------
-#define GUI_BUTTON_START_TIME	1
+
 #define GUI_BUTTON_START_D		2
 #define GUI_BUTTON_START_C		3
-#define GUI_BUTTON_START_TEST	4
 #define GUI_BUTTON_START_OPTION	5
 
-#define GUI_BUTTON_D_PIDCONTROL	8
 #define GUI_BUTTON_D_BACK		9
 
-#define GUI_BUTTON_C_START		3
 #define GUI_BUTTON_C_BACK		6
 
 #define GUI_BUTTON_OPTION_BACK  1
 #define GUI_BUTTON_OPTION_CALI	7
+#define GUI_BUTTON_OPTION_CHANGE_LANGUAGE	15
 
 
 #define GUI_BUTTON_TEST1	16
@@ -156,12 +154,14 @@ static void app_gui_btn_d_back(uint8_t status);
 
 #define GUI_TEXT_C_VOL		5
 #define GUI_TEXT_C_C		7
+#define GUI_TEXT_C_PROGRASS	10
 
 #define GUI_TEXT_OPTION_SN	6
 #define GUI_TEXT_OPTION_VERSION	4
 #define GUI_TEXT_OPTION_CALI_D_VALUE 10
 #define GUI_TEXT_OPTION_CALI_INTERNAL_D_VALUE 11
 #define GUI_TEXT_OPTION_CALI_TIME 		13
+
 // --------------------------------------
 
 // --------------------------------------
@@ -184,6 +184,7 @@ void APP_Gui_SetParam(void)
 	Dacai_SetBuzzer(50);	
 	Dacai_GetScreen();
 	Dacai_GetRTC();
+	Dacai_Change_Language(g_SystemParam_Config.language_num);
 }
 
 void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t status)
@@ -198,14 +199,11 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 			{
 				switch(control_id)
 				{
-					case GUI_BUTTON_START_TIME:
-						{
-							DEBUG("GUI_BUTTON_START_TIME :%d\r\n" , status);
-						}break;
 					case GUI_BUTTON_START_D:
 						{
 							APP_Dvalue_SW();
 							APP_Cvalue.calc_flag = 0;
+							app_gui_btn_d_pid(status);
 							DEBUG("GUI_BUTTON_START_D\r\n");
 						}break;
 					case GUI_BUTTON_START_C:
@@ -214,10 +212,6 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 							APP_Cvalue.calc_flag = 1;
 							DEBUG("GUI_BUTTON_START_C\r\n");
 						}break;
-					case GUI_BUTTON_START_TEST:
-						{
-							DEBUG("GUI_BUTTON_START_TEST\r\n");
-						}break;	
 					case GUI_BUTTON_START_OPTION:
 						{
 							DEBUG("GUI_BUTTON_START_OPTION\r\n");
@@ -231,11 +225,6 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 			{
 				switch(control_id)
 				{
-					case GUI_BUTTON_D_PIDCONTROL:
-						{
-							app_gui_btn_d_pid(status);
-							DEBUG("GUI_BUTTON_D_PIDCONTROL\r\n");
-						}break;
 					case GUI_BUTTON_D_BACK:
 						{
 							app_gui_btn_d_back(status);
@@ -249,10 +238,6 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 			{
 				switch(control_id)
 				{
-					case GUI_BUTTON_C_START:
-						{
-							DEBUG("GUI_BUTTON_C_START\r\n");
-						}break;
 					case GUI_BUTTON_C_BACK:
 						{
 							APP_Cvalue.calc_flag = 0;
@@ -273,6 +258,20 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 						{
 							APP_Dvalue.cali_flag = 1;
 							DEBUG("GUI_BUTTON_OPTION_CALI\r\n");
+						}break;
+					case GUI_BUTTON_OPTION_CHANGE_LANGUAGE:
+						{
+							if(g_SystemParam_Config.language_num == 0)
+							{
+								g_SystemParam_Config.language_num = 1;
+							}
+							else
+							{
+								g_SystemParam_Config.language_num = 0;
+							}
+							Dacai_Change_Language(g_SystemParam_Config.language_num);
+							SystemParam_Save();
+							DEBUG("GUI_BUTTON_OPTION_CHANGE_LANGUAGE\r\n");
 						}break;
 					default:break;
 				}					
@@ -440,22 +439,22 @@ static void app_gui_up_c(void)
 	Dacai_Disable_Updata();
 	
 	char strbuf[40];
-	snprintf(strbuf , 40 , "%.2f" , BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL));
+	snprintf(strbuf , 40 , "%.2fmV" , BSP_AD7682_Get_CurValue(BSP_AD7682_C_OUT_CHANNEL));
 	Dacai_SetTextValue(GUI_SCREEN_C,GUI_TEXT_C_VOL,(uint8_t *)strbuf , strlen(strbuf));	
 
 	if(APP_Cvalue.status == APP_CVALUE_NORMALE)
 	{
 		if(APP_Cvalue.range == APP_CVALUE_UF)
 		{
-			snprintf(strbuf , 40 , "%.2fUF" , APP_Cvalue.C_value);
+			snprintf(strbuf , 40 , "%.2fuF" , APP_Cvalue.C_value);
 		}
 		else if(APP_Cvalue.range == APP_CVALUE_NF)
 		{
-			snprintf(strbuf , 40 , "%.2fNF" , APP_Cvalue.C_value);
+			snprintf(strbuf , 40 , "%.2fnF" , APP_Cvalue.C_value);
 		}
 		else if(APP_Cvalue.range == APP_CVALUE_PF)
 		{
-			snprintf(strbuf , 40 , "%.2fPF" , APP_Cvalue.C_value);
+			snprintf(strbuf , 40 , "%.2fpF" , APP_Cvalue.C_value);
 		}		
 	}
 	else if(APP_Cvalue.status == APP_CVALUE_WAIT_CALC)
@@ -468,12 +467,13 @@ static void app_gui_up_c(void)
 	}	
 
 	Dacai_SetTextValue(GUI_SCREEN_C,GUI_TEXT_C_C ,(uint8_t *)strbuf , strlen(strbuf));	
+	
+	Dacai_SetProgressBar(GUI_SCREEN_C , GUI_TEXT_C_PROGRASS,(uint32_t )APP_Cvalue.schedule);
 	Dacai_Enable_Updata();
 
 }
 
-#define GUI_TEXT_OPTION_CALI_D_VALUE 10
-#define GUI_TEXT_OPTION_CALI_INTERNAL_D_VALUE 11
+
 
 static void app_gui_up_option(void)
 {
@@ -522,17 +522,11 @@ static void app_gui_up_option(void)
 //GUI_BUTTON_D_PIDCONTROL
 static void app_gui_btn_d_pid(uint8_t status)
 {
-	if(status == 0x01)
-	{	
-		DEBUG("APP_VirExc_PID_1250\r\n");
-		APP_VirExc_PID_1250();
-		APP_Dvalue.calc_flag = 1;
-	}
-	else
-	{
-		DEBUG("APP_VirExc_PID_50\r\n");
-		APP_VirExc_PID_50();
-	}
+
+	DEBUG("APP_VirExc_PID_1250\r\n");
+	APP_VirExc_PID_1250();
+	APP_Dvalue.calc_flag = 1;
+
 }
 //GUI_BUTTON_D_BACK
 
