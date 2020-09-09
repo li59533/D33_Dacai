@@ -1,8 +1,8 @@
 /**
  **************************************************************************************************
- * @file        lnprotocol_std.h
+ * @file        app_conf.h
  * @author
- * @version    v0.1.0
+ * @app_conf
  * @date        
  * @brief
  **************************************************************************************************
@@ -10,8 +10,8 @@
  *
  **************************************************************************************************
  */
-#ifndef _LNPROTOCOL_STD_H_
-#define _LNPROTOCOL_STD_H_
+#ifndef _APP_CONF_H_
+#define _APP_CONF_H_
 
 /**
  * @addtogroup    XXX 
@@ -19,16 +19,14 @@
  */
 #include "self_def.h"
 /**
- * @addtogroup    lnprotocol_std_Modules 
+ * @addtogroup    app_conf_Modules 
  * @{  
  */
 
 /**
- * @defgroup      lnprotocol_std_Exported_Macros 
+ * @defgroup      app_conf_Exported_Macros 
  * @{  
  */
-#define LNPROTOCOL_STD_HEAD			0X7E
-#define LNPROTOCOL_STD_FOOT			0X7E
 
 
 /**
@@ -36,28 +34,7 @@
  */
 
 /**
- * @defgroup      lnprotocol_std_Exported_Constants
- * @{  
- */
-
-/**
- * @}
- */
- 
-/**
- * @defgroup      lnprotocol_std_Exported_Types 
- * @{  
- */
- 
-
- 
-
-/**
- * @}
- */
-
-/**
- * @defgroup      lnprotocol_std_Exported_Variables 
+ * @defgroup      app_conf_Exported_Constants
  * @{  
  */
 
@@ -66,10 +43,28 @@
  */
 
 /**
- * @defgroup      lnprotocol_std_Exported_Functions 
+ * @defgroup      app_conf_Exported_Types 
  * @{  
  */
-int8_t LNprotocol_STD_Checksum(uint8_t * buf,uint16_t len);  // enter a complete buf
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      app_conf_Exported_Variables 
+ * @{  
+ */
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup      app_conf_Exported_Functions 
+ * @{  
+ */
+
 /**
  * @}
  */

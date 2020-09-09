@@ -336,10 +336,10 @@ void APP_Dvalue_Cali(void)
 		case APP_DVALUE_CALI_Get_Average:
 			{
 				DEBUG("APP_DVALUE_Get_Average\r\n");
-				static float sig_buf[8];
+				//static float sig_buf[8];
 				static uint8_t sig_count = 0;
 				
-				sig_buf[sig_count] = BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv;
+				//sig_buf[sig_count] = BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv;
 				
 				sig_count ++;
 

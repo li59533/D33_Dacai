@@ -29,6 +29,7 @@
 #include "dacai_task.h"
 #include "gui_task.h"
 #include "time_task.h"
+#include "conf_task.h"
 /**
  * @addtogroup    task_list_Modules 
  * @{  
@@ -133,6 +134,7 @@ void RTOS_Init(void)
 	basetype |= Dacai_Task_Init();
 	basetype |= Gui_Task_Init();
 	basetype |= Time_Task_Init();
+	basetype |= Conf_Task_Init();
 	
 	if(pdPASS == basetype)
 	{

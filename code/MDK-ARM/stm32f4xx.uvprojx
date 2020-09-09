@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx,CMSIS_OS2,ARM_MATH_CM4,RTT_DEBUG</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\bsp;..\fml;..\task;..\Utilities;..\Middlewares;..\Middlewares\rttviewer;..\app;..\Drivers\CMSIS\Lib\ARM;..\Drivers\CMSIS\DSP\Include;..\Middlewares\dacai</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\bsp;..\fml;..\task;..\Utilities;..\Middlewares;..\Middlewares\rttviewer;..\app;..\Drivers\CMSIS\Lib\ARM;..\Drivers\CMSIS\DSP\Include;..\Middlewares\dacai;..\fml\mcuprotocol</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -714,19 +714,19 @@
           <GroupName>fml</GroupName>
           <Files>
             <File>
-              <FileName>lnprotocol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\fml\lnprotocol.c</FilePath>
-            </File>
-            <File>
-              <FileName>lnprotocol_std.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\fml\lnprotocol_std.c</FilePath>
-            </File>
-            <File>
               <FileName>system_param.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\fml\system_param.c</FilePath>
+            </File>
+            <File>
+              <FileName>mcuprotocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\fml\mcuprotocol\mcuprotocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>mcuprotocolp2p.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\fml\mcuprotocol\mcuprotocolp2p.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -778,6 +778,11 @@
               <FileType>1</FileType>
               <FilePath>..\task\gui_task.c</FilePath>
             </File>
+            <File>
+              <FileName>conf_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\task\conf_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -822,6 +827,11 @@
               <FileName>app_cvalue.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\app\app_cvalue.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\app_conf.c</FilePath>
             </File>
           </Files>
         </Group>

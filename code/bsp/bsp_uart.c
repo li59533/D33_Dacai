@@ -19,6 +19,7 @@
  */
 #include "bsp_led.h"
 #include "dacai_port.h"
+#include "mcuprotocol.h"
 
 /**
  * @addtogroup    bsp_uart_Modules 
@@ -77,10 +78,10 @@ UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart1_tx ; 
 DMA_HandleTypeDef hdma_usart3_tx ; 
  
-static uint8_t USART1_Tx_Buf[BSP_USART1_TXBUF_SIZE] = { 0 };
+//static uint8_t USART1_Tx_Buf[BSP_USART1_TXBUF_SIZE] = { 0 };
 static uint8_t USART1_Rx_Buf[BSP_USART1_RXBUF_SIZE] = { 0 };
 
-static uint8_t USART3_Tx_Buf[BSP_USART3_TXBUF_SIZE] = { 0 };
+//static uint8_t USART3_Tx_Buf[BSP_USART3_TXBUF_SIZE] = { 0 };
 static uint8_t USART3_Rx_Buf[BSP_USART3_RXBUF_SIZE] = { 0 };
 
 
@@ -136,6 +137,7 @@ void BSP_USART_Init(uint8_t BSP_USARTx, uint8_t *userparams)
 			{
 				Error_Handler();
 			}
+			HAL_UART_Receive_IT(&huart1, USART1_Rx_Buf, 1);	
 		}
 		break;
 		case BSP_USART3:
@@ -399,7 +401,7 @@ uint16_t BSP_USART_ReadBytes(uint8_t BSP_USARTx,uint8_t* pBuf,uint16_t length)
 void USART1_IRQHandler(void)
 {
 	HAL_UART_IRQHandler(&huart1);
-	
+	HAL_UART_Receive_IT(&huart1, USART1_Rx_Buf, 1);
 }
 
 void USART3_IRQHandler(void)
@@ -407,6 +409,12 @@ void USART3_IRQHandler(void)
 	HAL_UART_IRQHandler(&huart3);
 	HAL_UART_Receive_IT(&huart3, USART3_Rx_Buf, 1);
 }
+
+void DMA2_Stream7_IRQHandler(void)
+{
+	HAL_DMA_IRQHandler(&hdma_usart1_tx);
+}
+
 void DMA1_Stream3_IRQHandler(void)
 {
 	HAL_DMA_IRQHandler(&hdma_usart3_tx);
@@ -418,6 +426,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if(huart->Instance==USART1)
 	{
 		DEBUG("UART1_RxCplt:%x\r\n" , USART1_Rx_Buf[0]);
+		MCUprotocol_FlowAnalysis( MCUPROTOCOL_FLOWCHANNEL_CONF , USART1_Rx_Buf , 1);
+		
 	}
 	else if(huart->Instance==USART3)
 	{

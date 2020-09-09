@@ -146,10 +146,10 @@ uint32_t Second_Task_Init(void)
 
 void Second_Task(void * pvParameter)
 {
-	UBaseType_t secondtask_ramainheap = 0;
+	//UBaseType_t secondtask_ramainheap = 0;
 	//UBaseType_t ramainheap = 0;
 	DEBUG("Second Task Enter\r\n");
-	uint32_t count = 0 ;
+	//uint32_t count = 0 ;
 	
 	
 
