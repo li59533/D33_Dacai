@@ -216,7 +216,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 
 
 		/* USART1 interrupt Init */
-		HAL_NVIC_SetPriority(USART1_IRQn, 1, 0);
+		HAL_NVIC_SetPriority(USART1_IRQn, 7, 0);
 		HAL_NVIC_EnableIRQ(USART1_IRQn);
 		/* USER CODE BEGIN USART1_MspInit 1 */
 		/* DMA2_Stream7_IRQn interrupt configuration */

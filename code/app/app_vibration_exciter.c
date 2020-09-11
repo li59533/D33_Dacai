@@ -26,6 +26,7 @@
 #include "virexc_task.h"
 #include "app_dvalue.h"
 #include "system_param.h"
+#include "bsp_led.h"
 /**
  * @addtogroup    app_vibration_exciter_Modules 
  * @{  
@@ -147,11 +148,13 @@ void APP_Viration_Exciter_Init(void)
 
 void APP_VirExc_Start(void)
 {
+	
 	BSP_TIM_Start(BSP_TIM_13);
 }
 
 void APP_VirExc_Stop(void)
 {
+
 	BSP_TIM_Stop(BSP_TIM_13);
 }
 
@@ -198,12 +201,14 @@ void APP_VirExc_PID_1250(void)
 {
 	desired_value = (float)(g_SystemParam_Config.D_cali_result / 4.0 * 10.0f);
 	APP_VirExc_PID_Start();
+	BSP_Led_Blink(BSP_LED_EXCITATION , 0 , 50 , 100);
 }
 
 void APP_VirExc_PID_50(void)
 {
 	desired_value = 0.0f;
 	APP_VirExc_PID_Start();
+	BSP_Led_Blink(BSP_LED_EXCITATION , 1 , 50 , 100);
 }
 
 void APP_VirExc_PID_Loop(void)

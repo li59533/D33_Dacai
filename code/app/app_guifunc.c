@@ -102,7 +102,8 @@ static void app_gui_up_d(void);
 static void app_gui_up_c(void);
 static void app_gui_up_option(void);
 
-
+static void app_gui_btn_d_record(uint8_t status);
+static void app_gui_btn_c_record(uint8_t status);
 static void app_gui_btn_d_pid(uint8_t status);
 static void app_gui_btn_d_back(uint8_t status);
 
@@ -134,8 +135,10 @@ static void app_gui_btn_d_back(uint8_t status);
 #define GUI_BUTTON_START_C		3
 #define GUI_BUTTON_START_OPTION	5
 
+#define GUI_BUTTON_D_RECORD		8
 #define GUI_BUTTON_D_BACK		9
 
+#define GUI_BUTTON_C_RECORD		8
 #define GUI_BUTTON_C_BACK		6
 
 #define GUI_BUTTON_OPTION_BACK  1
@@ -225,6 +228,11 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 			{
 				switch(control_id)
 				{
+					case GUI_BUTTON_D_RECORD:
+						{
+							app_gui_btn_d_record(status);
+							DEBUG("GUI_BUTTON_D_RECORD\r\n");
+						}break;					
 					case GUI_BUTTON_D_BACK:
 						{
 							app_gui_btn_d_back(status);
@@ -238,6 +246,11 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 			{
 				switch(control_id)
 				{
+					case GUI_BUTTON_C_RECORD:
+						{
+							app_gui_btn_c_record(status);
+							DEBUG("GUI_BUTTON_C_RECORD\r\n");
+						}break;
 					case GUI_BUTTON_C_BACK:
 						{
 							APP_Cvalue.calc_flag = 0;
@@ -519,27 +532,35 @@ static void app_gui_up_option(void)
 // -----------------------------------
 
 // ----------Button Func -------------
+//GUI_BUTTON_D_RECORD
+static void app_gui_btn_d_record(uint8_t status)
+{
+	
+}
 //GUI_BUTTON_D_PIDCONTROL
 static void app_gui_btn_d_pid(uint8_t status)
 {
-
 	DEBUG("APP_VirExc_PID_1250\r\n");
 	APP_VirExc_PID_1250();
 	APP_Dvalue.calc_flag = 1;
 
 }
 //GUI_BUTTON_D_BACK
-
 static void app_gui_btn_d_back(uint8_t status)
 {
 	APP_VirExc_PID_50();
 	
 }
 
+//GUI_BUTTON_D_RECORD
+static void app_gui_btn_c_record(uint8_t status)
+{
 	
-
+}
 
 // -----------------------------------
+
+
 
 /**
  * @}

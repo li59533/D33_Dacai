@@ -363,14 +363,14 @@ static void bsp_led_blinknolimit_process(uint8_t bsp_ledx)
 			//DEBUG("LED_Status_OFF\r\n");
 			bsp_led_blink_handle[bsp_ledx].time_lost = bsp_led_blink_handle[bsp_ledx].check_on_count;
 			Bsp_LedClose(bsp_ledx);
-			bsp_led_blink_handle[bsp_ledx].blink_times --;
+			//bsp_led_blink_handle[bsp_ledx].blink_times --;
 		}
 		else
 		{
 			//DEBUG("LED_Status_ON\r\n");
 			Bsp_LedOpen(bsp_ledx);
 			bsp_led_blink_handle[bsp_ledx].time_lost = bsp_led_blink_handle[bsp_ledx].check_off_count;
-			bsp_led_blink_handle[bsp_ledx].blink_times --;
+			//bsp_led_blink_handle[bsp_ledx].blink_times --;
 		}
 		
 		

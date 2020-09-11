@@ -102,6 +102,9 @@ typedef struct
  * @brief         
  * @{  
  */
+
+static uint8_t app_conf_space[200];
+
 APP_Conf_R_Queue_t APP_Conf_R_Queue = 
 {
 	.in = 0,
@@ -137,6 +140,11 @@ APP_Conf_T_Queue_t APP_Conf_T_Queue =
  */
 static void app_conf_in_R_queue(uint8_t * buf , uint16_t len);
 static int8_t app_conf_out_R_queue(uint8_t * buf , uint16_t *len);
+static void app_conf_in_T_queue(uint8_t * buf , uint16_t len);
+static int8_t app_conf_out_T_queue(uint8_t * buf , uint16_t *len);
+
+
+
 /**
  * @}
  */
@@ -155,6 +163,59 @@ void APP_Conf_ProtocolInit(void)
 	//MCU_P2P_FrameTypeDataSet_Callback(void (*callback)(uint8_t * buf ,uint16_t len));
 }
 
+
+
+
+
+void APP_Conf_RevProcess(void)
+{
+	uint8_t * rbuf = 0;
+	uint16_t rbuf_len = 0;
+	rbuf = pvPortMalloc(sizeof(uint8_t) * 500); //vPortFree()
+	if(app_conf_out_R_queue(rbuf , &rbuf_len) > 0)
+	{
+		Conf_Task_Event_Start(CONF_TASK_REV_EVENT, EVENT_FROM_TASK);
+	}
+	
+	if(rbuf_len > 0)
+	{
+		MCU_P2P_Decode(rbuf , rbuf_len );		
+	}
+
+	vPortFree(rbuf);
+}
+
+void APP_Conf_Send_InQueue(uint8_t * buf , uint16_t len)
+{
+	app_conf_in_T_queue( buf ,  len);
+	Conf_Task_Event_Start(CONF_TASK_SEND_EVENT, EVENT_FROM_TASK);
+}
+
+void APP_Conf_SendProcess(void)
+{
+	uint16_t len = 0 ;
+	if(app_conf_out_T_queue( app_conf_space, &len) > 0)
+	{
+		Conf_Task_Event_Start(CONF_TASK_SEND_EVENT, EVENT_FROM_TASK);
+	}
+	
+	if(len > 0)
+	{
+		APP_Conf_Send( app_conf_space,  len);	
+	}
+
+}
+
+
+void APP_Conf_Send(uint8_t *buf , uint16_t len)
+{
+	BSP_USART_WriteBytes_DMA(BSP_USART1 , buf , len);
+}
+
+
+
+
+// ------------------- Queue ---------------------------
 static void app_conf_in_R_queue(uint8_t * buf , uint16_t len)
 {
 	memcpy(APP_Conf_R_Queue.Queue[APP_Conf_R_Queue.in].buf , buf , len);
@@ -179,28 +240,40 @@ static int8_t app_conf_out_R_queue(uint8_t * buf , uint16_t *len)
 		APP_Conf_R_Queue.count --;		
 	}
 
-	
 	return APP_Conf_R_Queue.count;
 }
 
-
-void APP_Conf_RevProcess(void)
+static void app_conf_in_T_queue(uint8_t * buf , uint16_t len)
 {
-	uint8_t * rbuf = 0;
-	rbuf = 
-	if(app_conf_out_R_queue)
+	memcpy(APP_Conf_T_Queue.Queue[APP_Conf_T_Queue.in].buf , buf , len);
+	APP_Conf_T_Queue.Queue[APP_Conf_T_Queue.in].len = len;
+	
+	APP_Conf_T_Queue.in ++;     
+	APP_Conf_T_Queue.in %= APP_Conf_T_Queue.size;
+	APP_Conf_T_Queue.count ++;
+	
+}
+
+static int8_t app_conf_out_T_queue(uint8_t * buf , uint16_t *len)
+{
+	if(APP_Conf_T_Queue.count > 0)
+	{
+		memcpy(buf ,APP_Conf_T_Queue.Queue[APP_Conf_T_Queue.out].buf ,  APP_Conf_T_Queue.Queue[APP_Conf_T_Queue.out].len);
+		* len = APP_Conf_T_Queue.Queue[APP_Conf_T_Queue.out].len;
+		
+		APP_Conf_T_Queue.out ++;
+		APP_Conf_T_Queue.out %= APP_Conf_T_Queue.size;
+		APP_Conf_T_Queue.count --;		
+	}
+
+	
+	return APP_Conf_T_Queue.count;
 }
 
 
 
 
-void APP_Conf_Send(uint8_t *buf , uint16_t len)
-{
-	BSP_USART_WriteBytes_DMA(BSP_USART1 , buf , len);
-}
-
-
-
+// ------------------------------------------------------
 
 
 /**

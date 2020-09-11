@@ -17,7 +17,7 @@
 
 #include "timers.h"
 #include "conf_task.h"
-
+#include "app_conf.h"
 /**
  * @addtogroup    XXX 
  * @{  
@@ -141,6 +141,8 @@ void Conf_Task(void * pvParameter)
 	
 	DEBUG("Conf Task Enter\r\n");
 	UBaseType_t conftask_ramainheap = 0;
+	
+	APP_Conf_ProtocolInit();
 
 	while(1)
 	{
@@ -161,12 +163,12 @@ void Conf_Task(void * pvParameter)
 		if((event_flag & CONF_TASK_REV_EVENT) != 0x00)
 		{
 			DEBUG("Conf Task REV EVENT\r\n");
-			
+			APP_Conf_RevProcess();
 		}		
 		if((event_flag & CONF_TASK_SEND_EVENT) != 0x00)
 		{
 			DEBUG("Conf Task SEND EVENT\r\n");
-			
+			APP_Conf_SendProcess();
 		}		
 	}
 	

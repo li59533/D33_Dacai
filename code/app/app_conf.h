@@ -53,7 +53,7 @@
 
 /**
  * @defgroup      app_conf_Exported_Variables 
- * @{  
+ * @{   
  */
 
 /**
@@ -64,6 +64,12 @@
  * @defgroup      app_conf_Exported_Functions 
  * @{  
  */
+ 
+void APP_Conf_ProtocolInit(void);
+void APP_Conf_RevProcess(void);
+void APP_Conf_Send(uint8_t *buf , uint16_t len);
+void APP_Conf_Send_InQueue(uint8_t * buf , uint16_t len);
+void APP_Conf_SendProcess(void);
 
 /**
  * @}

@@ -26,6 +26,7 @@
 #include "system_param.h"
 #include "dacai.h"
 #include "app_guifunc.h"
+#include "bsp_led.h"
 
 /**
  * @addtogroup    app_dvalue_Modules 
@@ -150,18 +151,21 @@ void APP_Dvalue_TestPGA(uint8_t  Test_PGA)
 				APP_SW_L(APP_SW_PD1);
 				APP_SW_L(APP_SW_PD0);
 				APP_Dvalue.mul = 1;
+				BSP_Led_Blink(BSP_LED_RANGE , 2 , 10 , 100);
 			}break;
 		case Test_PGA_10:	
 			{
 				APP_SW_H(APP_SW_PD1);
 				APP_SW_L(APP_SW_PD0);
 				APP_Dvalue.mul = 10;
+				BSP_Led_Blink(BSP_LED_RANGE , 2 , 50 , 100);
 			}break;
 		case Test_PGA_100:	
 			{
 				APP_SW_L(APP_SW_PD1);
 				APP_SW_H(APP_SW_PD0);
 				APP_Dvalue.mul = 100;
+				BSP_Led_Blink(BSP_LED_RANGE , 2 , 90 , 100);
 			}break;
 		default:break;
 	}
@@ -182,7 +186,7 @@ void APP_Dvalue_Calc(void)
 					//APP_Dvalue.calc_flag = 0;
 					APP_Dvalue.schedule = 1;
 					status = APP_DVALUE_CALC_Check_SIG;
-					APP_Dvalue_TestPGA(Test_PGA_1);
+					//APP_Dvalue_TestPGA(Test_PGA_1);
 
 				}
 				else
@@ -219,6 +223,10 @@ void APP_Dvalue_Calc(void)
 							//status = APP_DVALUE_Get_Average;
 						}
 					}
+					else if(BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv > 2800.0f)
+					{
+						APP_Dvalue_TestPGA(Test_PGA_1);
+					}
 					else
 					{
 						APP_Dvalue.schedule = 80;
@@ -230,24 +238,24 @@ void APP_Dvalue_Calc(void)
 		case APP_DVALUE_CALC_Get_Average:
 			{
 				DEBUG("APP_DVALUE_Get_Average\r\n");
-				static float sig_buf[8];
+				static float sig_buf[4];
 				static uint8_t sig_count = 0;
 				
 				sig_buf[sig_count] = BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv;
 				
 				sig_count ++;
 
-				if(sig_count == 8)
+				if(sig_count == 4)
 				{
 					sig_count = 0;
 					float sum = 0;
-					for(uint8_t i = 0; i < 8 ; i ++)
+					for(uint8_t i = 0; i < 4 ; i ++)
 					{
 						sum += sig_buf[i];
 					}
 					float temp = 0;
 					
-					temp = (float)(sum / 8.0f) / APP_Dvalue.mul * 4.0f;
+					temp = (float)(sum / 4.0f) / APP_Dvalue.mul * 4.0f;
 					//APP_Dvalue.D_value = temp * 0.7018f - 1.701f;
 					APP_Dvalue.D_value = temp ;
 					APP_Dvalue.schedule = 100;
@@ -258,8 +266,9 @@ void APP_Dvalue_Calc(void)
 			{
 				static uint8_t wait_time = 0;
 				wait_time ++;
-				if(wait_time > 30)
+				if(wait_time > 10)
 				{
+					BSP_Led_Blink(BSP_LED_D , 2 , 50 , 100);
 					wait_time = 0;
 					status = APP_DVALUE_CALC_Wait;
 				}
@@ -273,9 +282,6 @@ void APP_Dvalue_Calc(void)
 			}break;
 	}
 }
-
-
-
 
 void APP_Dvalue_Cali(void)
 {
@@ -398,6 +404,15 @@ void APP_Dvalue_Loop(void)
 }
 
 
+// -------------- Report Data -------------------
+
+void APP_Dvalue_Report_data(void)
+{
+	
+}
+
+
+// ----------------------------------------------
 /**
  * @}
  */

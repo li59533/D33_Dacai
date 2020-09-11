@@ -21,6 +21,7 @@
 #include "bsp_ad7682.h"
 #include "bsp_tim.h"
 #include "clog.h"
+#include "bsp_led.h"
 /**
  * @addtogroup    app_cvalue_Modules 
  * @{  
@@ -402,7 +403,7 @@ void APP_Cvalue_Calc(void)
 			}break;
 		case APP_CVALUE_Measure_Calc:
 			{
-
+				BSP_Led_Blink(BSP_LED_C , 2 , 50 , 100);
 				measure_time = app_cvalue_checkv_time * 0.25f;		
 				
 				if(APP_Cvalue.range == APP_CVALUE_UF)
@@ -442,6 +443,17 @@ void APP_Cvalue_CheckV(void)
 		app_cvalue_checkv_time ++;
 	}
 }
+
+// -------------- Report Data -------------------
+void APP_Cvalue_Report_data(void)
+{
+	
+	
+}
+
+
+// ----------------------------------------------
+
 
 
 /**

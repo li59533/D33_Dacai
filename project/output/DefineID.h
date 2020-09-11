@@ -36,6 +36,11 @@
 
 #define  _PROGRESS_D值_PROGRESS1                                               10
 
+//全局图片d值2.png
+#define  _IMG_D值2_PNG                                                          4
+
+#define  _BTN_D值_BUTTON1                                                       8
+
 #define  _TXT_DIS__C值_TEXT_DISPLAY1                                            5
 
 #define  _TXT_DIS__C值_TEXT_DISPLAY3                                            7
@@ -43,6 +48,11 @@
 #define  _BTN_C值_BUTTON2                                                       6
 
 #define  _PROGRESS_C值_PROGRESS1                                               10
+
+//全局图片c值2.png
+#define  _IMG_C值2_PNG                                                          6
+
+#define  _BTN_C值_BUTTON1                                                       8
 
 #define  _BTN_设置_BUTTON1                                                       1
 
