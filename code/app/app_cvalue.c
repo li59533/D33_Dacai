@@ -489,6 +489,7 @@ void APP_Cvalue_Report_data(void)
 	
 	
 	APP_Conf_Send_InQueue( &MCUprotocolp2p->Head , MCUprotocolp2p->Length);	
+	vPortFree(buf_space);
 	
 }
 
