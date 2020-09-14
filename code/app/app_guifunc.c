@@ -535,7 +535,7 @@ static void app_gui_up_option(void)
 //GUI_BUTTON_D_RECORD
 static void app_gui_btn_d_record(uint8_t status)
 {
-	
+	APP_Dvalue_Report_data();
 }
 //GUI_BUTTON_D_PIDCONTROL
 static void app_gui_btn_d_pid(uint8_t status)
@@ -555,7 +555,7 @@ static void app_gui_btn_d_back(uint8_t status)
 //GUI_BUTTON_D_RECORD
 static void app_gui_btn_c_record(uint8_t status)
 {
-	
+	APP_Cvalue_Report_data();
 }
 
 // -----------------------------------

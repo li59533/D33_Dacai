@@ -90,6 +90,7 @@ void APP_Dvalue_Calc(void);
 void APP_Dvalue_Cali(void);
 void APP_Dvalue_Loop(void);
 void APP_Dvalue_Report_data(void);
+
 /**
  * @}
  */

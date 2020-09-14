@@ -57,6 +57,10 @@
  * @brief         
  * @{  
  */
+ 
+
+ 
+ 
 typedef struct
 {
     uint8_t buf[MCUPROTOCOL_BUFFER_SIZE_MAX + 50];
@@ -97,7 +101,7 @@ static MCUprotocolPacketCache_t s_MCUprotocolPacketCacheList[MCUPROTOCOL_PACKETC
  * @brief         
  * @{  
  */
-uint32_t g_MCUprotocol_Seq = 0;
+uint8_t g_MCUprotocol_Seq = 0;
 
 MCUprotocolPacket_t g_MCUprotocolMakeCache;
 /**

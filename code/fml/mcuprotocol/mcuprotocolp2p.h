@@ -46,12 +46,19 @@
  * @defgroup      mcuprotocolp2p_Exported_Types 
  * @{  
  */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 #pragma pack(1)
 
 
 typedef struct
 {
-    uint8_t 	Header; // 帧头
+    uint8_t 	Head; // 帧头
     uint16_t 	Length; // 数据包总长度
 
 	MCUprotocolFCF_t FCF;	// 帧控制域
@@ -62,7 +69,7 @@ typedef struct
 
 
     uint8_t FCS; // 帧校验
-    uint8_t Footer; // 帧尾        
+    uint8_t Foot; // 帧尾        
 }MCUprotocolp2p_t;
 
 #pragma pack()

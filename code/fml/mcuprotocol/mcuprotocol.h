@@ -85,6 +85,26 @@
  * @defgroup      mcuprotocol_Exported_Types 
  * @{  
  */
+// ----- Std Cmd --------
+typedef enum
+{
+
+    MCUCmd_StdFWVersionGetReq    = 11,   // 获取版本号请求
+    MCUCmd_StdFWVersionGetResp   = 12,   // 获取版本号应答
+
+}MCUCmd_e;
+// ----------------------
+// ----- Self Cmd Tag-------
+typedef enum
+{
+	MCUCmd_SelfUPData = 128 , // 上报数据
+}MCUCmd_Self_e;
+
+#define UPDATA_DVALUE_TAG   0
+#define UPDATA_CVALUE_TAG	1
+
+
+// ----------------------
 
 #pragma pack(1)
 typedef struct
@@ -151,7 +171,7 @@ typedef struct
  * @defgroup      mcuprotocol_Exported_Variables 
  * @{  
  */
-
+extern uint8_t g_MCUprotocol_Seq ;
 /**
  * @}
  */

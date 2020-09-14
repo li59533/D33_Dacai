@@ -27,6 +27,8 @@
 #include "dacai.h"
 #include "app_guifunc.h"
 #include "bsp_led.h"
+#include "mcuprotocol.h"
+#include "app_conf.h"
 
 /**
  * @addtogroup    app_dvalue_Modules 
@@ -405,10 +407,47 @@ void APP_Dvalue_Loop(void)
 
 
 // -------------- Report Data -------------------
-
 void APP_Dvalue_Report_data(void)
 {
+	uint8_t * buf_space ;
+	uint8_t * payload_ptr ;
+	MCUprotocolTLV_t MCUprotocolTLV;
+	uint8_t len = 0;
+	buf_space = pvPortMalloc(sizeof(uint8_t) * 100); //vPortFree()
 	
+	MCUprotocolp2p_t * MCUprotocolp2p = (MCUprotocolp2p_t * )buf_space;
+	
+	MCUprotocolp2p->Head = MCUPROTOCOL_AHR_SIGN;
+	//MCUprotocolp2p->Length = ;
+	MCUprotocolp2p->FCF.Ack = 0;
+	MCUprotocolp2p->FCF.ConnType = MCUPROTOCOL_CONNTYPE_P2P;
+	MCUprotocolp2p->FCF.FrameType = MCUPROTOCOL_FRAMETYPE_DATA;
+	MCUprotocolp2p->FCF.Gateway = 0;
+	MCUprotocolp2p->FCF.none_1 = 0;
+	MCUprotocolp2p->FCF.none_2 = 0;
+	MCUprotocolp2p->FCF.Pending = 0;
+	MCUprotocolp2p->FCF.Sec = 0;
+	MCUprotocolp2p->FCF.Trans = 0;
+	MCUprotocolp2p->Seq = g_MCUprotocol_Seq ++;
+	MCUprotocolp2p->Cmd = MCUCmd_SelfUPData;
+	
+	payload_ptr = &MCUprotocolp2p->Cmd + 1;
+	
+	MCUprotocolTLV.Tag = UPDATA_DVALUE_TAG;
+	MCUprotocolTLV.Len = 4;
+	memcpy(MCUprotocolTLV.Value.Array , (uint8_t *)&APP_Dvalue.D_value , 4);
+	payload_ptr += MCUprotocol_AddTlv(payload_ptr ,&MCUprotocolTLV);
+	len += 4;
+	
+	MCUprotocolp2p->Length = len + 9;
+	
+	
+	MCUprotocolp2p->FCS = MCUprotocol_GetChecksum((uint8_t *)&MCUprotocolp2p->FCF , MCUprotocolp2p->Length - 5);
+	
+	MCUprotocolp2p->Foot = MCUPROTOCOL_AFR_SIGN;
+	
+	
+	APP_Conf_Send_InQueue( &MCUprotocolp2p->Head , MCUprotocolp2p->Length);
 }
 
 
