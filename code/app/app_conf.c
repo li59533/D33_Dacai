@@ -20,6 +20,7 @@
 #include "bsp_uart.h"
 #include "conf_task.h"
 #include "rtos_tools.h"
+#include "clog.h"
 /**
  * @addtogroup    app_conf_Modules 
  * @{  
@@ -158,6 +159,7 @@ static int8_t app_conf_out_T_queue(uint8_t * buf , uint16_t *len);
  
 void APP_Conf_ProtocolInit(void)
 {
+	BSP_USART_Init( BSP_USART1 , 0);
 	MCUprotocol_FlowSetCallback( MCUPROTOCOL_FLOWCHANNEL_CONF , app_conf_in_R_queue );
 	
 	//MCU_P2P_FrameTypeDataSet_Callback(void (*callback)(uint8_t * buf ,uint16_t len));
@@ -201,6 +203,7 @@ void APP_Conf_SendProcess(void)
 	
 	if(len > 0)
 	{
+		DEBUG(" ConfRev: %d\r\n" , len);
 		APP_Conf_Send( app_conf_space,  len);	
 	}
 
