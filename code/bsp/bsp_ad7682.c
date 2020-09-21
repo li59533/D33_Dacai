@@ -220,6 +220,7 @@ void BSP_AD7682_SPI_GetValue(void)  // in SPI interrupt
 	{
 		BSP_AD7682_Value[curindex.resp_index].curvalue = bsp_ad7682_curvalue;
 		BSP_AD7682_Value[curindex.resp_index].buf[BSP_AD7682_Value[curindex.resp_index].index ++] = bsp_ad7682_curvalue;
+			
 		if(BSP_AD7682_Value[curindex.resp_index].index == BSP_AD7682_SAVE_SIZE)
 		{
 			BSP_AD7682_Value[curindex.resp_index].index = 0;

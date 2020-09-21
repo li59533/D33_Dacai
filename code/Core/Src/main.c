@@ -7,7 +7,7 @@
 #include "bsp_init.h"
 #include "system_param.h"
 
-
+#include "app_dvalue.h"
 
 void SystemClock_Config(void);
 

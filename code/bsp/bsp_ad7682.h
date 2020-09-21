@@ -64,6 +64,8 @@ typedef struct
 {
 	uint16_t curvalue;
 	uint16_t buf[BSP_AD7682_SAVE_SIZE];
+	uint16_t max_index;
+	uint16_t max_value;
 	uint16_t index;
 	uint8_t buf_flag;
 }BSP_AD7682_Value_t;

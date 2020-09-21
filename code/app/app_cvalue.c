@@ -476,16 +476,29 @@ void APP_Cvalue_Report_data(void)
 	
 	MCUprotocolTLV.Tag = UPDATA_CVALUE_TAG;
 	MCUprotocolTLV.Len = 4;
-	memcpy(MCUprotocolTLV.Value.Array , (uint8_t *)&APP_Cvalue.C_value , 4);
+	float c_value = 0;
+	if(APP_Cvalue.range == APP_CVALUE_UF)
+	{
+		c_value = APP_Cvalue.C_value * 1000000.0f;
+	}
+	else if(APP_Cvalue.range == APP_CVALUE_NF)
+	{
+		c_value = APP_Cvalue.C_value * 1000.0f;
+	}
+	else if(APP_Cvalue.range == APP_CVALUE_PF)
+	{
+		c_value = APP_Cvalue.C_value ;
+	}	
+	memcpy(MCUprotocolTLV.Value.Array , (uint8_t *)&c_value , 4);
 	payload_ptr += MCUprotocol_AddTlv(payload_ptr ,&MCUprotocolTLV);
-	len += 4;
+	len += 6;
 	
 	MCUprotocolp2p->Length = len + 9;
 	
 	
-	MCUprotocolp2p->FCS = MCUprotocol_GetChecksum((uint8_t *)&MCUprotocolp2p->FCF , MCUprotocolp2p->Length - 5);
+	*(buf_space + MCUprotocolp2p->Length - 2) = MCUprotocol_GetChecksum((uint8_t *)&MCUprotocolp2p->FCF , MCUprotocolp2p->Length - 5);
 	
-	MCUprotocolp2p->Foot = MCUPROTOCOL_AFR_SIGN;
+	*(buf_space + MCUprotocolp2p->Length - 1) = MCUPROTOCOL_AFR_SIGN;
 	
 	
 	APP_Conf_Send_InQueue( &MCUprotocolp2p->Head , MCUprotocolp2p->Length);	

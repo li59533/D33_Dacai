@@ -123,7 +123,7 @@ APP_Dvalue_t APP_Dvalue =
  * @brief         
  * @{  
  */
-
+static int8_t app_dvalue_getpolarity(void);
 /**
  * @}
  */
@@ -249,6 +249,12 @@ void APP_Dvalue_Calc(void)
 
 				if(sig_count == 4)
 				{
+					
+					APP_Dvalue.polarity = app_dvalue_getpolarity();
+					
+					
+					
+					
 					sig_count = 0;
 					float sum = 0;
 					for(uint8_t i = 0; i < 4 ; i ++)
@@ -257,7 +263,7 @@ void APP_Dvalue_Calc(void)
 					}
 					float temp = 0;
 					
-					temp = (float)(sum / 4.0f) / APP_Dvalue.mul * 4.0f;
+					temp = (float)(sum / 4.0f) / APP_Dvalue.mul * 4.0f * APP_Dvalue.polarity;
 					//APP_Dvalue.D_value = temp * 0.7018f - 1.701f;
 					APP_Dvalue.D_value = temp ;
 					APP_Dvalue.schedule = 100;
@@ -406,6 +412,38 @@ void APP_Dvalue_Loop(void)
 }
 
 
+static int8_t app_dvalue_getpolarity(void)
+{
+	uint16_t max_value[2];
+	max_value[0] = 0;
+	max_value[1] = 0;
+	uint16_t max_index[2];
+	for(uint16_t i = 0;  i < 1000; i ++)
+	{
+		if(max_value[0] < BSP_AD7682_Value[BSP_AD7682_SIG_CHANNEL].buf[i])
+		{
+			max_value[0] = BSP_AD7682_Value[BSP_AD7682_SIG_CHANNEL].buf[i];
+			max_index[0] = i;
+		}
+		if(max_value[1] < BSP_AD7682_Value[BSP_AD7682_CAL_CHANNEL].buf[i])
+		{
+			max_value[1] = BSP_AD7682_Value[BSP_AD7682_CAL_CHANNEL].buf[i];
+			max_index[1] = i;
+		}		
+	}
+	//if(abs(max_index[1] - max_index[0]) > 300)3
+	if(BSP_AD7682_Value[BSP_AD7682_CAL_CHANNEL].buf[max_index[0]] < 300)
+	{
+		return -1;
+	}
+	else
+	{
+		return 1;
+	}
+	
+}
+
+
 // -------------- Report Data -------------------
 void APP_Dvalue_Report_data(void)
 {
@@ -437,17 +475,18 @@ void APP_Dvalue_Report_data(void)
 	MCUprotocolTLV.Len = 4;
 	memcpy(MCUprotocolTLV.Value.Array , (uint8_t *)&APP_Dvalue.D_value , 4);
 	payload_ptr += MCUprotocol_AddTlv(payload_ptr ,&MCUprotocolTLV);
-	len += 4;
+	len += 6;
 	
 	MCUprotocolp2p->Length = len + 9;
 	
 	
-	MCUprotocolp2p->FCS = MCUprotocol_GetChecksum((uint8_t *)&MCUprotocolp2p->FCF , MCUprotocolp2p->Length - 5);
+	*(buf_space + MCUprotocolp2p->Length - 2) = MCUprotocol_GetChecksum((uint8_t *)&MCUprotocolp2p->FCF , MCUprotocolp2p->Length - 5);
 	
-	MCUprotocolp2p->Foot = MCUPROTOCOL_AFR_SIGN;
+	*(buf_space + MCUprotocolp2p->Length - 1) = MCUPROTOCOL_AFR_SIGN;
 	
 	
 	APP_Conf_Send_InQueue( &MCUprotocolp2p->Head , MCUprotocolp2p->Length);
+	
 	vPortFree(buf_space);
 }
 

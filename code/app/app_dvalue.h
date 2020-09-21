@@ -61,6 +61,7 @@ typedef struct
 	uint8_t calc_flag;
 	uint8_t cali_flag;
 	float cali_mv;
+	int8_t polarity;
 }APP_Dvalue_t;
 
 
