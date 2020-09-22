@@ -428,7 +428,7 @@ static void app_gui_up_d(void)
 	
 	
 	
-	if(abs((int)(BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv - (float)g_SystemParam_Config.D_cali_result / 4.0f * 10.0f)) < 5)
+	if(abs((int)(BSP_ADC_Value[BSP_ADC_CAL_CHANNEL].real_mv - (float)g_SystemParam_Config.D_cali_result / 4.0f * 10.0f)) < 20)
 	{
 		snprintf(strbuf , 40 , "%.2fpc/N" , APP_Dvalue.D_value);
 		Dacai_SetTextValue(GUI_SCREEN_D,GUI_TEXT_D_D,(uint8_t *)strbuf , strlen(strbuf));			

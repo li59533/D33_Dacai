@@ -88,7 +88,7 @@
 */ 
 arm_pid_instance_f32 PID = 
 {
-	.Kp = 4.0f,
+	.Kp = 1.6f,
 	.Ki = 0.0f,
 	.Kd = 0.0f,
 };

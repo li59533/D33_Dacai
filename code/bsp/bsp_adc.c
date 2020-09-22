@@ -77,7 +77,7 @@ DMA_HandleTypeDef hdma_adc1;
 
 
 bsp_adc_data_t BSP_ADC_Value[BSP_ADC_CHANNEL_COUNT];
-uint16_t bsp_adcspace[128];
+uint16_t bsp_adcspace[512];
 
 /**
  * @}
@@ -157,7 +157,7 @@ void BSP_ADC_Init(void)
 		Error_Handler();
 	}
 	
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t * )bsp_adcspace, 64);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t * )bsp_adcspace, 512);
 }
 
 
@@ -257,15 +257,15 @@ void BSP_ADC_EnableIRQ(void)
 static void bsp_adc_calc(void)
 {
 	uint32_t sum[2] = {0 , 0};
-	for(uint8_t i = 0 ; i < 32 ; i ++)
+	for(uint16_t i = 0 ; i < 256 ; i ++)
 	{
 		sum[0] += bsp_adcspace[i* 2];
 		sum[1] += bsp_adcspace[i * 2 + 1];
 	}
 	
 	
-	BSP_ADC_Value[BSP_ADC_CHANNEL_0].average = (uint16_t )(sum[0] / 32);
-	BSP_ADC_Value[BSP_ADC_CHANNEL_1].average = (uint16_t )(sum[1] / 32);
+	BSP_ADC_Value[BSP_ADC_CHANNEL_0].average = (uint16_t )(sum[0] / 256);
+	BSP_ADC_Value[BSP_ADC_CHANNEL_1].average = (uint16_t )(sum[1] / 256);
 	
 	BSP_ADC_Value[BSP_ADC_CHANNEL_0].real_mv = (float)(0.805664f * BSP_ADC_Value[BSP_ADC_CHANNEL_0].average);
 	BSP_ADC_Value[BSP_ADC_CHANNEL_1].real_mv = (float)(0.805664f * BSP_ADC_Value[BSP_ADC_CHANNEL_1].average);

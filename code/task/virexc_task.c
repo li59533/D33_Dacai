@@ -118,7 +118,7 @@ uint32_t VirExc_Task_Init(void)
 	BaseType_t basetype = { 0 };
 	basetype = xTaskCreate(VirExc_Task,\
 							"VirExc Task",\
-							1024,
+							2048,
 							NULL,
 							6,
 							&VirExc_Task_Handle);
@@ -181,7 +181,7 @@ void VirExc_Task(void * pvParameter)
 		if((event_flag & VIREXC_TASK_PID1250_EVENT) != 0x00)
 		{
 			DEBUG("VirExc Task PID1250\r\n");
-			VirExc_Task_StartTim(100);
+			VirExc_Task_StartTim(10);
 		}	
 	
 		

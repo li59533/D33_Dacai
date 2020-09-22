@@ -157,9 +157,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>436</LineNumber>
+          <LineNumber>399</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134223962</Address>
+          <Address>134223756</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -168,39 +168,39 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\app\app_dvalue.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\stm32f4xx\../app/app_dvalue.c\436</Expression>
+          <Expression>\\stm32f4xx\../app/app_dvalue.c\399</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>443</LineNumber>
+          <LineNumber>321</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134223452</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
+          <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\app\app_dvalue.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\stm32f4xx\../app/app_dvalue.c\321</Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>474</LineNumber>
+          <LineNumber>340</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134223546</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
+          <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\app\app_dvalue.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\stm32f4xx\../app/app_dvalue.c\340</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -223,6 +223,11 @@
           <count>3</count>
           <WinNumber>1</WinNumber>
           <ItemText>APP_Cvalue</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>APP_Dvalue.D_value</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>

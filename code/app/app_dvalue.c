@@ -36,7 +36,7 @@
  */
 
 /**
- * @defgroup      app_dvalue_IO_Define          s 
+ * @defgroup      app_dvalue_IO_Define           
  * @brief         
  * @{  
  */
@@ -75,6 +75,7 @@ typedef enum
 {
 	APP_DVALUE_CALC_Wait	= 1,
 	APP_DVALUE_CALC_Check_SIG ,
+	APP_DVALUE_CALC_NOCheck_SIG ,
 	APP_DVALUE_CALC_Get_Average  ,
 	APP_DVALUE_CALC_Complete , 
 }app_dvalue_calc_state_machine_e;
@@ -187,13 +188,33 @@ void APP_Dvalue_Calc(void)
 					//APP_Dvalue.D_value = 0;
 					//APP_Dvalue.calc_flag = 0;
 					APP_Dvalue.schedule = 1;
-					status = APP_DVALUE_CALC_Check_SIG;
-					//APP_Dvalue_TestPGA(Test_PGA_1);
+					
+					if(g_SystemParam_Config.auto_change_mul == 0)
+					{
+						status = APP_DVALUE_CALC_Check_SIG;
+					}
+					else
+					{
+						status = APP_DVALUE_CALC_NOCheck_SIG;
+					}
 
+					//APP_Dvalue_TestPGA(Test_PGA_1);
 				}
 				else
 				{
 					
+				}
+			}break;
+		case APP_DVALUE_CALC_NOCheck_SIG:
+			{
+				APP_Dvalue.schedule = 50;
+				status = APP_DVALUE_CALC_Get_Average;
+				switch(g_SystemParam_Config.D_calc_mul)
+				{
+					case 0:APP_Dvalue_TestPGA(Test_PGA_1);break;
+					case 1:APP_Dvalue_TestPGA(Test_PGA_10);break;
+					case 2:APP_Dvalue_TestPGA(Test_PGA_100);break;
+					default:break;
 				}
 			}break;
 		case APP_DVALUE_CALC_Check_SIG:
@@ -240,30 +261,27 @@ void APP_Dvalue_Calc(void)
 		case APP_DVALUE_CALC_Get_Average:
 			{
 				DEBUG("APP_DVALUE_Get_Average\r\n");
-				static float sig_buf[4];
+				static float sig_buf[1];
 				static uint8_t sig_count = 0;
 				
 				sig_buf[sig_count] = BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv;
 				
 				sig_count ++;
 
-				if(sig_count == 4)
+				if(sig_count == 1)
 				{
 					
 					APP_Dvalue.polarity = app_dvalue_getpolarity();
-					
-					
-					
-					
+
 					sig_count = 0;
 					float sum = 0;
-					for(uint8_t i = 0; i < 4 ; i ++)
+					for(uint8_t i = 0; i < 1 ; i ++)
 					{
 						sum += sig_buf[i];
 					}
 					float temp = 0;
 					
-					temp = (float)(sum / 4.0f) / APP_Dvalue.mul * 4.0f * APP_Dvalue.polarity;
+					temp = (float)(sum / 1.0f) / APP_Dvalue.mul * 4.0f * APP_Dvalue.polarity;
 					//APP_Dvalue.D_value = temp * 0.7018f - 1.701f;
 					APP_Dvalue.D_value = temp ;
 					APP_Dvalue.schedule = 100;
@@ -274,7 +292,7 @@ void APP_Dvalue_Calc(void)
 			{
 				static uint8_t wait_time = 0;
 				wait_time ++;
-				if(wait_time > 10)
+				if(wait_time > 1)
 				{
 					BSP_Led_Blink(BSP_LED_D , 2 , 50 , 100);
 					wait_time = 0;
@@ -343,7 +361,7 @@ void APP_Dvalue_Cali(void)
 					else
 					{
 						APP_Dvalue.schedule = 80;
-						status = APP_DVALUE_CALC_Get_Average;
+						status = APP_DVALUE_CALI_Get_Average;
 					}					
 				}				
 			}break;
@@ -432,7 +450,7 @@ static int8_t app_dvalue_getpolarity(void)
 		}		
 	}
 	//if(abs(max_index[1] - max_index[0]) > 300)3
-	if(BSP_AD7682_Value[BSP_AD7682_CAL_CHANNEL].buf[max_index[0]] < 300)
+	if(BSP_AD7682_Value[BSP_AD7682_CAL_CHANNEL].buf[max_index[0]] < 600)
 	{
 		return -1;
 	}

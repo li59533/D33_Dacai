@@ -76,6 +76,8 @@ const SystemParam_Config_t SystemParam_Config_Default =
 	.D_caliunit_value = 497 ,
 	.D_cali_result = 1250 ,  
 	.language_num = 0,
+	.auto_change_mul = 0,
+	.D_calc_mul = 1,
 };
 /**
  * @}
