@@ -181,7 +181,7 @@ void VirExc_Task(void * pvParameter)
 		if((event_flag & VIREXC_TASK_PID1250_EVENT) != 0x00)
 		{
 			DEBUG("VirExc Task PID1250\r\n");
-			VirExc_Task_StartTim(10);
+			VirExc_Task_StartTim(100);
 		}	
 	
 		

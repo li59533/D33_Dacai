@@ -88,7 +88,7 @@
 */ 
 arm_pid_instance_f32 PID = 
 {
-	.Kp = 1.6f,
+	.Kp = 4.0f,
 	.Ki = 0.0f,
 	.Kd = 0.0f,
 };
@@ -229,6 +229,7 @@ void APP_VirExc_PID_Loop(void)
 		}
 		
 		err_range = desired_value - BSP_ADC_Value[BSP_ADC_SIG_CHANNEL].real_mv;
+		//Clog_Float("Cali errrange:",err_range);
 	}
 	else
 	{

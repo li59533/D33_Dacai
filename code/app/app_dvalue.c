@@ -147,6 +147,7 @@ void APP_Dvalue_SW(void)
 
 void APP_Dvalue_TestPGA(uint8_t  Test_PGA)
 {
+	//DEBUG("PGA:%d\r\n" , Test_PGA);
 	switch(Test_PGA)
 	{
 		case Test_PGA_1 :
@@ -212,7 +213,7 @@ void APP_Dvalue_Calc(void)
 				switch(g_SystemParam_Config.D_calc_mul)
 				{
 					case 0:APP_Dvalue_TestPGA(Test_PGA_1);break;
-					case 1:APP_Dvalue_TestPGA(Test_PGA_10);break;
+					case 1:APP_Dvalue_TestPGA(Test_PGA_1);break;
 					case 2:APP_Dvalue_TestPGA(Test_PGA_100);break;
 					default:break;
 				}
@@ -308,7 +309,6 @@ void APP_Dvalue_Calc(void)
 			}break;
 	}
 }
-
 void APP_Dvalue_Cali(void)
 {
 	static uint8_t status = 0; 
