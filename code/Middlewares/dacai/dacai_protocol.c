@@ -445,14 +445,17 @@ void Dacai_SetButtonValue(uint16_t screen_id,uint16_t control_id,uint8_t state)
 {
 	uint8_t space_ptr = 0;
 	uint8_t tempbuf[50];
+
+	uint16_t screen_id_temp = __REV16(screen_id);
+	uint16_t control_id_temp = __REV16(control_id);	
 	
 	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_head , 1);
 	uint8_t cmd = 0xB1;
 	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&cmd , 1);
 	uint8_t cmd2 = 0x10;
 	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&cmd2 , 1);
-	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&screen_id , 2);
-	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&control_id , 2);
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&screen_id_temp , 2);
+	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&control_id_temp , 2);
 	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)&state , 1);
 	space_ptr += dacai_Tbuf_Add( tempbuf + space_ptr, (uint8_t *)dacai_foot , 4);
 	Dacai_Queue_in_Bytes( tempbuf , space_ptr);

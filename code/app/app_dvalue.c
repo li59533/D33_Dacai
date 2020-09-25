@@ -192,11 +192,11 @@ void APP_Dvalue_Calc(void)
 					
 					if(g_SystemParam_Config.auto_change_mul == 0)
 					{
-						status = APP_DVALUE_CALC_Check_SIG;
+						status = APP_DVALUE_CALC_NOCheck_SIG;
 					}
 					else
 					{
-						status = APP_DVALUE_CALC_NOCheck_SIG;
+						status = APP_DVALUE_CALC_Check_SIG;
 					}
 
 					//APP_Dvalue_TestPGA(Test_PGA_1);
@@ -212,9 +212,9 @@ void APP_Dvalue_Calc(void)
 				status = APP_DVALUE_CALC_Get_Average;
 				switch(g_SystemParam_Config.D_calc_mul)
 				{
-					case 0:APP_Dvalue_TestPGA(Test_PGA_1);break;
-					case 1:APP_Dvalue_TestPGA(Test_PGA_1);break;
-					case 2:APP_Dvalue_TestPGA(Test_PGA_100);break;
+					case 0:APP_Dvalue_TestPGA(Test_PGA_100);break;
+					case 1:APP_Dvalue_TestPGA(Test_PGA_10);break;
+					case 2:APP_Dvalue_TestPGA(Test_PGA_1 );break;
 					default:break;
 				}
 			}break;
@@ -261,7 +261,7 @@ void APP_Dvalue_Calc(void)
 			}break;
 		case APP_DVALUE_CALC_Get_Average:
 			{
-				DEBUG("APP_DVALUE_Get_Average\r\n");
+				//DEBUG("APP_DVALUE_Get_Average\r\n");
 				static float sig_buf[1];
 				static uint8_t sig_count = 0;
 				

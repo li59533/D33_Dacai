@@ -107,6 +107,11 @@ static void app_gui_btn_c_record(uint8_t status);
 static void app_gui_btn_d_pid(uint8_t status);
 static void app_gui_btn_d_back(uint8_t status);
 
+static void app_gui_btn_d_auto(uint8_t status);
+static void app_gui_btn_d_40(uint8_t status);
+static void app_gui_btn_d_400(uint8_t status);
+static void app_gui_btn_d_4000(uint8_t status);
+
 
 /**
  * @}
@@ -137,6 +142,10 @@ static void app_gui_btn_d_back(uint8_t status);
 
 #define GUI_BUTTON_D_RECORD		8
 #define GUI_BUTTON_D_BACK		9
+#define GUI_BUTTON_D_AUTO		11
+#define GUI_BUTTON_D_40			12
+#define GUI_BUTTON_D_400		13
+#define GUI_BUTTON_D_4000		14
 
 #define GUI_BUTTON_C_RECORD		8
 #define GUI_BUTTON_C_BACK		6
@@ -238,7 +247,27 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 							app_gui_btn_d_back(status);
 							APP_Dvalue.calc_flag = 0;
 							DEBUG("GUI_BUTTON_D_BACK\r\n");
-						}break;					
+						}break;		
+					case GUI_BUTTON_D_AUTO:
+						{
+							app_gui_btn_d_auto(status);
+							DEBUG("GUI_BUTTON_D_AUTO\r\n");
+						}break;
+					case GUI_BUTTON_D_40:
+						{
+							app_gui_btn_d_40(status);
+							DEBUG("GUI_BUTTON_D_40\r\n");
+						}break;
+					case GUI_BUTTON_D_400:
+						{
+							app_gui_btn_d_400(status);
+							DEBUG("GUI_BUTTON_D_400\r\n");
+						}break;
+					case GUI_BUTTON_D_4000:
+						{
+							app_gui_btn_d_4000(status);
+							DEBUG("GUI_BUTTON_D_4000\r\n");
+						}break;
 					default:break;
 				}					
 			}break;		
@@ -443,6 +472,43 @@ static void app_gui_up_d(void)
 	
 	Dacai_SetProgressBar(GUI_SCREEN_D , GUI_TEXT_D_PROGRASS,(uint32_t )APP_Dvalue.schedule);
 	
+	if(g_SystemParam_Config.auto_change_mul == 1)
+	{
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_AUTO , 0x01);
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_40, 0x01);
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_400, 0x01);
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_4000, 0x01);
+	}
+	else
+	{
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_AUTO , 0x00);
+		
+		switch(g_SystemParam_Config.D_calc_mul)
+		{
+			case 0:
+				{
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_40, 0x01);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_400, 0x00);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_4000, 0x00);
+				}break;
+			case 1:
+				{
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_40, 0x00);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_400, 0x01);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_4000, 0x00);					
+				}break;
+			case 2:
+				{
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_40, 0x00);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_400, 0x00);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_4000, 0x01);				
+				}break;
+			default:break;
+		}
+	}
+		
+	
+	
 	Dacai_Enable_Updata();
 }
 
@@ -555,8 +621,33 @@ static void app_gui_btn_d_back(uint8_t status)
 	APP_VirExc_PID_50();
 	
 }
+//GUI_BUTTON_D_AUTO:
+static void app_gui_btn_d_auto(uint8_t status)
+{
+	g_SystemParam_Config.auto_change_mul = status;
+	SystemParam_Save();
+}
+//GUI_BUTTON_D_40:
+static void app_gui_btn_d_40(uint8_t status)
+{
+	g_SystemParam_Config.D_calc_mul = 0;
+	SystemParam_Save();
+}
+//GUI_BUTTON_D_400:
+static void app_gui_btn_d_400(uint8_t status)
+{
+	g_SystemParam_Config.D_calc_mul = 1;
+	SystemParam_Save();
+}
+//GUI_BUTTON_D_4000:
+static void app_gui_btn_d_4000(uint8_t status)
+{
+	g_SystemParam_Config.D_calc_mul = 2;
+	SystemParam_Save();
+}
 
-//GUI_BUTTON_D_RECORD
+
+//GUI_BUTTON_C_RECORD
 static void app_gui_btn_c_record(uint8_t status)
 {
 	if(status == 0x01)
@@ -565,6 +656,9 @@ static void app_gui_btn_c_record(uint8_t status)
 	}
 	
 }
+
+
+
 
 // -----------------------------------
 

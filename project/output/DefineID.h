@@ -41,6 +41,14 @@
 
 #define  _BTN_D值_BUTTON1                                                       8
 
+#define  _BTN_D值_BUTTON3                                                      11
+
+#define  _BTN_D值_BUTTON4                                                      12
+
+#define  _BTN_D值_BUTTON5                                                      13
+
+#define  _BTN_D值_BUTTON6                                                      14
+
 #define  _TXT_DIS__C值_TEXT_DISPLAY1                                            5
 
 #define  _TXT_DIS__C值_TEXT_DISPLAY3                                            7
@@ -50,7 +58,7 @@
 #define  _PROGRESS_C值_PROGRESS1                                               10
 
 //全局图片c值2.png
-#define  _IMG_C值2_PNG                                                          6
+#define  _IMG_C值2_PNG                                                         14
 
 #define  _BTN_C值_BUTTON1                                                       8
 
@@ -69,10 +77,10 @@
 #define  _TXT_DIS__设置_TEXT_DISPLAY5                                           13
 
 //画面设置中按钮Button3弹起时的图片
-#define  _IMG_设置_BUTTON3_UP                                                    9
+#define  _IMG_设置_BUTTON3_UP                                                   17
 
 //画面设置中按钮Button3按下时的图片
-#define  _IMG_设置_BUTTON3_DOWN                                                 10
+#define  _IMG_设置_BUTTON3_DOWN                                                 18
 
 #define  _BTN_设置_BUTTON3                                                      15
 
