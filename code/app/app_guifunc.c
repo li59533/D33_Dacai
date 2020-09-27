@@ -25,6 +25,7 @@
 #include "system_param.h"
 #include "version.h"
 #include "bsp_uniqueID.h"
+#include "hal_task.h"
 
 /**
  * @addtogroup    app_guifunc_Modules 
@@ -99,6 +100,7 @@ sys_time_t app_gui_rtc ;
 static void app_gui_update(void);
 static void app_gui_up_start(void);
 static void app_gui_up_d(void);
+static void app_gui_d_flash_button(void);
 static void app_gui_up_c(void);
 static void app_gui_up_option(void);
 
@@ -312,7 +314,7 @@ void APP_Gui_Button_CB(uint16_t screen_id , uint16_t control_id  , uint8_t statu
 								g_SystemParam_Config.language_num = 0;
 							}
 							Dacai_Change_Language(g_SystemParam_Config.language_num);
-							SystemParam_Save();
+							Hal_Task_Event_Start( HAL_TASK_SYS_PARAM_SAVE_EVENT , EVENT_FROM_TASK);
 							DEBUG("GUI_BUTTON_OPTION_CHANGE_LANGUAGE\r\n");
 						}break;
 					default:break;
@@ -471,7 +473,7 @@ static void app_gui_up_d(void)
 
 	
 	Dacai_SetProgressBar(GUI_SCREEN_D , GUI_TEXT_D_PROGRASS,(uint32_t )APP_Dvalue.schedule);
-	
+		
 	if(g_SystemParam_Config.auto_change_mul == 1)
 	{
 		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_AUTO , 0x01);
@@ -505,13 +507,54 @@ static void app_gui_up_d(void)
 				}break;
 			default:break;
 		}
-	}
-		
+	}		
+	
 	
 	
 	Dacai_Enable_Updata();
+	
+	//app_gui_d_flash_button();
 }
 
+static void app_gui_d_flash_button(void)
+{
+	Dacai_Disable_Updata();
+	if(g_SystemParam_Config.auto_change_mul == 1)
+	{
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_AUTO , 0x01);
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_40, 0x01);
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_400, 0x01);
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_4000, 0x01);
+	}
+	else
+	{
+		Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_AUTO , 0x00);
+		
+		switch(g_SystemParam_Config.D_calc_mul)
+		{
+			case 0:
+				{
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_40, 0x01);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_400, 0x00);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_4000, 0x00);
+				}break;
+			case 1:
+				{
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_40, 0x00);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_400, 0x01);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_4000, 0x00);					
+				}break;
+			case 2:
+				{
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_40, 0x00);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_400, 0x00);
+					Dacai_SetButtonValue( GUI_SCREEN_D , GUI_BUTTON_D_4000, 0x01);				
+				}break;
+			default:break;
+		}
+	}	
+	Dacai_Enable_Updata();
+}
 
 static void app_gui_up_c(void)
 {
@@ -625,25 +668,34 @@ static void app_gui_btn_d_back(uint8_t status)
 static void app_gui_btn_d_auto(uint8_t status)
 {
 	g_SystemParam_Config.auto_change_mul = status;
-	SystemParam_Save();
+	Dacai_Queue_Clear();
+	app_gui_d_flash_button();
+	Hal_Task_Event_Start( HAL_TASK_SYS_PARAM_SAVE_EVENT , EVENT_FROM_TASK);
+
 }
 //GUI_BUTTON_D_40:
 static void app_gui_btn_d_40(uint8_t status)
 {
 	g_SystemParam_Config.D_calc_mul = 0;
-	SystemParam_Save();
+	Dacai_Queue_Clear();
+	app_gui_d_flash_button();
+	Hal_Task_Event_Start( HAL_TASK_SYS_PARAM_SAVE_EVENT , EVENT_FROM_TASK);
 }
 //GUI_BUTTON_D_400:
 static void app_gui_btn_d_400(uint8_t status)
 {
 	g_SystemParam_Config.D_calc_mul = 1;
-	SystemParam_Save();
+	Dacai_Queue_Clear();
+	app_gui_d_flash_button();
+	Hal_Task_Event_Start( HAL_TASK_SYS_PARAM_SAVE_EVENT , EVENT_FROM_TASK);
 }
 //GUI_BUTTON_D_4000:
 static void app_gui_btn_d_4000(uint8_t status)
 {
 	g_SystemParam_Config.D_calc_mul = 2;
-	SystemParam_Save();
+	Dacai_Queue_Clear();
+	app_gui_d_flash_button();
+	Hal_Task_Event_Start( HAL_TASK_SYS_PARAM_SAVE_EVENT , EVENT_FROM_TASK);
 }
 
 

@@ -72,7 +72,7 @@ void Dacai_Ring_in_Byte(uint8_t buf);
 int8_t Dacai_Ring_out_Byte(uint8_t * buf);
 void Dacai_Queue_in_Bytes(uint8_t * buf , uint16_t len);
 int8_t Dacai_Queue_out_Bytes(uint8_t * buf, uint16_t * len);
-
+void Dacai_Queue_Clear(void);
 
 // ---------- Test Code ------------------------
 void Dacai_TestCode(void);

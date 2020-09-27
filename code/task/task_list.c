@@ -24,6 +24,7 @@
 
 #include "first_task.h"
 #include "second_task.h"
+#include "hal_task.h"
 #include "led_task.h"
 #include "virexc_task.h"
 #include "dacai_task.h"
@@ -129,6 +130,7 @@ void RTOS_Init(void)
 	//basetype |= Time_Task_Init();
 	//basetype |= First_Task_Init();
 	//basetype |= Second_Task_Init();
+	basetype |= Hal_Task_Init();
 	basetype |= Led_Task_Init();
 	basetype |= VirExc_Task_Init();
 	basetype |= Dacai_Task_Init();

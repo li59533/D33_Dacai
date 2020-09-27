@@ -78,7 +78,7 @@ typedef struct
 }dacai_txbuf_t;
 typedef struct
 {
-	dacai_txbuf_t tqueue[10];
+	dacai_txbuf_t tqueue[20];
 	uint8_t in ;
 	uint8_t out;
 	uint8_t count;
@@ -254,6 +254,14 @@ int8_t Dacai_Ring_out_Byte(uint8_t * buf)
 	return dacai_revbuf.count;
 }
 // --
+
+void Dacai_Queue_Clear(void)
+{
+	dacai_txqueue.in = 0;
+	dacai_txqueue.out = 0 ;
+	dacai_txqueue.count = 0;
+}
+
 void Dacai_Queue_in_Bytes(uint8_t * buf , uint16_t len)
 {
 	if(len < DACAI_T_QUEUE_LEN)
